@@ -12,12 +12,12 @@
         /// <summary>
         /// Gets the admin port number used by hoverfly.
         /// </summary>
-        public int AdminPort { get; private set; } = DEFAULT_PROXY_PORT;
+        public int AdminPort { get; private set; } = DEFAULT_ADMIN_PORT;
 
         /// <summary>
         /// Gets the proxy port number used by hoverfly.
         /// </summary>
-        public int ProxyPort { get; private set; } = DEFAULT_ADMIN_PORT;
+        public int ProxyPort { get; private set; } = DEFAULT_PROXY_PORT;
 
         /// <summary>
         /// Gets if the hoverfly uses a remote instance.
@@ -26,12 +26,12 @@
         public bool IsRemoteInstance { get; private set; }
 
         /// <summary>
-        /// Gets the URL of the remote hoverfly intance.
+        /// Gets the base URL of the remote hoverfly instance.
         /// </summary>
-        public Uri RemoteHost { get; private set; } = new Uri(LOCALHOST);
+        public string RemoteHost { get; private set; } = LOCALHOST;
 
         /// <summary>
-        /// Gets if any request to localhost will be or not be proxied throigh hoverfly..
+        /// Gets if any request to localhost will be or not be proxied through hoverfly..
         /// </summary>
         public bool ProxyLocalhost { get; private set; }
 
@@ -47,17 +47,17 @@
         public static HoverflyConfig Config() => new HoverflyConfig();
 
         ///<summary>Use this method if there is already a remote instance of hoverfly running. By using this method .Net will not start a hoverfly instance.</summary>
-        ///<param name="remoteHost">The URL of the romote hoverfly instance. If nothing is specified, localhost, will be used by default.</param>
+        ///<param name="remoteHost">The base URL of the remote hoverfly instance. If nothing is specified, localhost, will be used by default.</param>
         ///<param name="proxyPort">The proxy port the remote hoverfly uses. If nothing is specified, 8500, will be used by default.</param>
         ///<param name="adminPort">The admin port the remote hoverfly uses. If nothing is specified, 8888, will be used by default.</param>
         ///<returns>Returns <see cref="HoverflyConfig"/> for further customizations.</returns>
         public HoverflyConfig UseRemoteInstance(
-            Uri remoteHost = null,
+            string remoteHost = null,
             int proxyPort = DEFAULT_PROXY_PORT,
             int adminPort = DEFAULT_ADMIN_PORT)
         {
             this.IsRemoteInstance = true;
-            RemoteHost = remoteHost ?? new Uri(LOCALHOST);
+            RemoteHost = remoteHost ?? LOCALHOST;
             return this;
         }
 
@@ -85,13 +85,13 @@
         }
 
         /// <summary>
-        /// Sets the remote hos of an already running hoverfly instance.
+        /// Sets the base remote host of an already running hoverfly instance.
         /// </summary>
         /// <param name="remoteHost">The remote host URL port.</param>
         /// <returns>Returns <see cref="HoverflyConfig"/> for further customizations.</returns>
-        public HoverflyConfig SetRemoteHost(Uri remoteHost)
+        public HoverflyConfig SetRemoteHost(string remoteHost)
         {
-            if (remoteHost == null)
+            if (string.IsNullOrWhiteSpace(remoteHost))
                 throw new ArgumentNullException(nameof(remoteHost));
 
             RemoteHost = remoteHost;
@@ -101,11 +101,11 @@
         /// <summary>
         /// Sets if localhost should be proxied.
         /// </summary>
-        /// <param name="proxyLoalhost">If localhost should be proxied or not.</param>
+        /// <param name="proxyLocalhost">If localhost should be proxied or not.</param>
         /// <returns>Returns <see cref="HoverflyConfig"/> for further customizations.</returns>
-        public HoverflyConfig SetProxyLocalhost(bool proxyLoalhost)
+        public HoverflyConfig SetProxyLocalhost(bool proxyLocalhost)
         {
-            ProxyLocalhost = proxyLoalhost;
+            ProxyLocalhost = proxyLocalhost;
             return this;
         }
 

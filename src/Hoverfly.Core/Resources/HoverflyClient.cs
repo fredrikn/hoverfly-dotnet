@@ -6,6 +6,9 @@
 
     using Logging;
 
+    /// <summary>
+    /// The client that works against a hoverfly instance.
+    /// </summary>
     public class HoverflyClient : IHoverflyClient
     {
         private const string HEALTH_CHECK_PATH = "/api/stats";
@@ -28,11 +31,11 @@
         /// Imports simulation to hoverfly.
         /// </summary>
         /// <param name="simulationData">The simulation as a hoverfly json simulation.</param>
-        public void ImportSimulation(string simulationData)
+        public void ImportSimulation(Byte[] simulationData)
         {
             var putSimulationTask = _hoverflyHttpClient.PutAsync(
                                                                  SIMULATION_PATH,
-                                                                 new StringContent(simulationData, Encoding.UTF8, "application/json"));
+                                                                 new StringContent(Encoding.UTF8.GetString(simulationData), Encoding.UTF8, "application/json"));
 
             putSimulationTask.Wait();
             var response = putSimulationTask.Result;

@@ -30,24 +30,28 @@
 
         private Process _hoverflyProcess;
 
-        public Hoverfly(HoverflyMode hoverflyMode) : this(hoverflyMode, null)
+        public Hoverfly(HoverflyMode hoverflyMode) : this(null, hoverflyMode)
         {
         }
 
-        public Hoverfly(HoverflyMode hoverflyMode, ILoggerFactory loggerFactory) : this(null, hoverflyMode, loggerFactory)
+        public Hoverfly(
+            HoverflyConfig config,
+            HoverflyMode hoverflyMode) : this(config, hoverflyMode, null, null)
         {
         }
 
-
-        public Hoverfly(HoverflyConfig config, HoverflyMode hoverflyMode, ILoggerFactory loggerFactory) : this(config, hoverflyMode, null, loggerFactory)
+        public Hoverfly(
+            HoverflyConfig config,
+            HoverflyMode hoverflyMode,
+            IHoverflyClient hoverflyClient) : this(config, hoverflyMode, hoverflyClient, null)
         {
         }
 
-        public Hoverfly(HoverflyConfig config, HoverflyMode hoverflyMode, IHoverflyClient hoverflyClient) : this(config, hoverflyMode, hoverflyClient, null)
-        {
-        }
-
-        public Hoverfly(HoverflyConfig config, HoverflyMode hoverflyMode, IHoverflyClient hoverflyClient, ILoggerFactory loggerFactory)
+        public Hoverfly(
+            HoverflyConfig config,
+            HoverflyMode hoverflyMode,
+            IHoverflyClient hoverflyClient,
+            ILoggerFactory loggerFactory)
         {
             _hoverflyMode = hoverflyMode;
 
@@ -60,18 +64,13 @@
                                                          _logger);
         }
 
-        public void Start(string simulationFile = null)
+        public void Start()
         {
             if (!_hoverflyConfig.IsRemoteInstance)
                 StartHoverflyProcess();
 
             WaitForHoverflyToBecomeHealthy();
             SetProxySystemProperties();
-
-            //TODO: Refactor so simulation file can be read for any source, not just as file path at the moment.
-
-            if (!string.IsNullOrWhiteSpace(simulationFile))
-                ImportSimulation(simulationFile);
         }
 
         public void Stop()
@@ -80,19 +79,17 @@
             _hoverflyProcess?.Kill();
         }
 
-        public void ImportSimulation(string simulationFile)
+        public void ImportSimulation(ISimulationSource simulationSource)
         {
-            if (string.IsNullOrWhiteSpace(simulationFile))
-                throw new ArgumentNullException(nameof(simulationFile));
+            if (simulationSource == null)
+                throw new ArgumentNullException(nameof(simulationSource));
 
-            if (!File.Exists(simulationFile))
-                throw new FileNotFoundException($"Can't find the simulation file '{simulationFile}'");
+            _logger?.Info($"Importing simulation data to Hoverfly.");
 
-            _logger?.Info($"Importing simulation data to Hoverfly from path: '{simulationFile}'");
+            var simulationData = simulationSource.GetSimulation();
 
-            //TODO: Read simulation as byte[] instead so we can get if from different sources.
-
-            var simulationData = File.ReadAllText(simulationFile);
+            if (simulationData == null)
+                throw new SimulationEmptyException($"The hoverfly simulation data from source '{simulationSource.ResourcePath}' is empty.");
 
             _hoverflyClient.ImportSimulation(simulationData);
         }
