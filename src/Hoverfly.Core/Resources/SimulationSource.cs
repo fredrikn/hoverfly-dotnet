@@ -31,7 +31,7 @@
         /// <returns>Returns a byte array with the simulation data.</returns>
         public byte[] GetSimulation()
         {
-            if (File.Exists(ResourcePath))
+            if (!File.Exists(ResourcePath))
                 throw new FileNotFoundException($"Can't find the file '{ResourcePath}'.");
 
             return File.ReadAllBytes(ResourcePath);
