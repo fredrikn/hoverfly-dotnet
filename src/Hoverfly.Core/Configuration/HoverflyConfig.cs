@@ -46,11 +46,13 @@
         /// <returns>Returns an instance of <see cref="HoverflyConfig"/>.</returns>
         public static HoverflyConfig Config() => new HoverflyConfig();
 
-        ///<summary>Use this method if there is already a remote instance of hoverfly running. By using this method .Net will not start a hoverfly instance.</summary>
-        ///<param name="remoteHost">The base URL of the remote hoverfly instance. If nothing is specified, localhost, will be used by default.</param>
-        ///<param name="proxyPort">The proxy port the remote hoverfly uses. If nothing is specified, 8500, will be used by default.</param>
-        ///<param name="adminPort">The admin port the remote hoverfly uses. If nothing is specified, 8888, will be used by default.</param>
-        ///<returns>Returns <see cref="HoverflyConfig"/> for further customizations.</returns>
+        /// <summary>
+        /// Use this method if there is already a remote instance of hoverfly running. By using this method .Net will not start a hoverfly instance.
+        /// </summary>
+        /// <param name="remoteHost">The base URL of the remote hoverfly instance. If nothing is specified, localhost, will be used by default.</param>
+        /// <param name="proxyPort">The proxy port the remote hoverfly uses. If nothing is specified, 8500, will be used by default.</param>
+        /// <param name="adminPort">The admin port the remote hoverfly uses. If nothing is specified, 8888, will be used by default.</param>
+        /// <returns>Returns <see cref="HoverflyConfig"/> for further customizations.</returns>
         public HoverflyConfig UseRemoteInstance(
             string remoteHost = null,
             int proxyPort = DEFAULT_PROXY_PORT,
@@ -60,7 +62,6 @@
             RemoteHost = remoteHost ?? LOCALHOST;
             return this;
         }
-
 
         /// <summary>
         /// Sets the proxy port used by the hoverfly.
@@ -109,7 +110,6 @@
             return this;
         }
 
-
         /// <summary>
         /// Sets the base path to the hoverfly.exe.
         /// </summary>
@@ -119,9 +119,6 @@
         {
             if (string.IsNullOrWhiteSpace(hoverflyBasePath))
                 throw new ArgumentNullException(nameof(hoverflyBasePath));
-
-            if (hoverflyBasePath.Contains("hoverfly.exe"))
-                hoverflyBasePath = hoverflyBasePath.Replace("hoverfly.exe", string.Empty);
 
             HoverflyBasePath = hoverflyBasePath;
             return this;

@@ -6,16 +6,12 @@ namespace Hoverfly.Core.Resources
     public interface ISimulationSource
     {
         /// <summary>
-        /// The path to the simulation file.
-        /// </summary>
-        string ResourcePath { get; }
-
-        /// <summary>
         /// Gets the simulation data for the given name.
         /// </summary>
+        /// <param name="name">The resource name of the simulation if any.</param>
         /// <returns>Returns a byte array with the simulation data.</returns>
         /// <remarks>Will use the specified ResourcePath to get the simulation data.</remarks>
-        byte[] GetSimulation();
+        byte[] GetSimulation(string name);
 
         /// <summary>
         /// Saves the simulation data.

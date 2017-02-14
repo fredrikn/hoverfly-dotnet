@@ -18,11 +18,13 @@
         private const int BOOT_TIMEOUT_SECONDS = 10;
         private const int RETRY_BACKOFF_INTERVAL_MS = 100;
 
+        private const string HOVERFLY_EXE = "hoverfly.exe";
+
         private readonly HoverflyConfig _hoverflyConfig;
 
         private readonly IHoverflyClient _hoverflyClient;
 
-        private readonly ILoggerFactory _loggerFactory;
+        private readonly ISimulationSource _simulationSource;
 
         private readonly ILog _logger;
 
@@ -30,38 +32,24 @@
 
         private Process _hoverflyProcess;
 
-        public Hoverfly(HoverflyMode hoverflyMode) : this(null, hoverflyMode)
-        {
-        }
-
         public Hoverfly(
-            HoverflyConfig config,
-            HoverflyMode hoverflyMode) : this(config, hoverflyMode, null, null)
-        {
-        }
-
-        public Hoverfly(
-            HoverflyConfig config,
             HoverflyMode hoverflyMode,
-            IHoverflyClient hoverflyClient) : this(config, hoverflyMode, hoverflyClient, null)
-        {
-        }
-
-        public Hoverfly(
-            HoverflyConfig config,
-            HoverflyMode hoverflyMode,
-            IHoverflyClient hoverflyClient,
-            ILoggerFactory loggerFactory)
+            HoverflyConfig config = null,
+            IHoverflyClient hoverflyClient = null,
+            ISimulationSource simulationSource = null,
+            ILoggerFactory loggerFactory = null)
         {
             _hoverflyMode = hoverflyMode;
 
             _hoverflyConfig = config ?? HoverflyConfig.Config();
-           
+
             _logger = loggerFactory?.Create(this.GetType().Name);
 
             _hoverflyClient = hoverflyClient ?? new HoverflyClient(
                                                          new Uri($"{_hoverflyConfig.RemoteHost}:{_hoverflyConfig.AdminPort}"),
                                                          _logger);
+
+            _simulationSource = simulationSource ?? new JsonFileSimulationSource(Environment.CurrentDirectory);
         }
 
         public void Start()
@@ -79,24 +67,35 @@
             _hoverflyProcess?.Kill();
         }
 
-        public void ImportSimulation(ISimulationSource simulationSource)
+        public void ImportSimulation(string name)
         {
-            if (simulationSource == null)
-                throw new ArgumentNullException(nameof(simulationSource));
+            _logger?.Info($"Importing simulation data '{name}' to Hoverfly.");
 
-            _logger?.Info($"Importing simulation data to Hoverfly.");
+            var simulationData = _simulationSource.GetSimulation(name);
 
-            var simulationData = simulationSource.GetSimulation();
+            if (simulationData != null)
+                _hoverflyClient.ImportSimulation(simulationData);
+        }
 
-            if (simulationData == null)
-                throw new SimulationEmptyException($"The hoverfly simulation data from source '{simulationSource.ResourcePath}' is empty.");
+        public void ExportSimulation(string name)
+        {
+            _logger?.Info($"Exporting simulation data from Hoverfly.");
 
-            _hoverflyClient.ImportSimulation(simulationData);
+            //TODO: Implement the save simulation. Get the simulation data from hoverfly.
+
+            try
+            {
+                _simulationSource.SaveSimulation(null, name);
+            }
+            catch (Exception e)
+            {
+            }
         }
 
         private void SetProxySystemProperties()
         {
-            //TODO: When starting hoverfly webserver, no proxy is needed.
+            if (_hoverflyMode == HoverflyMode.WEBSERVER)
+                return;
 
             WebRequest.DefaultWebProxy = new WebProxy(
                                                       $"{_hoverflyConfig.RemoteHost}:{_hoverflyConfig.ProxyPort}",
@@ -120,23 +119,34 @@
 
         private void StartHoverflyProcess()
         {
-            var hoverflyPath = Path.Combine(_hoverflyConfig.HoverflyBasePath, "hoverfly.exe");
-
-            if (!File.Exists(hoverflyPath))
-                throw new FileNotFoundException($"Can't find the file hoverfly file at path '{hoverflyPath}'.");
-
             VerifyPortNotInUse(_hoverflyConfig.ProxyPort);
             VerifyPortNotInUse(_hoverflyConfig.AdminPort);
+
+            var hoverflyPath = GetHoverflyPath();
 
             _logger?.Info($"Start hoverfly from path '{hoverflyPath}'");
 
             var processInfo = new ProcessStartInfo(hoverflyPath, GetHoverflyArgumentsBasedOnMode())
-                                  {
-                                      WorkingDirectory = _hoverflyConfig.HoverflyBasePath,
-                                      CreateNoWindow = false
-                                  };
+            {
+                WorkingDirectory = _hoverflyConfig.HoverflyBasePath,
+                CreateNoWindow = false
+            };
 
             _hoverflyProcess = Process.Start(processInfo);
+        }
+
+        private string GetHoverflyPath()
+        {
+            var hoverfileBasePath = string.IsNullOrWhiteSpace(_hoverflyConfig.HoverflyBasePath) ?
+                                           Environment.CurrentDirectory :
+                                           _hoverflyConfig.HoverflyBasePath;
+
+            var result = Directory.GetFiles(hoverfileBasePath, HOVERFLY_EXE, SearchOption.AllDirectories);
+
+            if (result.Any())
+                return result.First();
+
+            throw new FileNotFoundException($"Can't find the file '{HOVERFLY_EXE}' file in the current directory '{hoverfileBasePath}' or is sub-folders.");
         }
 
         private string GetHoverflyArgumentsBasedOnMode()
