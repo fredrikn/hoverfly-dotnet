@@ -6,3 +6,7 @@ src/Hoverfly\.Core/\.vs/Hoverfly\.Core/v14/\.suo
 src/Hoverfly\.Core/obj/Debug/
 
 src/Hoverfly\.Core\.Test/bin/Debug/binaries/
+
+src/Hoverfly\.Core\.Test/bin/Debug/
+
+src/Hoverfly\.Core\.Test/obj/Debug/
