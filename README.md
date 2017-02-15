@@ -1,7 +1,5 @@
 # hoverfly-dotnet
-A .Net Library for Hoverfly
-
-http://hoverfly.io/
+A .Net Library for Hoverfly (http://hoverfly.io/)
 
 Hoverfly is maintained by SpectoLabs (https://specto.io/)
 
@@ -14,3 +12,38 @@ Hoverfly .Net is a native language binding which gives you an expressive API for
 
 This project doesn't include the hoverfly.exe
 You can download it from http://hoverfly.io/#download
+
+Example:
+
+```
+var hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
+
+hoverfly.Start();
+
+var result = //Use HttpClient to get content, e.g. "http://time.jsontest.com";
+
+// This call will not reach the destination URL, insted Hoverfly will return a first call that is recorded.
+var result2 = //Use HttpClient to get content, e.g. "http://time.jsontest.com";
+
+hoverfly.Stop();
+```
+
+Catpture and export simulations:
+
+```
+var hoverfly = new Hoverfly(HoverflyMode.CAPTURE);
+
+hoverfly.Start();
+
+use for example HttpClient to make a call to a URL, e.g. "http://echo.jsontest.com/key/value/one/two");
+
+hoverfly.ExportSimulation("simulation.json");
+
+hoverfly.Stop();
+```
+
+Import recorded simulations into hoverfly:
+
+```
+hoverfly.ImportSimulation("simulation.json");
+```
