@@ -10,8 +10,8 @@
     using System.Threading;
 
     using Configuration;
-    using Resources;
     using Logging;
+    using Resources;
 
     public class Hoverfly
     {
@@ -49,7 +49,7 @@
                                                          new Uri($"{_hoverflyConfig.RemoteHost}:{_hoverflyConfig.AdminPort}"),
                                                          _logger);
 
-            _simulationSource = simulationSource ?? new JsonFileSimulationSource(Environment.CurrentDirectory);
+            _simulationSource = simulationSource ?? new FileSimulationSource(Environment.CurrentDirectory);
         }
 
         public void Start()
@@ -81,14 +81,14 @@
         {
             _logger?.Info($"Exporting simulation data from Hoverfly.");
 
-            //TODO: Implement the save simulation. Get the simulation data from hoverfly.
-
             try
             {
-                _simulationSource.SaveSimulation(null, name);
+                var simulationData = _hoverflyClient.GetSimulation();
+                _simulationSource.SaveSimulation(simulationData, name);
             }
             catch (Exception e)
             {
+                throw new SimulationExportException($"Can't export simulation, reason: {e}", e);
             }
         }
 
@@ -97,9 +97,20 @@
             if (_hoverflyMode == HoverflyMode.WEBSERVER)
                 return;
 
-            WebRequest.DefaultWebProxy = new WebProxy(
-                                                      $"{_hoverflyConfig.RemoteHost}:{_hoverflyConfig.ProxyPort}",
-                                                      !_hoverflyConfig.ProxyLocalhost);
+            //TODO: Temporary hack to accept all SSL
+            ServicePointManager.ServerCertificateValidationCallback = (senderX, certificate, chain, sslPolicyErrors) => true;
+
+            if (_hoverflyConfig.ProxyLocalhost)
+            {
+                WebRequest.DefaultWebProxy = new WebProxy($"http://localhost:{_hoverflyConfig.ProxyPort}", false);
+            }
+            else
+            {
+                WebRequest.DefaultWebProxy = new WebProxy(
+                    $"http://localhost:{_hoverflyConfig.ProxyPort}",
+                    true,
+                    new[] { "local;*.local;169.254/16;*.169.254/16" });
+            }
         }
 
         private void WaitForHoverflyToBecomeHealthy()
@@ -162,6 +173,14 @@
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            //commands.add(binaryPath.toString());
+            //commands.add("-db");
+            //commands.add("memory");
+            //commands.add("-pp");
+            //commands.add(proxyPort.toString());
+            //commands.add("-ap");
+            //commands.add(adminPort.toString());
 
             return null;
         }

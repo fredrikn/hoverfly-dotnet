@@ -54,7 +54,7 @@
     <Compile Include="Resources\ISimulationSource.cs" />
     <Compile Include="Resources\SimulationEmptyException.cs" />
     <Compile Include="Resources\SimulationExportException.cs" />
-    <Compile Include="Resources\JsonFileSimulationSource.cs" />
+    <Compile Include="Resources\FileSimulationSource.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

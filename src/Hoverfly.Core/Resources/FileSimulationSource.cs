@@ -4,15 +4,15 @@
     using System.IO;
 
     /// <summary>
-    /// JsonFileSimulationSource is used for saveing and loading hoverfly simulation data.
+    /// FileSimulationSource is used for saveing and loading hoverfly simulation data.
     /// </summary>
-    public class JsonFileSimulationSource : ISimulationSource
+    public class FileSimulationSource : ISimulationSource
     {
         /// <summary>
         /// Creates a source for the hoverfly simulation data.
         /// </summary>
         /// <param name="resourcePath">The file path to the simulation data.</param>
-        public JsonFileSimulationSource(string resourcePath)
+        public FileSimulationSource(string resourcePath)
         {
             if (string.IsNullOrWhiteSpace(resourcePath))
                 throw new ArgumentNullException(nameof(resourcePath));

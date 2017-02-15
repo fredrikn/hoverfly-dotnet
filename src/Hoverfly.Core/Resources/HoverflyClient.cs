@@ -3,6 +3,7 @@
     using System;
     using System.Net.Http;
     using System.Text;
+    using System.Threading.Tasks;
 
     using Logging;
 
@@ -45,6 +46,17 @@
         }
 
         /// <summary>
+        /// Gets the simulation recorded by hoverfly.
+        /// </summary>
+        public byte[] GetSimulation()
+        {
+            var getSimulationtask = Task.Run(async () => await GetSimulationDataFromHoverflyAsync());
+
+            getSimulationtask.Wait();
+            return getSimulationtask.Result;
+        }
+
+        /// <summary>
         /// Cheks if hoverfly is running and is healty.
         /// </summary>
         /// <returns>Returns true if hoverfly is healthy.</returns>
@@ -68,6 +80,16 @@
             }
 
             return false;
+        }
+
+        private async Task<byte[]> GetSimulationDataFromHoverflyAsync()
+        {
+            var response = await _hoverflyHttpClient.GetAsync(SIMULATION_PATH);
+
+            if (!response.IsSuccessStatusCode)
+                throw new HttpRequestException($"Can't get the simulation from Hoverfly, status code: '{response.StatusCode}', reason '{response.ReasonPhrase}'");
+
+            return await response.Content.ReadAsByteArrayAsync();
         }
     }
 }

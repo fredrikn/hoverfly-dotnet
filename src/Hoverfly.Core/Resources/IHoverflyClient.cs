@@ -12,6 +12,11 @@ namespace Hoverfly.Core.Resources
         void ImportSimulation(byte[] simulationData);
 
         /// <summary>
+        /// Gets the simulation recorded by hoverfly.
+        /// </summary>
+        byte[] GetSimulation();
+
+        /// <summary>
         /// Cheks if hoverfly is running and is healty.
         /// </summary>
         /// <returns>Returns true if hoverfly is healthy.</returns>

@@ -7,7 +7,7 @@
         private const int DEFAULT_PROXY_PORT = 8500;
         private const int DEFAULT_ADMIN_PORT = 8888;
 
-        private const string LOCALHOST = "http://localhost";
+        private const string LOCALHOST = "localhost";
 
         /// <summary>
         /// Gets the admin port number used by hoverfly.
