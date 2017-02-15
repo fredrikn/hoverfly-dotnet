@@ -28,7 +28,7 @@ var result2 = //Use HttpClient to get content, e.g. "http://time.jsontest.com";
 hoverfly.Stop();
 ```
 
-Catpture and export simulations:
+Capture and export simulations:
 
 ```
 var hoverfly = new Hoverfly(HoverflyMode.CAPTURE);
