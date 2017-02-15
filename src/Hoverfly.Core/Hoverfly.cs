@@ -7,6 +7,7 @@
     using System.Linq;
     using System.Net;
     using System.Net.NetworkInformation;
+    using System.Text;
     using System.Threading;
 
     using Configuration;
@@ -17,6 +18,8 @@
     {
         private const int BOOT_TIMEOUT_SECONDS = 10;
         private const int RETRY_BACKOFF_INTERVAL_MS = 100;
+
+        private const int KILL_PROCESS_TIMEOUT = 2;
 
         private const string HOVERFLY_EXE = "hoverfly.exe";
 
@@ -64,7 +67,21 @@
         public void Stop()
         {
             _logger?.Info("Destroying hoverfly process");
-            _hoverflyProcess?.Kill();
+
+            if (_hoverflyProcess == null)
+                return;
+
+            _hoverflyProcess.Kill();
+
+            // We can't make sure the Process are really dead hwne we make a call to Kill,
+            // so we don't leave stop until we are sure its gone.
+            var timeout = DateTime.Now.AddSeconds(KILL_PROCESS_TIMEOUT);
+
+            while (Process.GetProcessesByName("hoverfly").Any() && timeout > DateTime.Now)
+                Thread.Sleep(1);
+
+            if (Process.GetProcessesByName("hoverfly").Any())
+                throw new TimeoutException("Timeout while waiting for hoverfly process to be closed.");
         }
 
         public void ImportSimulation(string name)
@@ -79,17 +96,25 @@
 
         public void ExportSimulation(string name)
         {
-            _logger?.Info($"Exporting simulation data from Hoverfly.");
+            _logger?.Info("Exporting simulation data from Hoverfly.");
 
             try
             {
-                var simulationData = _hoverflyClient.GetSimulation();
+                var simulationData = GetSimulation();
                 _simulationSource.SaveSimulation(simulationData, name);
             }
             catch (Exception e)
             {
                 throw new SimulationExportException($"Can't export simulation, reason: {e}", e);
             }
+        }
+
+
+        public byte[] GetSimulation()
+        {
+            _logger?.Info("Get simulation data from Hoverfly.");
+
+            return _hoverflyClient.GetSimulation();
         }
 
         private void SetProxySystemProperties()
@@ -140,7 +165,7 @@
             var processInfo = new ProcessStartInfo(hoverflyPath, GetHoverflyArgumentsBasedOnMode())
             {
                 WorkingDirectory = _hoverflyConfig.HoverflyBasePath,
-                CreateNoWindow = false
+                WindowStyle = ProcessWindowStyle.Hidden
             };
 
             _hoverflyProcess = Process.Start(processInfo);
@@ -162,27 +187,27 @@
 
         private string GetHoverflyArgumentsBasedOnMode()
         {
+            var arguments = new StringBuilder();
+
             switch (_hoverflyMode)
             {
                 case HoverflyMode.CAPTURE:
-                    return " -capture";
+                    arguments.Append(" -capture ");
+                    break;
                 case HoverflyMode.WEBSERVER:
-                    return " -webserver";
+                    arguments.Append(" -webserver ");
+                    break;
                 case HoverflyMode.SIMULATE:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            //commands.add(binaryPath.toString());
-            //commands.add("-db");
-            //commands.add("memory");
-            //commands.add("-pp");
-            //commands.add(proxyPort.toString());
-            //commands.add("-ap");
-            //commands.add(adminPort.toString());
+            arguments.Append(" -db memory ");
+            arguments.Append($" -pp {_hoverflyConfig.ProxyPort} ");
+            arguments.Append($" -ap {_hoverflyConfig.AdminPort} ");
 
-            return null;
+            return arguments.ToString();
         }
 
         private static void VerifyPortNotInUse(int port)

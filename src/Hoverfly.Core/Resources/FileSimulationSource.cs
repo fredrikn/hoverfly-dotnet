@@ -32,15 +32,12 @@
         /// <returns>Returns a byte array with the simulation data.</returns>
         public byte[] GetSimulation(string name)
         {
-            var jsonFile = Path.Combine(ResourcePath, name);
+            var filetoLoad = Path.Combine(ResourcePath, name);
 
-            if (!jsonFile.Contains(".json"))
-                jsonFile = jsonFile + ".json";
+            if (!File.Exists(filetoLoad))
+                throw new FileNotFoundException($"Can't find the file '{filetoLoad}'.");
 
-            if (!File.Exists(jsonFile))
-                throw new FileNotFoundException($"Can't find the file '{jsonFile}'.");
-
-            return File.ReadAllBytes(jsonFile);
+            return File.ReadAllBytes(filetoLoad);
         }
 
         /// <summary>
@@ -50,12 +47,7 @@
         /// <param name="name">The name of the simulation data file.</param>
         public void SaveSimulation(byte[] simulationData, string name)
         {
-            var jsonFile = Path.Combine(ResourcePath, name);
-
-            if (!jsonFile.Contains(".json"))
-                jsonFile = jsonFile + ".json";
-
-            File.WriteAllBytes(jsonFile, simulationData);
+            File.WriteAllBytes(Path.Combine(ResourcePath, name), simulationData);
         }
     }
 }
