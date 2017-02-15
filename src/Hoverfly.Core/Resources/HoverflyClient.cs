@@ -32,17 +32,14 @@
         /// Imports simulation to hoverfly.
         /// </summary>
         /// <param name="simulationData">The simulation as a hoverfly json simulation.</param>
-        public void ImportSimulation(Byte[] simulationData)
+        public void ImportSimulation(byte[] simulationData)
         {
-            var putSimulationTask = _hoverflyHttpClient.PutAsync(
-                                                                 SIMULATION_PATH,
-                                                                 new StringContent(Encoding.UTF8.GetString(simulationData), Encoding.UTF8, "application/json"));
-
-            putSimulationTask.Wait();
-            var response = putSimulationTask.Result;
-
-            if (!response.IsSuccessStatusCode)
-                throw new HttpRequestException($"Can't add the simulation to Hoverfly, status code: '{response.StatusCode}', reason '{response.ReasonPhrase}'");
+            using (var response = Task.Run(() => _hoverflyHttpClient.PutAsync(SIMULATION_PATH, new StringContent(Encoding.UTF8.GetString(simulationData), Encoding.UTF8, "application/json")))
+                                      .Result)
+            {
+                if (!response.IsSuccessStatusCode)
+                    throw new HttpRequestException($"Can't add the simulation to Hoverfly, status code: '{response.StatusCode}', reason '{response.ReasonPhrase}'");
+            }
         }
 
         /// <summary>
@@ -50,10 +47,13 @@
         /// </summary>
         public byte[] GetSimulation()
         {
-            var getSimulationtask = Task.Run(async () => await GetSimulationDataFromHoverflyAsync());
+            using (var response = Task.Run(() => _hoverflyHttpClient.GetAsync(SIMULATION_PATH)).Result)
+            {
+                if (!response.IsSuccessStatusCode)
+                    throw new HttpRequestException($"Can't get the simulation from Hoverfly, status code: '{response.StatusCode}', reason '{response.ReasonPhrase}'");
 
-            getSimulationtask.Wait();
-            return getSimulationtask.Result;
+                return Task.Run(() => response.Content.ReadAsByteArrayAsync()).Result;
+            }
         }
 
         /// <summary>
@@ -64,10 +64,7 @@
         {
             try
             {
-                var requestTask = _hoverflyHttpClient.GetAsync(HEALTH_CHECK_PATH);
-                requestTask.Wait();
-
-                using (var response = requestTask.Result)
+                using (var response = Task.Run(() => _hoverflyHttpClient.GetAsync(HEALTH_CHECK_PATH)).Result)
                 {
                     _logger?.Info($"Hoverfly health check status code is: {response.StatusCode}");
 
@@ -80,16 +77,6 @@
             }
 
             return false;
-        }
-
-        private async Task<byte[]> GetSimulationDataFromHoverflyAsync()
-        {
-            var response = await _hoverflyHttpClient.GetAsync(SIMULATION_PATH);
-
-            if (!response.IsSuccessStatusCode)
-                throw new HttpRequestException($"Can't get the simulation from Hoverfly, status code: '{response.StatusCode}', reason '{response.ReasonPhrase}'");
-
-            return await response.Content.ReadAsByteArrayAsync();
         }
     }
 }
