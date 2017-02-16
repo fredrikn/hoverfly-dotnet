@@ -35,6 +35,14 @@
 
         private Process _hoverflyProcess;
 
+        /// <summary>
+        /// Provide access to Hoverfly to start and stop simulation or capture HTTP calls.
+        /// </summary>
+        /// <param name="hoverflyMode">The mode hoverfly should be started in. <see cref="HoverflyMode"/></param>
+        /// <param name="config">Hoverfly configurations. <see cref="HoverflyConfig"/></param>
+        /// <param name="hoverflyClient">Hoverfly client, by default the <see cref="HoverflyClient"/> is used to accessing the Hoverfly process REST API.</param>
+        /// <param name="simulationSource">The source to the hoverfly simulations. By default the <see cref="FileSimulationSource"/> is used.</param>
+        /// <param name="loggerFactory">A logger factory for creating a logger to log messages.</param>
         public Hoverfly(
             HoverflyMode hoverflyMode,
             HoverflyConfig config = null,
@@ -55,6 +63,9 @@
             _simulationSource = simulationSource ?? new FileSimulationSource(Environment.CurrentDirectory);
         }
 
+        /// <summary>
+        /// Starts the hoverfly process.
+        /// </summary>
         public void Start()
         {
             if (!_hoverflyConfig.IsRemoteInstance)
@@ -64,6 +75,13 @@
             SetProxySystemProperties();
         }
 
+        /// <summary>
+        /// Stop the hoverfly process.
+        /// </summary>
+        /// <exception cref="TimeoutException">
+        /// Thrown when the hoverfly process is still running after trying to kill it.
+        /// Default timeout is 5 seconds.
+        /// </exception>
         public void Stop()
         {
             _logger?.Info("Destroying hoverfly process");
@@ -78,6 +96,34 @@
                 throw new TimeoutException("Timeout while waiting for hoverfly process to be closed.");
         }
 
+        /// <summary>
+        /// Closes all running hoverfly processes.
+        /// </summary>
+        /// <remarks>
+        /// Sometimes there are allready running hoverfly process.
+        /// By using this method all exitsing processes will be killed.
+        /// </remarks>
+        /// <exception cref="ApplicationException">
+        /// Can be thrown if there are still running hoverfly processes after trying to closing them.
+        /// </exception>
+        public void CloseAllRunningHoverflyProcesses()
+        {
+            var processesToKill = Process.GetProcessesByName("hoverfly");
+
+            foreach (var process in processesToKill)
+            {
+                process.Kill();
+                process.WaitForExit(KILL_PROCESS_TIMEOUT);
+            }
+
+            if (Process.GetProcessesByName("hoverfly").Any())
+                throw new ApplicationException("can't kill all existing running hoverfly processes.");
+        }
+
+        /// <summary>
+        /// Imports hoverfly simulation.
+        /// </summary>
+        /// <param name="name">The name of the simulation to import.</param>
         public void ImportSimulation(string name)
         {
             _logger?.Info($"Importing simulation data '{name}' to Hoverfly.");
@@ -88,6 +134,10 @@
                 _hoverflyClient.ImportSimulation(simulationData);
         }
 
+        /// <summary>
+        /// Export hoverfly captured or simulated simulations.
+        /// </summary>
+        /// <param name="name">The name of the exported simulation.</param>
         public void ExportSimulation(string name)
         {
             _logger?.Info("Exporting simulation data from Hoverfly.");
@@ -103,7 +153,11 @@
             }
         }
 
-
+        /// <summary>
+        /// Gets the hoverfly captured or imported simulations.
+        /// </summary>
+        /// <returns>Retuns a <see cref="byte[]"/> of the simulation data.</returns>
+        /// <remarks>Hoverfly simulation data is a JSON format.</remarks>
         public byte[] GetSimulation()
         {
             _logger?.Info("Get simulation data from Hoverfly.");
