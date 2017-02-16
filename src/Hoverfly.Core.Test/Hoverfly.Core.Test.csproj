@@ -66,9 +66,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="binaries\hoverfly.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>

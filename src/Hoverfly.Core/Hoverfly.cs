@@ -73,11 +73,11 @@
 
             _hoverflyProcess.Kill();
 
-            // We can't make sure the Process are really dead hwne we make a call to Kill,
-            // so we don't leave stop until we are sure its gone.
+            // We can't make sure the Process are really killed because the kill is an asynchronous operation,
+            // so we don't leave Stop until we are sure the process is killed.
             var timeout = DateTime.Now.AddSeconds(KILL_PROCESS_TIMEOUT);
 
-            while (Process.GetProcessesByName("hoverfly").Any() && timeout > DateTime.Now)
+            while (IsHoverflyProcessStillRunning() && timeout > DateTime.Now)
                 Thread.Sleep(1);
 
             if (Process.GetProcessesByName("hoverfly").Any())
@@ -153,36 +153,69 @@
             throw new TimeoutException($"Hoverfly has not become healthy in '{BOOT_TIMEOUT_SECONDS}' seconds");
         }
 
+        private bool IsHoverflyProcessStillRunning()
+        {
+            try
+            {
+                Process.GetProcessById(this._hoverflyProcess.Id);
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         private void StartHoverflyProcess()
         {
             VerifyPortNotInUse(_hoverflyConfig.ProxyPort);
             VerifyPortNotInUse(_hoverflyConfig.AdminPort);
 
-            var hoverflyPath = GetHoverflyPath();
+            var hoverfilePath = string.IsNullOrWhiteSpace(_hoverflyConfig.HoverflyBasePath) ?
+                               HOVERFLY_EXE :
+                               Path.Combine(_hoverflyConfig.HoverflyBasePath, HOVERFLY_EXE);
 
-            _logger?.Info($"Start hoverfly from path '{hoverflyPath}'");
+            _logger?.Info($"Start hoverfly.");
 
-            var processInfo = new ProcessStartInfo(hoverflyPath, GetHoverflyArgumentsBasedOnMode())
+            if (!TryStartHoverflyProcess(hoverfilePath))
             {
-                WorkingDirectory = _hoverflyConfig.HoverflyBasePath,
-                WindowStyle = ProcessWindowStyle.Hidden
-            };
+                var hoverfileBasePath = GetHoverfileBasePath();
 
-            _hoverflyProcess = Process.Start(processInfo);
+                var hoverflyPath = SearchForHoverflyFile(hoverfileBasePath);
+
+                if (string.IsNullOrWhiteSpace(hoverflyPath))
+                    throw new FileNotFoundException($"Can't find the file '{HOVERFLY_EXE}' file in the '{hoverfileBasePath}' or is sub-folders.");
+
+                TryStartHoverflyProcess(hoverflyPath);
+            }
         }
 
-        private string GetHoverflyPath()
+        private string GetHoverfileBasePath()
         {
-            var hoverfileBasePath = string.IsNullOrWhiteSpace(_hoverflyConfig.HoverflyBasePath) ?
-                                           Environment.CurrentDirectory :
-                                           _hoverflyConfig.HoverflyBasePath;
+            return string.IsNullOrWhiteSpace(_hoverflyConfig.HoverflyBasePath) ?
+                Environment.CurrentDirectory :
+                _hoverflyConfig.HoverflyBasePath;
+        }
 
-            var result = Directory.GetFiles(hoverfileBasePath, HOVERFLY_EXE, SearchOption.AllDirectories);
+        private bool TryStartHoverflyProcess(string hoverflyPath)
+        {
+            try
+            {
+                var processInfo = new ProcessStartInfo(hoverflyPath, GetHoverflyArgumentsBasedOnMode())
+                {
+                    WorkingDirectory = _hoverflyConfig.HoverflyBasePath,
+                    WindowStyle = ProcessWindowStyle.Hidden
+                };
 
-            if (result.Any())
-                return result.First();
+                _hoverflyProcess = Process.Start(processInfo);
+            }
+            catch (FileNotFoundException)
+            {
+                return false;
+            }
 
-            throw new FileNotFoundException($"Can't find the file '{HOVERFLY_EXE}' file in the current directory '{hoverfileBasePath}' or is sub-folders.");
+            return true;
         }
 
         private string GetHoverflyArgumentsBasedOnMode()
@@ -208,6 +241,12 @@
             arguments.Append($" -ap {_hoverflyConfig.AdminPort} ");
 
             return arguments.ToString();
+        }
+
+        private static string SearchForHoverflyFile(string folder)
+        {
+            var result = Directory.GetFiles(folder, HOVERFLY_EXE, SearchOption.AllDirectories);
+            return result.Any() ? result.First() : null;
         }
 
         private static void VerifyPortNotInUse(int port)
