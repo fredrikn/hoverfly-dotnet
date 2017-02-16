@@ -19,7 +19,7 @@
         private const int BOOT_TIMEOUT_SECONDS = 10;
         private const int RETRY_BACKOFF_INTERVAL_MS = 100;
 
-        private const int KILL_PROCESS_TIMEOUT = 2;
+        private const int KILL_PROCESS_TIMEOUT = 5000;
 
         private const string HOVERFLY_EXE = "hoverfly.exe";
 
@@ -72,15 +72,9 @@
                 return;
 
             _hoverflyProcess.Kill();
+            _hoverflyProcess.WaitForExit(KILL_PROCESS_TIMEOUT);
 
-            // We can't make sure the Process are really killed because the kill is an asynchronous operation,
-            // so we don't leave Stop until we are sure the process is killed.
-            var timeout = DateTime.Now.AddSeconds(KILL_PROCESS_TIMEOUT);
-
-            while (IsHoverflyProcessStillRunning() && timeout > DateTime.Now)
-                Thread.Sleep(1);
-
-            if (Process.GetProcessesByName("hoverfly").Any())
+            if (IsHoverflyProcessStillRunning())
                 throw new TimeoutException("Timeout while waiting for hoverfly process to be closed.");
         }
 
@@ -157,7 +151,7 @@
         {
             try
             {
-                Process.GetProcessById(this._hoverflyProcess.Id);
+                Process.GetProcessById(_hoverflyProcess.Id);
             }
             catch
             {
@@ -255,9 +249,7 @@
             var tcpConnInfoArray = ipGlobalProperties.GetActiveTcpListeners();
 
             if (tcpConnInfoArray.Any(endpoint => endpoint.Port == port))
-            {
                 throw new ConfigurationErrorsException($"Port '{port}' is already in use by other application, please use another one");
-            }
         }
     }
 }
