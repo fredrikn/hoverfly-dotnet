@@ -45,5 +45,5 @@ hoverfly.Stop();
 Import recorded simulations into hoverfly:
 
 ```
-hoverfly.ImportSimulation("simulation.json");
+hoverfly.ImportSimulation(new FileSimulationSource("simulation_test.json"));
 ```
