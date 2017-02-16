@@ -165,6 +165,25 @@
             return _hoverflyClient.GetSimulation();
         }
 
+        /// <summary>
+        /// Changes the hoverfly mode.
+        /// </summary>
+        /// <param name="mode">The <see cref="HoverflyMode"/> to change to.</param>
+        public void ChangeMode(HoverflyMode mode)
+        {
+            _logger?.Info($"Changing mode to '{mode}'");
+            _hoverflyClient.ChangeMode(mode);
+        }
+
+        /// <summary>
+        /// Gets the hoverfly mode.
+        /// </summary>
+        /// <returns>Return the <see cref="HoverflyMode"/> the current hoverfly process uses.</returns>
+        public HoverflyMode GetMode()
+        {
+            return _hoverflyClient.GetMode();
+        }
+
         private void SetProxySystemProperties()
         {
             if (_hoverflyMode == HoverflyMode.WEBSERVER)
@@ -253,7 +272,7 @@
                 var processInfo = new ProcessStartInfo(hoverflyPath, GetHoverflyArgumentsBasedOnMode())
                 {
                     WorkingDirectory = _hoverflyConfig.HoverflyBasePath,
-                    WindowStyle = ProcessWindowStyle.Hidden
+                    //WindowStyle = ProcessWindowStyle.Hidden
                 };
 
                 _hoverflyProcess = Process.Start(processInfo);

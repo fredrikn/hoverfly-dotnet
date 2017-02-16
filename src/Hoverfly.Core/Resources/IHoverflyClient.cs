@@ -17,6 +17,18 @@ namespace Hoverfly.Core.Resources
         byte[] GetSimulation();
 
         /// <summary>
+        /// Changes the hoverfly mode.
+        /// </summary>
+        /// <param name="mode">The <see cref="HoverflyMode"/> to change to.</param>
+        void ChangeMode(HoverflyMode mode);
+
+        /// <summary>
+        /// Gets the hoverfly mode.
+        /// </summary>
+        /// <returns>Return the <see cref="HoverflyMode"/> the current hoverfly process uses.</returns>
+        HoverflyMode GetMode();
+
+        /// <summary>
         /// Cheks if hoverfly is running and is healty.
         /// </summary>
         /// <returns>Returns true if hoverfly is healthy.</returns>

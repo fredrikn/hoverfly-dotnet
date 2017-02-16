@@ -60,6 +60,36 @@
             Assert.Equal(result, result2);
         }
 
+        [Fact]
+        public void ShouldReturnCorrectHoverflyMode()
+        {
+            var hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
+
+            hoverfly.Start();
+
+            var mode = hoverfly.GetMode();
+
+            hoverfly.Stop();
+
+            Assert.Equal(HoverflyMode.SIMULATE, mode);
+        }
+
+        [Fact]
+        public void ShouldReturnCorrectMode_WhenHoverflyModeIsChanged()
+        {
+            var hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
+
+            hoverfly.Start();
+
+            hoverfly.ChangeMode(HoverflyMode.CAPTURE);
+
+            var mode = hoverfly.GetMode();
+
+            hoverfly.Stop();
+
+            Assert.Equal(HoverflyMode.CAPTURE, mode);
+        }
+
         private static string GetContentFrom(string url)
         {
             var response = Task.Run(() => new HttpClient().GetAsync(url)).Result;

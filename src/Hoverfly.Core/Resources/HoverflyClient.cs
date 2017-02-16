@@ -1,11 +1,14 @@
 ﻿namespace Hoverfly.Core.Resources
 {
     using System;
+    using System.ComponentModel;
     using System.Net.Http;
     using System.Text;
     using System.Threading.Tasks;
 
     using Logging;
+
+    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// The client that works against a hoverfly instance.
@@ -14,6 +17,7 @@
     {
         private const string HEALTH_CHECK_PATH = "/api/stats";
         private const string SIMULATION_PATH = "/api/v2/simulation";
+        private const string HOVERFLY_MODE_PATH = "/api/v2/hoverfly/mode";
 
         private readonly HttpClient _hoverflyHttpClient;
 
@@ -53,6 +57,44 @@
                     throw new HttpRequestException($"Can't get the simulation from Hoverfly, status code: '{response.StatusCode}', reason '{response.ReasonPhrase}'");
 
                 return Task.Run(() => response.Content.ReadAsByteArrayAsync()).Result;
+            }
+        }
+
+        /// <summary>
+        /// Changes the hoverfly mode.
+        /// </summary>
+        /// <param name="mode">The <see cref="HoverflyMode"/> to change to.</param>
+        public void ChangeMode(HoverflyMode mode)
+        {
+            var modeBody = new StringContent("{ \"mode\": \"" + mode.ToString().ToLower() + "\"}", Encoding.UTF8, "application/json");
+
+            using (var response = Task.Run(() => _hoverflyHttpClient.PutAsync(HOVERFLY_MODE_PATH, modeBody)).Result)
+            {
+                if (!response.IsSuccessStatusCode)
+                    throw new HttpRequestException($"Can't change the mode to {mode}, status code: '{response.StatusCode}', reason '{response.ReasonPhrase}'");
+            }
+        }
+
+        /// <summary>
+        /// Gets the hoverfly mode.
+        /// </summary>
+        /// <returns>Return the <see cref="HoverflyMode"/> the current hoverfly process uses.</returns>
+        public HoverflyMode GetMode()
+        {
+            using (var response = Task.Run(() => _hoverflyHttpClient.GetAsync(HOVERFLY_MODE_PATH)).Result)
+            {
+                if (!response.IsSuccessStatusCode)
+                    throw new HttpRequestException($"Can't get the mode from hoverfly, status code: '{response.StatusCode}', reason '{response.ReasonPhrase}'");
+
+                dynamic result = JObject.Parse(Task.Run(() => response.Content.ReadAsStringAsync()).Result);
+
+                HoverflyMode mode;
+
+                if (HoverflyMode.TryParse((string)result.mode, true, out mode))
+                    return mode;
+
+                throw new InvalidEnumArgumentException($"Can't parse mode {mode} to any of the enum value in the HoverflyMode enum.");
+
             }
         }
 
