@@ -243,7 +243,7 @@
                                HOVERFLY_EXE :
                                Path.Combine(_hoverflyConfig.HoverflyBasePath, HOVERFLY_EXE);
 
-            _logger?.Info($"Start hoverfly.");
+            _logger?.Info("Start hoverfly.");
 
             if (!TryStartHoverflyProcess(hoverfilePath))
             {
@@ -252,7 +252,7 @@
                 var hoverflyPath = SearchForHoverflyFile(hoverfileBasePath);
 
                 if (string.IsNullOrWhiteSpace(hoverflyPath))
-                    throw new FileNotFoundException($"Can't find the file '{HOVERFLY_EXE}' file in the '{hoverfileBasePath}' or is sub-folders.");
+                    throw new FileNotFoundException($"Can't find the file '{HOVERFLY_EXE}' file in the '{hoverfileBasePath}' or in its sub-folders.");
 
                 TryStartHoverflyProcess(hoverflyPath);
             }
@@ -272,12 +272,12 @@
                 var processInfo = new ProcessStartInfo(hoverflyPath, GetHoverflyArgumentsBasedOnMode())
                 {
                     WorkingDirectory = _hoverflyConfig.HoverflyBasePath,
-                    //WindowStyle = ProcessWindowStyle.Hidden
+                    WindowStyle = ProcessWindowStyle.Hidden
                 };
 
                 _hoverflyProcess = Process.Start(processInfo);
             }
-            catch (FileNotFoundException)
+            catch
             {
                 return false;
             }
