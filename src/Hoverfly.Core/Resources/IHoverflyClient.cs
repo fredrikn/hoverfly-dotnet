@@ -10,13 +10,8 @@ namespace Hoverfly.Core.Resources
         /// <summary>
         /// Imports simulation to hoverfly.
         /// </summary>
-        /// <param name="simulationData">The simulation data as a hoverfly json simulation.</param>
-        void ImportSimulation(byte[] simulationData);
-
-        /// <summary>
-        /// Gets the simulation recorded by hoverfly.
-        /// </summary>
-        byte[] GetSimulationAsBytes();
+        /// <param name="simulation">The <see cref="Simulation"/> to import to <see cref="Hoverfly"/>.</param>
+        void ImportSimulation(Simulation simulation);
 
         /// <summary>
         /// Gets the hoverfly captured or imported simulations.

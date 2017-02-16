@@ -37,30 +37,16 @@
         /// <summary>
         /// Imports simulation to hoverfly.
         /// </summary>
-        /// <param name="simulationData">The simulation as a hoverfly json simulation.</param>
-        public void ImportSimulation(byte[] simulationData)
+        /// <param name="simulation">The <see cref="Simulation"/> to import.</param>
+        public void ImportSimulation(Simulation simulation)
         {
-            var body = new StringContent(Encoding.UTF8.GetString(simulationData), Encoding.UTF8, "application/json");
+            var body = new StringContent(JsonConvert.SerializeObject(simulation), Encoding.UTF8, "application/json");
 
             using (var response = Task.Run(() => _hoverflyHttpClient.PutAsync(SIMULATION_PATH, body))
                                       .Result)
             {
                 if (!response.IsSuccessStatusCode)
                     throw new HttpRequestException($"Can't add the simulation to Hoverfly, status code: '{response.StatusCode}', reason '{response.ReasonPhrase}'");
-            }
-        }
-
-        /// <summary>
-        /// Gets the simulation recorded by hoverfly.
-        /// </summary>
-        public byte[] GetSimulationAsBytes()
-        {
-            using (var response = Task.Run(() => _hoverflyHttpClient.GetAsync(SIMULATION_PATH)).Result)
-            {
-                if (!response.IsSuccessStatusCode)
-                    throw new HttpRequestException($"Can't get the simulation from Hoverfly, status code: '{response.StatusCode}', reason '{response.ReasonPhrase}'");
-
-                return Task.Run(() => response.Content.ReadAsByteArrayAsync()).Result;
             }
         }
 
@@ -73,9 +59,16 @@
         {
             _logger?.Info("Get simulation data from Hoverfly.");
 
-            var result = Encoding.UTF8.GetString(GetSimulationAsBytes());
+            using (var response = Task.Run(() => _hoverflyHttpClient.GetAsync(SIMULATION_PATH)).Result)
+            {
+                if (!response.IsSuccessStatusCode)
+                    throw new HttpRequestException($"Can't get the simulation from Hoverfly, status code: '{response.StatusCode}', reason '{response.ReasonPhrase}'");
 
-            return JsonConvert.DeserializeObject<Simulation>(result);
+                var result = Encoding.UTF8.GetString(Task.Run(() => response.Content.ReadAsByteArrayAsync()).Result);
+
+                return JsonConvert.DeserializeObject<Simulation>(result);
+
+            }
         }
 
         /// <summary>
@@ -138,5 +131,17 @@
 
             return false;
         }
+
+        private byte[] GetSimulationAsBytes()
+        {
+            using (var response = Task.Run(() => _hoverflyHttpClient.GetAsync(SIMULATION_PATH)).Result)
+            {
+                if (!response.IsSuccessStatusCode)
+                    throw new HttpRequestException($"Can't get the simulation from Hoverfly, status code: '{response.StatusCode}', reason '{response.ReasonPhrase}'");
+
+                return Task.Run(() => response.Content.ReadAsByteArrayAsync()).Result;
+            }
+        }
+
     }
 }

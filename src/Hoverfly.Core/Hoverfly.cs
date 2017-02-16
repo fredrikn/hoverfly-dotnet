@@ -28,8 +28,6 @@
 
         private readonly IHoverflyClient _hoverflyClient;
 
-        private readonly ISimulationSource _simulationSource;
-
         private readonly ILog _logger;
 
         private readonly HoverflyMode _hoverflyMode;
@@ -41,13 +39,11 @@
         /// </summary>
         /// <param name="hoverflyMode">The mode hoverfly should be started in. <see cref="HoverflyMode"/></param>
         /// <param name="config">Hoverfly configurations. <see cref="HoverflyConfig"/></param>
-        /// <param name="simulationSource">The source to the hoverfly simulations. By default the <see cref="FileSimulationSource"/> is used.</param>
         /// <param name="hoverflyClient">Hoverfly client, by default the <see cref="HoverflyClient"/> is used to accessing the Hoverfly process REST API.</param>
         /// <param name="loggerFactory">A logger factory for creating a logger to log messages.</param>
         public Hoverfly(
             HoverflyMode hoverflyMode,
             HoverflyConfig config = null,
-            ISimulationSource simulationSource = null,
             IHoverflyClient hoverflyClient = null,
             ILoggerFactory loggerFactory = null)
         {
@@ -60,8 +56,6 @@
             _hoverflyClient = hoverflyClient ?? new HoverflyClient(
                                                          new Uri($"{_hoverflyConfig.RemoteHost}:{_hoverflyConfig.AdminPort}"),
                                                          _logger);
-
-            _simulationSource = simulationSource ?? new FileSimulationSource(Environment.CurrentDirectory);
         }
 
         /// <summary>
@@ -124,15 +118,15 @@
         /// <summary>
         /// Imports hoverfly simulation.
         /// </summary>
-        /// <param name="name">The name of the simulation to import.</param>
-        public void ImportSimulation(string name)
+        /// <param name="source">The source of the simulation data to import.</param>
+        public void ImportSimulation(ISimulationSource source)
         {
-            _logger?.Info($"Importing simulation data '{name}' to Hoverfly.");
+            _logger?.Info("Importing simulation data to Hoverfly.");
 
-            var simulationData = _simulationSource.GetSimulation(name);
+            var simulation = source.GetSimulation();
 
-            if (simulationData != null)
-                _hoverflyClient.ImportSimulation(simulationData);
+            if (simulation != null)
+                _hoverflyClient.ImportSimulation(simulation);
         }
 
         /// <summary>
@@ -145,8 +139,11 @@
 
             try
             {
-                var simulationData = _hoverflyClient.GetSimulationAsBytes();
-                _simulationSource.SaveSimulation(simulationData, name);
+                var simulation = _hoverflyClient.GetSimulation();
+
+                // TODO Add a Destinaion class for where to save the simulation.
+                var source = new FileSimulationSource("");
+                source.SaveSimulation(simulation, name);
             }
             catch (Exception e)
             {

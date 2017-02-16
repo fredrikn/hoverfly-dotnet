@@ -1,53 +1,53 @@
 ﻿namespace Hoverfly.Core.Resources
 {
-    using System;
     using System.IO;
+    using System.Text;
+
+    using Model;
+
+    using Newtonsoft.Json;
 
     /// <summary>
-    /// FileSimulationSource is used for saveing and loading hoverfly simulation data.
+    /// FileSimulationSource is used for saving and loading hoverfly simulation data.
     /// </summary>
     public class FileSimulationSource : ISimulationSource
     {
         /// <summary>
         /// Creates a source for the hoverfly simulation data.
         /// </summary>
-        /// <param name="resourcePath">The file path to the simulation data.</param>
-        public FileSimulationSource(string resourcePath)
+        /// <param name="resoucePath">The file path to the simulation data.</param>
+        public FileSimulationSource(string resoucePath)
         {
-            if (string.IsNullOrWhiteSpace(resourcePath))
-                throw new ArgumentNullException(nameof(resourcePath));
-
-            ResourcePath = resourcePath;
+            ResourcePath = resoucePath;
         }
 
         /// <summary>
-        /// The path to the simulation file.
+        /// The base path to the simulation data.Will not include any file name.
         /// </summary>
         public string ResourcePath { get; }
 
         /// <summary>
-        /// Gets the simulation data for the given name.
+        /// Gets a simulation data from the ResourcePath.
         /// </summary>
-        /// <param name="name">The name of the simulation file. Will be the name of a .json file.</param>
-        /// <returns>Returns a byte array with the simulation data.</returns>
-        public byte[] GetSimulation(string name)
+        /// <returns>Returns <see cref="Simulation"/>with the simulation data.</returns>
+        public Simulation GetSimulation()
         {
-            var filetoLoad = Path.Combine(ResourcePath, name);
+            var filetoLoad = Path.Combine(ResourcePath);
 
             if (!File.Exists(filetoLoad))
                 throw new FileNotFoundException($"Can't find the file '{filetoLoad}'.");
 
-            return File.ReadAllBytes(filetoLoad);
+            return JsonConvert.DeserializeObject<Simulation>(File.ReadAllText(filetoLoad));
         }
 
         /// <summary>
         /// Saves the simulation data.
         /// </summary>
-        /// <param name="simulationData">A Byte array that contains the simulation data.</param>
-        /// <param name="name">The name of the simulation data file.</param>
-        public void SaveSimulation(byte[] simulationData, string name)
+        /// <param name="simulation">The <see cref="Simulation"/> to save.</param>
+        /// <param name="fileName">The path and file name to where he simulation data should be saved. If the file exists, it will be overwritten.</param>
+        public void SaveSimulation(Simulation simulation, string fileName)
         {
-            File.WriteAllBytes(Path.Combine(ResourcePath, name), simulationData);
+            File.WriteAllBytes(fileName, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(simulation)));
         }
     }
 }

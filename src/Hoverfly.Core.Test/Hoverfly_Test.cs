@@ -5,6 +5,8 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Resources;
+
     using Xunit;
 
     public class Hoverfly_Test
@@ -33,7 +35,7 @@
             hoverfly.Start();
 
             // Simulation_test.json holds a captured result from http://echo.jsontest.com/key/value/one/two
-            hoverfly.ImportSimulation("simulation_test.json");
+            hoverfly.ImportSimulation(new FileSimulationSource("simulation_test.json"));
 
             var result2 = GetContentFrom("http://localhost:8500/key/value/one/two");
 
@@ -98,7 +100,7 @@
 
             hoverfly.Start();
 
-            hoverfly.ImportSimulation("simulation_test.json");
+            hoverfly.ImportSimulation(new FileSimulationSource("simulation_test.json"));
 
             var simulation = hoverfly.GetSimulation();
 

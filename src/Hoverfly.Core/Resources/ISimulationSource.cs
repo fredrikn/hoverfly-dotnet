@@ -1,23 +1,23 @@
 namespace Hoverfly.Core.Resources
 {
+    using Model;
+
     /// <summary>
     /// ISimulationSource is used for saveing and loading hoverfly simulation data.
     /// </summary>
     public interface ISimulationSource
     {
         /// <summary>
-        /// Gets the simulation data for the given name.
+        /// Gets a simulation data from the ResourcePath.
         /// </summary>
-        /// <param name="name">The resource name of the simulation if any.</param>
-        /// <returns>Returns a byte array with the simulation data.</returns>
-        /// <remarks>Will use the specified ResourcePath to get the simulation data.</remarks>
-        byte[] GetSimulation(string name);
+        /// <returns>Returns <see cref="Simulation"/>with the simulation data.</returns>
+        Simulation GetSimulation();
 
         /// <summary>
         /// Saves the simulation data.
         /// </summary>
-        /// <param name="simulationData">A Byte array that contains the simulation data.</param>
-        /// <param name="name">The name of the simulation data.</param>
-        void SaveSimulation(byte[] simulationData, string name);
+        /// <param name="simulation">The <see cref="Simulation"/> to save.</param>
+        /// <param name="fileName">The path and file name to where he simulation data should be saved. If the file exists, it will be overwritten.</param>
+        void SaveSimulation(Simulation simulation, string fileName);
     }
 }
