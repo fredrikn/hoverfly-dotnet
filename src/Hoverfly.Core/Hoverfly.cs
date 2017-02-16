@@ -11,14 +11,8 @@
     using System.Threading;
 
     using Configuration;
-
-    using global::Hoverfly.Core.Model;
-
     using Logging;
-
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-
+    using Model;
     using Resources;
 
     public class Hoverfly
@@ -151,7 +145,7 @@
 
             try
             {
-                var simulationData = _hoverflyClient.GetSimulation();
+                var simulationData = _hoverflyClient.GetSimulationAsBytes();
                 _simulationSource.SaveSimulation(simulationData, name);
             }
             catch (Exception e)
@@ -169,9 +163,7 @@
         {
             _logger?.Info("Get simulation data from Hoverfly.");
 
-            var result = Encoding.UTF8.GetString(_hoverflyClient.GetSimulation());
-
-            return JsonConvert.DeserializeObject<Simulation>(result);
+            return _hoverflyClient.GetSimulation();
         }
 
         /// <summary>

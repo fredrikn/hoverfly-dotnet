@@ -1,5 +1,7 @@
 namespace Hoverfly.Core.Resources
 {
+    using Model;
+
     /// <summary>
     /// The client that works against a hoverfly instance.
     /// </summary>
@@ -14,7 +16,14 @@ namespace Hoverfly.Core.Resources
         /// <summary>
         /// Gets the simulation recorded by hoverfly.
         /// </summary>
-        byte[] GetSimulation();
+        byte[] GetSimulationAsBytes();
+
+        /// <summary>
+        /// Gets the hoverfly captured or imported simulations.
+        /// </summary>
+        /// <returns>Retuns a <see cref="Simulation"/> that contains the simulation data.</returns>
+        /// <remarks>Hoverfly simulation data.</remarks>
+        Simulation GetSimulation();
 
         /// <summary>
         /// Changes the hoverfly mode.

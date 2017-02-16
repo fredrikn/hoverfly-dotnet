@@ -7,7 +7,9 @@
     using System.Threading.Tasks;
 
     using Logging;
+    using Model;
 
+    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
     /// <summary>
@@ -49,7 +51,7 @@
         /// <summary>
         /// Gets the simulation recorded by hoverfly.
         /// </summary>
-        public byte[] GetSimulation()
+        public byte[] GetSimulationAsBytes()
         {
             using (var response = Task.Run(() => _hoverflyHttpClient.GetAsync(SIMULATION_PATH)).Result)
             {
@@ -58,6 +60,20 @@
 
                 return Task.Run(() => response.Content.ReadAsByteArrayAsync()).Result;
             }
+        }
+
+        /// <summary>
+        /// Gets the hoverfly captured or imported simulations.
+        /// </summary>
+        /// <returns>Retuns a <see cref="Simulation"/> that contains the simulation data.</returns>
+        /// <remarks>Hoverfly simulation data.</remarks>
+        public Simulation GetSimulation()
+        {
+            _logger?.Info("Get simulation data from Hoverfly.");
+
+            var result = Encoding.UTF8.GetString(GetSimulationAsBytes());
+
+            return JsonConvert.DeserializeObject<Simulation>(result);
         }
 
         /// <summary>
