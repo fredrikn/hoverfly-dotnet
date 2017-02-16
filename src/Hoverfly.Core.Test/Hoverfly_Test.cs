@@ -1,5 +1,6 @@
 ﻿namespace Hoverfly.Core.Test
 {
+    using System.Linq;
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
@@ -88,6 +89,31 @@
             hoverfly.Stop();
 
             Assert.Equal(HoverflyMode.CAPTURE, mode);
+        }
+
+        [Fact]
+        public void ShouldReturnSimluationFromHoverfly()
+        {
+            var hoverfly = new Hoverfly(HoverflyMode.WEBSERVER);
+
+            hoverfly.Start();
+
+            hoverfly.ImportSimulation("simulation_test.json");
+
+            var simulation = hoverfly.GetSimulation();
+
+            hoverfly.Stop();
+
+            var request = simulation.HoverflyData.RequestResponsePair.First().Request;
+            var response = simulation.HoverflyData.RequestResponsePair.First().Response;
+
+            Assert.Equal(request.Method, "GET");
+            Assert.Equal(request.Path, "/key/value/one/two");
+            Assert.Equal(request.Destination, "echo.jsontest.com");
+            Assert.Equal(request.Scheme, "http");
+
+            Assert.Equal(response.Status, 200);
+            Assert.Equal(response.Body, "{\n   \"one\": \"two\",\n   \"key\": \"value\"\n}\n");
         }
 
         private static string GetContentFrom(string url)

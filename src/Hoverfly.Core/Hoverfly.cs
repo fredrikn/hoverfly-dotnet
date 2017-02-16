@@ -11,7 +11,14 @@
     using System.Threading;
 
     using Configuration;
+
+    using global::Hoverfly.Core.Model;
+
     using Logging;
+
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+
     using Resources;
 
     public class Hoverfly
@@ -40,14 +47,14 @@
         /// </summary>
         /// <param name="hoverflyMode">The mode hoverfly should be started in. <see cref="HoverflyMode"/></param>
         /// <param name="config">Hoverfly configurations. <see cref="HoverflyConfig"/></param>
-        /// <param name="hoverflyClient">Hoverfly client, by default the <see cref="HoverflyClient"/> is used to accessing the Hoverfly process REST API.</param>
         /// <param name="simulationSource">The source to the hoverfly simulations. By default the <see cref="FileSimulationSource"/> is used.</param>
+        /// <param name="hoverflyClient">Hoverfly client, by default the <see cref="HoverflyClient"/> is used to accessing the Hoverfly process REST API.</param>
         /// <param name="loggerFactory">A logger factory for creating a logger to log messages.</param>
         public Hoverfly(
             HoverflyMode hoverflyMode,
             HoverflyConfig config = null,
-            IHoverflyClient hoverflyClient = null,
             ISimulationSource simulationSource = null,
+            IHoverflyClient hoverflyClient = null,
             ILoggerFactory loggerFactory = null)
         {
             _hoverflyMode = hoverflyMode;
@@ -144,7 +151,7 @@
 
             try
             {
-                var simulationData = GetSimulation();
+                var simulationData = _hoverflyClient.GetSimulation();
                 _simulationSource.SaveSimulation(simulationData, name);
             }
             catch (Exception e)
@@ -156,13 +163,15 @@
         /// <summary>
         /// Gets the hoverfly captured or imported simulations.
         /// </summary>
-        /// <returns>Retuns a <see cref="byte[]"/> of the simulation data.</returns>
-        /// <remarks>Hoverfly simulation data is a JSON format.</remarks>
-        public byte[] GetSimulation()
+        /// <returns>Retuns a <see cref="Simulation"/> that contains the simulation data.</returns>
+        /// <remarks>Hoverfly simulation data.</remarks>
+        public Simulation GetSimulation()
         {
             _logger?.Info("Get simulation data from Hoverfly.");
 
-            return _hoverflyClient.GetSimulation();
+            var result = Encoding.UTF8.GetString(_hoverflyClient.GetSimulation());
+
+            return JsonConvert.DeserializeObject<Simulation>(result);
         }
 
         /// <summary>

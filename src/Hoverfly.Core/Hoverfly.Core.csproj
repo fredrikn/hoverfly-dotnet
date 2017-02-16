@@ -46,8 +46,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\HoverflyConfig.cs" />
+    <Compile Include="Model\Simulation.cs" />
     <Compile Include="Hoverfly.cs" />
     <Compile Include="HoverflyMode.cs" />
+    <Compile Include="Model\HoverflyData.cs" />
+    <Compile Include="Model\Delay.cs" />
+    <Compile Include="Model\GlobalActions.cs" />
+    <Compile Include="Model\HoverflyMetaData.cs" />
+    <Compile Include="Model\RequestResponsePair.cs" />
+    <Compile Include="Model\Request.cs" />
+    <Compile Include="Model\Response.cs" />
     <Compile Include="Resources\HoverflyClient.cs" />
     <Compile Include="Resources\IHoverflyClient.cs" />
     <Compile Include="Logging\ILog.cs" />
