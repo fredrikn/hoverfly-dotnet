@@ -131,17 +131,5 @@
 
             return false;
         }
-
-        private byte[] GetSimulationAsBytes()
-        {
-            using (var response = Task.Run(() => _hoverflyHttpClient.GetAsync(SIMULATION_PATH)).Result)
-            {
-                if (!response.IsSuccessStatusCode)
-                    throw new HttpRequestException($"Can't get the simulation from Hoverfly, status code: '{response.StatusCode}', reason '{response.ReasonPhrase}'");
-
-                return Task.Run(() => response.Content.ReadAsByteArrayAsync()).Result;
-            }
-        }
-
     }
 }

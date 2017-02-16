@@ -39,13 +39,13 @@
         /// </summary>
         /// <param name="hoverflyMode">The mode hoverfly should be started in. <see cref="HoverflyMode"/></param>
         /// <param name="config">Hoverfly configurations. <see cref="HoverflyConfig"/></param>
-        /// <param name="hoverflyClient">Hoverfly client, by default the <see cref="HoverflyClient"/> is used to accessing the Hoverfly process REST API.</param>
         /// <param name="loggerFactory">A logger factory for creating a logger to log messages.</param>
+        /// <param name="hoverflyClient">Hoverfly client, by default the <see cref="HoverflyClient"/> is used to accessing the Hoverfly process REST API.</param>
         public Hoverfly(
             HoverflyMode hoverflyMode,
             HoverflyConfig config = null,
-            IHoverflyClient hoverflyClient = null,
-            ILoggerFactory loggerFactory = null)
+            ILoggerFactory loggerFactory = null,
+            IHoverflyClient hoverflyClient = null)
         {
             _hoverflyMode = hoverflyMode;
 
