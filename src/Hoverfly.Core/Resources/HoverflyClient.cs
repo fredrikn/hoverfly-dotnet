@@ -40,7 +40,9 @@
         /// <param name="simulationData">The simulation as a hoverfly json simulation.</param>
         public void ImportSimulation(byte[] simulationData)
         {
-            using (var response = Task.Run(() => _hoverflyHttpClient.PutAsync(SIMULATION_PATH, new StringContent(Encoding.UTF8.GetString(simulationData), Encoding.UTF8, "application/json")))
+            var body = new StringContent(Encoding.UTF8.GetString(simulationData), Encoding.UTF8, "application/json");
+
+            using (var response = Task.Run(() => _hoverflyHttpClient.PutAsync(SIMULATION_PATH, body))
                                       .Result)
             {
                 if (!response.IsSuccessStatusCode)
@@ -106,7 +108,7 @@
 
                 HoverflyMode mode;
 
-                if (HoverflyMode.TryParse((string)result.mode, true, out mode))
+                if (Enum.TryParse((string)result.mode, true, out mode))
                     return mode;
 
                 throw new InvalidEnumArgumentException($"Can't parse mode {mode} to any of the enum value in the HoverflyMode enum.");

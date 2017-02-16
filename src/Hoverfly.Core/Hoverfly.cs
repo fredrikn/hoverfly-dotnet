@@ -246,17 +246,17 @@
 
             _logger?.Info("Start hoverfly.");
 
-            if (!TryStartHoverflyProcess(hoverfilePath))
-            {
-                var hoverfileBasePath = GetHoverfileBasePath();
+            if (TryStartHoverflyProcess(hoverfilePath))
+                return;
 
-                var hoverflyPath = SearchForHoverflyFile(hoverfileBasePath);
+            var hoverfileBasePath = GetHoverfileBasePath();
 
-                if (string.IsNullOrWhiteSpace(hoverflyPath))
-                    throw new FileNotFoundException($"Can't find the file '{HOVERFLY_EXE}' file in the '{hoverfileBasePath}' or in its sub-folders.");
+            var hoverflyPath = SearchForHoverflyFile(hoverfileBasePath);
 
-                TryStartHoverflyProcess(hoverflyPath);
-            }
+            if (string.IsNullOrWhiteSpace(hoverflyPath))
+                throw new FileNotFoundException($"Can't find the file '{HOVERFLY_EXE}' file in the '{hoverfileBasePath}' or in its sub-folders.");
+
+            TryStartHoverflyProcess(hoverflyPath);
         }
 
         private string GetHoverfileBasePath()
