@@ -102,7 +102,6 @@ void StartUp()
     hoverfly.Start();
 }
 
-[Fact]
 void MyTest()
 {
     var myController = new MyController();
