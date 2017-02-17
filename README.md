@@ -47,3 +47,35 @@ Import recorded simulations into hoverfly:
 ```
 hoverfly.ImportSimulation(new FileSimulationSource("simulation_test.json"));
 ```
+
+Specify own simulations for a call to specific URL:
+
+```
+var hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
+
+hoverfly.Start();
+
+var simulation = new Simulation(
+                     new HoverflyData(
+                         new List<RequestResponsePair> {
+                             new RequestResponsePair(
+                                 new Request {
+                                               Method = "GET",
+                                               Scheme = "http",
+                                               Destination = "echo.jsontest.com",
+                                               Path = "/key/value/three/four",
+                                             },
+                                 new Response {
+                                               Status = 200,
+                                               Body = "{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n",
+                                              })}, 
+                             null),
+                    new HoverflyMetaData());
+
+hoverfly.ImportSimulation(simulation);
+
+// Every call (using for example HttpClient) to the URL http://echo.jsontest.com/key/value/three/four will now
+// return the specified Body in the simulation object. This will happen as long as hoverfly is running.
+var result = <Http Get Content From "http://echo.jsontest.com/key/value/three/four">
+
+hoverfly.Stop();
