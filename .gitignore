@@ -19,3 +19,7 @@ src/Hoverfly\.Dsl\.Test/obj/Debug/
 src/Hoverfly\.Dsl/bin/Debug/
 
 src/Hoverfly\.Dsl/obj/Debug/
+
+src/Hoverfly\.Test/bin/Debug/
+
+src/Hoverfly\.Test/obj/Debug/

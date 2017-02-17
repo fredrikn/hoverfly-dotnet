@@ -1,14 +1,26 @@
 ﻿namespace Hoverfly.Dsl
 {
-    public class HoverflyDsl
+    using System;
+
+    public static class HoverflyDsl
     {
-        private HoverflyDsl()
+        public static StubServiceBuilder Service(Uri baseUrl)
         {
+            if (baseUrl == null)
+                throw new ArgumentNullException(nameof(baseUrl));
+
+            return new StubServiceBuilder(baseUrl);
         }
 
-        //public static StubServiceBuilder service(string baseUrl)
-        //{
-        //    return new StubServiceBuilder(baseUrl);
-        //}
+        public static StubServiceBuilder Service(string baseUrl)
+        {
+            if (string.IsNullOrWhiteSpace(baseUrl))
+                throw new ArgumentNullException(nameof(baseUrl));
+
+            if (!baseUrl.Contains("http"))
+                baseUrl = $"http://{baseUrl}";
+
+            return new StubServiceBuilder(baseUrl);
+        }
     }
 }

@@ -6,6 +6,30 @@ namespace Hoverfly.Core.Model
 
     public class Request
     {
+        public Request()
+        {
+        }
+
+        public Request(
+            string path,
+            string method,
+            string destination,
+            string schema,
+            string query,
+            string body,
+            Dictionary<string, IList<string>> headers,
+            string requestType)
+        {
+            Path = path;
+            Method = method;
+            Destination = destination;
+            Scheme = schema;
+            Query = query;
+            Body = body;
+            Headers = headers;
+            RequestType = requestType;
+        }
+
         [JsonProperty("requestType")]
         public string RequestType { get; set; }
 

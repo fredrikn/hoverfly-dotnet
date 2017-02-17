@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Hoverfly.DslSimulationSource.Test")]
+[assembly: AssemblyTitle("Hoverfly.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Hoverfly.DslSimulationSource.Test")]
+[assembly: AssemblyProduct("Hoverfly.Test")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("3fb9cf85-538a-4b97-8078-9d7a66dae5d9")]
+[assembly: Guid("33af64a9-1823-4388-8e2f-87aeb6a73523")]
 
 // Version information for an assembly consists of the following four values:
 //
