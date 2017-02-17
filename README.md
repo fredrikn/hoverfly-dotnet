@@ -13,7 +13,7 @@ Hoverfly .Net is a native language binding which gives you an expressive API for
 This project doesn't include the hoverfly.exe
 You can download it from http://hoverfly.io/#download
 
-Example:
+###Example of using simulation:
 
 ```
 var hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
@@ -28,7 +28,7 @@ var result2 = //Use HttpClient to get content, e.g. "http://time.jsontest.com";
 hoverfly.Stop();
 ```
 
-Capture and export simulations:
+###Capture and export simulations:
 
 ```
 var hoverfly = new Hoverfly(HoverflyMode.CAPTURE);
@@ -48,7 +48,7 @@ Import recorded simulations into hoverfly:
 hoverfly.ImportSimulation(new FileSimulationSource("simulation_test.json"));
 ```
 
-Specify you own simulations for a call to specific URL:
+###Specify you own simulations for a call to specific URL:
 
 ```
 var hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
