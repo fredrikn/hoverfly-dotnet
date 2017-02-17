@@ -35,7 +35,7 @@ var hoverfly = new Hoverfly(HoverflyMode.CAPTURE);
 
 hoverfly.Start();
 
-use for example HttpClient to make a call to a URL, e.g. "http://echo.jsontest.com/key/value/one/two");
+// use for example HttpClient to make a call to a URL, e.g. "http://echo.jsontest.com/key/value/one/two");
 
 hoverfly.ExportSimulation("simulation.json");
 
