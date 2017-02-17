@@ -201,7 +201,7 @@
 
         private void SetProxySystemProperties()
         {
-            if (_hoverflyMode == HoverflyMode.WEBSERVER)
+            if (_hoverflyMode == HoverflyMode.WebServer)
             {
                 WebRequest.DefaultWebProxy = null;
                 return;
@@ -309,13 +309,13 @@
 
             switch (_hoverflyMode)
             {
-                case HoverflyMode.CAPTURE:
+                case HoverflyMode.Capture:
                     arguments.Append(" -capture ");
                     break;
-                case HoverflyMode.WEBSERVER:
+                case HoverflyMode.WebServer:
                     arguments.Append(" -webserver ");
                     break;
-                case HoverflyMode.SIMULATE:
+                case HoverflyMode.Simulate:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

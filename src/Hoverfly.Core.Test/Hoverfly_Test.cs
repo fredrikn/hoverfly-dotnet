@@ -19,7 +19,7 @@
         [Fact]
         public void ShouldExportSimulation()
         {
-            var hoverfly = new Hoverfly(HoverflyMode.CAPTURE);
+            var hoverfly = new Hoverfly(HoverflyMode.Capture);
 
             hoverfly.Start();
 
@@ -36,7 +36,7 @@
         {
             var result = GetContentFrom("http://echo.jsontest.com/key/value/one/two");
 
-            var hoverfly = new Hoverfly(HoverflyMode.WEBSERVER);
+            var hoverfly = new Hoverfly(HoverflyMode.WebServer);
 
             hoverfly.Start();
 
@@ -53,7 +53,7 @@
         [Fact]
         public void ShouldReturnCorrectSimulationDataResult_WhenHoverflyInSimulationMode()
         {
-            var hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
+            var hoverfly = new Hoverfly(HoverflyMode.Simulate);
 
             hoverfly.Start();
 
@@ -72,7 +72,7 @@
         [Fact]
         public void ShouldReturnCorrectHoverflyMode()
         {
-            var hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
+            var hoverfly = new Hoverfly(HoverflyMode.Simulate);
 
             hoverfly.Start();
 
@@ -80,29 +80,29 @@
 
             hoverfly.Stop();
 
-            Assert.Equal(HoverflyMode.SIMULATE, mode);
+            Assert.Equal(HoverflyMode.Simulate, mode);
         }
 
         [Fact]
         public void ShouldReturnCorrectMode_WhenHoverflyModeIsChanged()
         {
-            var hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
+            var hoverfly = new Hoverfly(HoverflyMode.Simulate);
 
             hoverfly.Start();
 
-            hoverfly.ChangeMode(HoverflyMode.CAPTURE);
+            hoverfly.ChangeMode(HoverflyMode.Capture);
 
             var mode = hoverfly.GetMode();
 
             hoverfly.Stop();
 
-            Assert.Equal(HoverflyMode.CAPTURE, mode);
+            Assert.Equal(HoverflyMode.Capture, mode);
         }
 
         [Fact]
         public void ShouldReturnSimluationFromHoverfly_WhenFileSimulationSourceIsUsed()
         {
-            var hoverfly = new Hoverfly(HoverflyMode.WEBSERVER);
+            var hoverfly = new Hoverfly(HoverflyMode.WebServer);
 
             hoverfly.Start();
 
@@ -127,7 +127,7 @@
         [Fact]
         public void ShouldReturnCorrectSimluationFromHoverfly_WhenImportingSimulation()
         {
-            var hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
+            var hoverfly = new Hoverfly(HoverflyMode.Simulate);
 
             hoverfly.Start();
 
@@ -154,7 +154,7 @@
         [Fact]
         public void ShouldReturnCorrectRestultFromARequest_WhenImportingSimulationAndUsingWebServerMode()
         {
-            var hoverfly = new Hoverfly(HoverflyMode.WEBSERVER);
+            var hoverfly = new Hoverfly(HoverflyMode.WebServer);
 
             hoverfly.Start();
 
@@ -172,7 +172,7 @@
         [Fact]
         public void ShouldReturnCorrectRestultFromARequest_WhenImportingSimulationAndUsingSimulationMode()
         {
-            var hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
+            var hoverfly = new Hoverfly(HoverflyMode.Simulate);
 
             hoverfly.Start();
 

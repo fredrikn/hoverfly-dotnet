@@ -2,8 +2,8 @@
 {
     public enum HoverflyMode
     {
-        SIMULATE,
-        CAPTURE,
-        WEBSERVER
+        Simulate,
+        Capture,
+        WebServer
     }
 }
