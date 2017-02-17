@@ -3,7 +3,7 @@ namespace Hoverfly.Core.Resources
     using Model;
 
     /// <summary>
-    /// ISimulationSource is used for saveing and loading hoverfly simulation data.
+    /// ISimulationSource is used for load hoverfly simulation data.
     /// </summary>
     public interface ISimulationSource
     {
@@ -12,11 +12,5 @@ namespace Hoverfly.Core.Resources
         /// </summary>
         /// <returns>Returns <see cref="Simulation"/>with the simulation data.</returns>
         Simulation GetSimulation();
-
-        /// <summary>
-        /// Saves the simulation data.
-        /// </summary>
-        /// <param name="simulation">The <see cref="Simulation"/> to save.</param>
-        void SaveSimulation(Simulation simulation);
     }
 }

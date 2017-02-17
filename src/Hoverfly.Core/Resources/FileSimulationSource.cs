@@ -11,7 +11,7 @@
     /// <summary>
     /// FileSimulationSource is used for saving and loading hoverfly simulation data.
     /// </summary>
-    public class FileSimulationSource : ISimulationSource
+    public class FileSimulationSource : ISimulationSource, ISimulationDestinationSource
     {
         /// <summary>
         /// Creates a source for the hoverfly simulation data.

@@ -1,7 +1,6 @@
 
 src/Hoverfly\.Core/bin/Debug/
-
-src/Hoverfly\.Core/.vs/
+src/\.vs
 src/packages
 
 src/Hoverfly\.Core/obj/Debug/
@@ -12,4 +11,4 @@ src/Hoverfly\.Core\.Test/bin/Debug/
 
 src/Hoverfly\.Core\.Test/obj/Debug/
 
-src/Hoverfly\.Core\.Test/binaries/
+src/Hoverfly\.Core

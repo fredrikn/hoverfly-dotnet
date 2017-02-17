@@ -133,7 +133,7 @@
         /// Export hoverfly captured or simulated simulations.
         /// </summary>
         /// <param name="destinationSource">The destination source to where to export the simulation data.</param>
-        public void ExportSimulation(ISimulationSource destinationSource)
+        public void ExportSimulation(ISimulationDestinationSource destinationSource)
         {
             if (destinationSource == null)
                 throw new ArgumentNullException(nameof(destinationSource));

@@ -63,6 +63,7 @@
     <Compile Include="Logging\LoggerFactory.cs" />
     <Compile Include="Logging\OutputLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\ISimulationDestinationSource.cs" />
     <Compile Include="Resources\ISimulationSource.cs" />
     <Compile Include="Resources\SimulationEmptyException.cs" />
     <Compile Include="Resources\SimulationExportException.cs" />
