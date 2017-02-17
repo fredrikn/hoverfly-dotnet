@@ -10,9 +10,6 @@ It enables you to get around common testing problems caused by external dependen
 
 Hoverfly .Net is a native language binding which gives you an expressive API for managing Hoverfly in .Net. It gives you a Hoverfly class which abstracts away the binary and API calls.
 
-Note: This project doesn't include the hoverfly.exe
-You can download it from http://hoverfly.io/#download It probably will be available as a Nuget package in a near future.
-
 ###Example of using simulation:
 
 ```cs
