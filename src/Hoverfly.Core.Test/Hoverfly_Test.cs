@@ -152,7 +152,7 @@
         }
 
         [Fact]
-        public void ShouldReturnCorrectRestultFromARequest_WhenImportingSimulation()
+        public void ShouldReturnCorrectRestultFromARequest_WhenImportingSimulationAndUsingWebServerMode()
         {
             var hoverfly = new Hoverfly(HoverflyMode.WEBSERVER);
 
@@ -169,33 +169,49 @@
             Assert.Equal("{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n",result);
         }
 
+        [Fact]
+        public void ShouldReturnCorrectRestultFromARequest_WhenImportingSimulationAndUsingSimulationMode()
+        {
+            var hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
+
+            hoverfly.Start();
+
+            var simulation = CreateTestSimulation();
+
+            hoverfly.ImportSimulation(simulation);
+
+            var result = GetContentFrom("http://echo.jsontest.com/key/value/three/four?name=test");
+
+            hoverfly.Stop();
+
+            Assert.Equal("{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n", result);
+        }
+
 
         private static Simulation CreateTestSimulation()
         {
-            var request = new Request
-                              {
-                                  Scheme = "http",
-                                  Destination = "echo.jsontest.com",
-                                  Method = "GET",
-                                  Path = "/key/value/three/four",
-                                  Query = "name=test",
-                                  Headers = new Dictionary<string, IList<string>> { { "Content-Type", new List<string> { "application/json" } } }
-                              };
-
-            var response = new Response
-                               {
-                                   Status = 200,
-                                   Body = "{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n",
-                                   EncodedBody = false,
-                                   Headers = new Dictionary<string, IList<string>> { { "Content-Type", new List<string> { "application/json" } } }
-                               };
-
-            var simulation =
-                new Simulation(
-                    new HoverflyData(
-                        new List<RequestResponsePair> { new RequestResponsePair(request, response) }, null),
-                    new HoverflyMetaData());
-            return simulation;
+            return new Simulation(
+                        new HoverflyData(
+                            new List<RequestResponsePair> {
+                                    new RequestResponsePair(
+                                        new Request
+                                        {
+                                            Scheme = "http",
+                                            Destination = "echo.jsontest.com",
+                                            Method = "GET",
+                                            Path = "/key/value/three/four",
+                                            Query = "name=test",
+                                            Headers = new Dictionary<string, IList<string>> { { "Content-Type", new List<string> { "application/json" } } }
+                                        },
+                                        new Response
+                                        {
+                                            Status = 200,
+                                            Body = "{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n",
+                                            EncodedBody = false,
+                                            Headers = new Dictionary<string, IList<string>> { { "Content-Type", new List<string> { "application/json" } } }
+                                        })}, 
+                            null),
+                        new HoverflyMetaData());
         }
 
         private static string GetContentFrom(string url)

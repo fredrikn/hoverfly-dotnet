@@ -202,7 +202,10 @@
         private void SetProxySystemProperties()
         {
             if (_hoverflyMode == HoverflyMode.WEBSERVER)
+            {
+                WebRequest.DefaultWebProxy = null;
                 return;
+            }
 
             //TODO: Temporary hack to accept all SSL
             ServicePointManager.ServerCertificateValidationCallback = (senderX, certificate, chain, sslPolicyErrors) => true;
