@@ -54,34 +54,26 @@ hoverfly.ImportSimulation(new FileSimulationSource("simulation.json"));
 hoverfly.Stop();
 ```
 
-###Specify you own simulations for a call to specific URL:
+###Specify you own simulations for a call to specific URL with Hoverfly.Dsl:
 
 ```cs
+using static Hoverfly.Dsl.HoverflyDsl;
+using static Hoverfly.Dsl.ResponseCreators;
+using static Hoverfly.Dsl.DslSimulationSource;
+    
+...
+
 var hoverfly = new Hoverfly(HoverflyMode.Simulate);
 
 hoverfly.Start();
 
-var simulation = new Simulation(
-                     new HoverflyData(
-                         new List<RequestResponsePair> {
-                             new RequestResponsePair(
-                                 new Request {
-                                               Method = "GET",
-                                               Scheme = "http",
-                                               Destination = "echo.jsontest.com",
-                                               Path = "/key/value/three/four",
-                                             },
-                                 new Response {
-                                               Status = 200,
-                                               Body = "{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n",
-                                              })}, 
-                             null),
-                    new HoverflyMetaData());
-
-hoverfly.ImportSimulation(simulation);
+hoverfly.ImportSimulation(DslSimulationSource.Dsl(
+                Service("http://echo.jsontest.com")
+                    .Get("/key/value/three/four")
+                    .WillReturn(Success("Hello World!", "plain/text"))));
 
 // Every call (using for example HttpClient) to the URL http://echo.jsontest.com/key/value/three/four will now
-// return the specified Body in the simulation object. This will happen as long as hoverfly is running.
+// return the specified success response in the imported simulation. This will happen as long as hoverfly is running.
 var result = <Http Get Content From "http://echo.jsontest.com/key/value/three/four">
 
 hoverfly.Stop();
