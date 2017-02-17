@@ -10,8 +10,8 @@ It enables you to get around common testing problems caused by external dependen
 
 Hoverfly .Net is a native language binding which gives you an expressive API for managing Hoverfly in .Net. It gives you a Hoverfly class which abstracts away the binary and API calls.
 
-This project doesn't include the hoverfly.exe
-You can download it from http://hoverfly.io/#download
+Note: This project doesn't include the hoverfly.exe
+You can download it from http://hoverfly.io/#download It probably will be available as a Nuget package in a near future.
 
 ###Example of using simulation:
 
@@ -88,3 +88,53 @@ hoverfly.ImportSimulation(simulation);
 var result = <Http Get Content From "http://echo.jsontest.com/key/value/three/four">
 
 hoverfly.Stop();
+```
+
+###Example of using hoverfly in a integration test:
+
+```
+Hoverfly hoverfly;
+
+void StartUp()
+{
+    hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
+    hoverfly.ImportSimulation("simulation.json");
+    hoverfly.Start();
+}
+
+[Fact]
+void MyTest()
+{
+    var myController = new MyController();
+    
+    var result = myController.Get("10");
+    
+    Assert.Eqaul(result.StatusCode, 200);
+}
+
+void TearDown()
+{
+   hoverfly.Stop();
+}
+```
+
+MyController, using ASP.Net Core
+
+```
+[Route("api/[controller]")]
+public class MyController : Controller
+{
+   [HttpGet]
+   public IActionResult Get(string userId)
+   {
+       // Assume this code integrates with another service (maybe a Microservcie :P) over HTTP wiht HttpClient
+       // http://mysuper.microservice.com/foo
+       
+       ...
+       
+       return result;
+   }
+}
+```
+
+When Hoverfly will add a Proxy and all Http calls will go through the proxy. Hoverfly will in simulation mode return a recorded result for a given Http call, so no extrenal call will be made. With the use of hoverfly in our integration/component test we don't need to create fakes to avoid extrenal calls. With hoverfly we can also in our tests simulate delays on certain extrenal calls etc. For example to test timeouts etc.
