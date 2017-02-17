@@ -7,15 +7,15 @@ namespace Hoverfly.Core.Model
     public class Response
     {
         [JsonProperty("status")]
-        public int Status { get; private set; }
+        public int Status { get; set; }
 
         [JsonProperty("body")]
-        public string Body { get; private set; }
+        public string Body { get; set; }
 
         [JsonProperty("encodedBody")]
-        public bool EncodedBody { get; private set; }
+        public bool EncodedBody { get; set; }
 
         [JsonProperty("headers")]
-        public Dictionary<string, IList<string>> Headers { get; private set; }
+        public Dictionary<string, IList<string>> Headers { get; set; }
     }
 }

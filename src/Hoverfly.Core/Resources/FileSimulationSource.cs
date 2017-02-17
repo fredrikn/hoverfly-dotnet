@@ -1,5 +1,6 @@
 ﻿namespace Hoverfly.Core.Resources
 {
+    using System;
     using System.IO;
     using System.Text;
 
@@ -44,10 +45,13 @@
         /// Saves the simulation data.
         /// </summary>
         /// <param name="simulation">The <see cref="Simulation"/> to save.</param>
-        /// <param name="fileName">The path and file name to where he simulation data should be saved. If the file exists, it will be overwritten.</param>
-        public void SaveSimulation(Simulation simulation, string fileName)
+        /// <remarks>The simulaion data will be saved to the specifed ResourcePath, if the file already exists it will be overwritten.</remarks>
+        public void SaveSimulation(Simulation simulation)
         {
-            File.WriteAllBytes(fileName, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(simulation)));
+            if (string.IsNullOrWhiteSpace(ResourcePath))
+                throw new ArgumentNullException($"You need to set the {nameof(ResourcePath)} to a valid file path.");
+
+            File.WriteAllBytes(ResourcePath, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(simulation)));
         }
     }
 }

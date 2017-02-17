@@ -6,6 +6,11 @@ namespace Hoverfly.Core.Model
 
     public class GlobalActions
     {
+        public GlobalActions(IList<DelaySettings> delays)
+        {
+            Delays = delays;
+        }
+
         [JsonProperty("delays")]
         public IList<DelaySettings> Delays { get; private set; }
     }

@@ -132,18 +132,18 @@
         /// <summary>
         /// Export hoverfly captured or simulated simulations.
         /// </summary>
-        /// <param name="name">The name of the exported simulation.</param>
-        public void ExportSimulation(string name)
+        /// <param name="destinationSource">The destination source to where to export the simulation data.</param>
+        public void ExportSimulation(ISimulationSource destinationSource)
         {
+            if (destinationSource == null)
+                throw new ArgumentNullException(nameof(destinationSource));
+
             _logger?.Info("Exporting simulation data from Hoverfly.");
 
             try
             {
                 var simulation = _hoverflyClient.GetSimulation();
-
-                // TODO Add a Destinaion class for where to save the simulation.
-                var source = new FileSimulationSource("");
-                source.SaveSimulation(simulation, name);
+                destinationSource.SaveSimulation(simulation);
             }
             catch (Exception e)
             {

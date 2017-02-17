@@ -4,6 +4,12 @@
 
     public class Simulation
     {
+        public Simulation(HoverflyData hoverflyData, HoverflyMetaData metaData)
+        {
+            HoverflyData = hoverflyData;
+            HoverflyMetaData = metaData;
+        }
+
         [JsonProperty("data")]
         public HoverflyData HoverflyData { get; private set; }
 

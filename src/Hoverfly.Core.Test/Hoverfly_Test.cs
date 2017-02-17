@@ -20,7 +20,8 @@
 
             GetContentFrom("http://echo.jsontest.com/key/value/one/two");
 
-            hoverfly.ExportSimulation("simulation.json");
+            var destinatonSource = new FileSimulationSource("simulation.json");
+            hoverfly.ExportSimulation(destinatonSource);
 
             hoverfly.Stop();
         }

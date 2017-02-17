@@ -17,7 +17,6 @@ namespace Hoverfly.Core.Resources
         /// Saves the simulation data.
         /// </summary>
         /// <param name="simulation">The <see cref="Simulation"/> to save.</param>
-        /// <param name="fileName">The path and file name to where he simulation data should be saved. If the file exists, it will be overwritten.</param>
-        void SaveSimulation(Simulation simulation, string fileName);
+        void SaveSimulation(Simulation simulation);
     }
 }

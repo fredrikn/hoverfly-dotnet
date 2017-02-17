@@ -7,27 +7,27 @@ namespace Hoverfly.Core.Model
     public class Request
     {
         [JsonProperty("requestType")]
-        public string RequestType { get; private set; }
+        public string RequestType { get; set; }
 
         [JsonProperty("path")]
-        public string Path { get; private set; }
+        public string Path { get; set; }
 
         [JsonProperty("method")]
-        public string Method { get; private set; }
+        public string Method { get; set; }
 
         [JsonProperty("destination")]
-        public string Destination { get; private set; }
+        public string Destination { get; set; }
 
         [JsonProperty("scheme")]
-        public string Scheme { get; private set; }
+        public string Scheme { get; set; }
 
         [JsonProperty("query")]
-        public string Query { get; private set; }
+        public string Query { get; set; }
 
         [JsonProperty("body")]
-        public string Body { get; private set; }
+        public string Body { get; set; }
 
         [JsonProperty("headers")]
-        public Dictionary<string, IList<string>> Headers { get; private set; }
+        public Dictionary<string, IList<string>> Headers { get; set; }
     }
 }
