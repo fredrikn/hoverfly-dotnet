@@ -15,7 +15,7 @@ You can download it from http://hoverfly.io/#download It probably will be availa
 
 ###Example of using simulation:
 
-```
+```cs
 var hoverfly = new Hoverfly(HoverflyMode.Simulate);
 
 hoverfly.Start();
@@ -30,7 +30,7 @@ hoverfly.Stop();
 
 ###Capture and export simulations:
 
-```
+```cs
 var hoverfly = new Hoverfly(HoverflyMode.Capture);
 
 hoverfly.Start();
@@ -44,7 +44,7 @@ hoverfly.Stop();
 
 ###Import recorded simulations into hoverfly:
 
-```
+```cs
 var hoverfly = new Hoverfly(HoverflyMode.Simulate);
 
 hoverfly.Start();
@@ -59,7 +59,7 @@ hoverfly.Stop();
 
 ###Specify you own simulations for a call to specific URL:
 
-```
+```cs
 var hoverfly = new Hoverfly(HoverflyMode.Simulate);
 
 hoverfly.Start();
@@ -92,7 +92,7 @@ hoverfly.Stop();
 
 ###Example of using hoverfly in a integration test:
 
-```
+```cs
 Hoverfly hoverfly;
 
 void StartUp()
@@ -119,7 +119,7 @@ void TearDown()
 
 MyController, using ASP.Net Core
 
-```
+```cs
 [Route("api/[controller]")]
 public class MyController : Controller
 {
