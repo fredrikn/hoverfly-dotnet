@@ -2,6 +2,7 @@
 src/Hoverfly\.Core/bin/Debug/
 
 src/Hoverfly\.Core/.vs/
+src/packages
 
 src/Hoverfly\.Core/obj/Debug/
 

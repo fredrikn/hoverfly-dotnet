@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hoverfly.Core", "Hoverfly.Core.csproj", "{12691AD5-E39E-4195-B7B3-C854F290FD07}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hoverfly.Core", "Hoverfly.Core\Hoverfly.Core.csproj", "{12691AD5-E39E-4195-B7B3-C854F290FD07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hoverfly.Core.Test", "..\Hoverfly.Core.Test\Hoverfly.Core.Test.csproj", "{5014DF7F-DFB7-4E1D-A63C-A700E605F2A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hoverfly.Core.Test", "Hoverfly.Core.Test\Hoverfly.Core.Test.csproj", "{5014DF7F-DFB7-4E1D-A63C-A700E605F2A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
