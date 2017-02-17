@@ -42,10 +42,19 @@ hoverfly.ExportSimulation("simulation.json");
 hoverfly.Stop();
 ```
 
-Import recorded simulations into hoverfly:
+###Import recorded simulations into hoverfly:
 
 ```
-hoverfly.ImportSimulation(new FileSimulationSource("simulation_test.json"));
+var hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
+
+hoverfly.Start();
+
+hoverfly.ImportSimulation(new FileSimulationSource("simulation.json"));
+
+// use for example HttpClient to make a call to a URL, e.g. "http://echo.jsontest.com/key/value/one/two");
+// and it will return the result from the imported recorded simulation
+
+hoverfly.Stop();
 ```
 
 ###Specify you own simulations for a call to specific URL:
