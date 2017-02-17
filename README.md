@@ -48,7 +48,7 @@ Import recorded simulations into hoverfly:
 hoverfly.ImportSimulation(new FileSimulationSource("simulation_test.json"));
 ```
 
-Specify own simulations for a call to specific URL:
+Specify you own simulations for a call to specific URL:
 
 ```
 var hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
