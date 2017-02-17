@@ -116,17 +116,34 @@
         }
 
         /// <summary>
-        /// Imports hoverfly simulation.
+        /// Imports hoverfly simulation data.
         /// </summary>
         /// <param name="source">The source of the simulation data to import.</param>
         public void ImportSimulation(ISimulationSource source)
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
             _logger?.Info("Importing simulation data to Hoverfly.");
 
             var simulation = source.GetSimulation();
 
             if (simulation != null)
                 _hoverflyClient.ImportSimulation(simulation);
+        }
+
+        /// <summary>
+        /// Imports hoverfly simulation.
+        /// </summary>
+        /// <param name="simulation">The <see cref="Simulation"/> to import.</param>
+        public void ImportSimulation(Simulation simulation)
+        {
+            if (simulation == null)
+                throw new ArgumentNullException(nameof(simulation));
+
+            _logger?.Info("Importing simulation data to Hoverfly.");
+
+            _hoverflyClient.ImportSimulation(simulation);
         }
 
         /// <summary>

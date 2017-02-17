@@ -1,9 +1,12 @@
 ﻿namespace Hoverfly.Core.Test
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
+
+    using Model;
 
     using Resources;
 
@@ -11,6 +14,8 @@
 
     public class Hoverfly_Test
     {
+        //TODO: The tests are now working against an external source, which can be down or be gone. Need to create a own Web server for the test.
+
         [Fact]
         public void ShouldExportSimulation()
         {
@@ -95,7 +100,7 @@
         }
 
         [Fact]
-        public void ShouldReturnSimluationFromHoverfly()
+        public void ShouldReturnSimluationFromHoverfly_WhenFileSimulationSourceIsUsed()
         {
             var hoverfly = new Hoverfly(HoverflyMode.WEBSERVER);
 
@@ -117,6 +122,80 @@
 
             Assert.Equal(response.Status, 200);
             Assert.Equal(response.Body, "{\n   \"one\": \"two\",\n   \"key\": \"value\"\n}\n");
+        }
+
+        [Fact]
+        public void ShouldReturnCorrectSimluationFromHoverfly_WhenImportingSimulation()
+        {
+            var hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
+
+            hoverfly.Start();
+
+            var simulation = CreateTestSimulation();
+
+            hoverfly.ImportSimulation(simulation);
+
+            var expectedSimulation = hoverfly.GetSimulation();
+
+            hoverfly.Stop();
+
+            var expectedRequest = expectedSimulation.HoverflyData.RequestResponsePair.First().Request;
+            var expectedResponse = expectedSimulation.HoverflyData.RequestResponsePair.First().Response;
+
+            Assert.Equal(expectedRequest.Method, "GET");
+            Assert.Equal(expectedRequest.Path, "/key/value/three/four");
+            Assert.Equal(expectedRequest.Destination, "echo.jsontest.com");
+            Assert.Equal(expectedRequest.Scheme, "http");
+
+            Assert.Equal(expectedResponse.Status, 200);
+            Assert.Equal(expectedResponse.Body, "{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n");
+        }
+
+        [Fact]
+        public void ShouldReturnCorrectRestultFromARequest_WhenImportingSimulation()
+        {
+            var hoverfly = new Hoverfly(HoverflyMode.WEBSERVER);
+
+            hoverfly.Start();
+
+            var simulation = CreateTestSimulation();
+
+            hoverfly.ImportSimulation(simulation);
+
+            var result = GetContentFrom("http://localhost:8500/key/value/three/four?name=test");
+
+            hoverfly.Stop();
+
+            Assert.Equal("{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n",result);
+        }
+
+
+        private static Simulation CreateTestSimulation()
+        {
+            var request = new Request
+                              {
+                                  Scheme = "http",
+                                  Destination = "echo.jsontest.com",
+                                  Method = "GET",
+                                  Path = "/key/value/three/four",
+                                  Query = "name=test",
+                                  Headers = new Dictionary<string, IList<string>> { { "Content-Type", new List<string> { "application/json" } } }
+                              };
+
+            var response = new Response
+                               {
+                                   Status = 200,
+                                   Body = "{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n",
+                                   EncodedBody = false,
+                                   Headers = new Dictionary<string, IList<string>> { { "Content-Type", new List<string> { "application/json" } } }
+                               };
+
+            var simulation =
+                new Simulation(
+                    new HoverflyData(
+                        new List<RequestResponsePair> { new RequestResponsePair(request, response) }, null),
+                    new HoverflyMetaData());
+            return simulation;
         }
 
         private static string GetContentFrom(string url)

@@ -44,7 +44,7 @@
                                   Destination = "echo.jsontest.com",
                                   Method = "GET",
                                   Path = "/key/value/three/four",
-                                  Query = "?name=test",
+                                  Query = "name=test",
                                   Headers = requestHeaders
                               };
 
