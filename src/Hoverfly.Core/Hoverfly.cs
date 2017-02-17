@@ -15,7 +15,7 @@
     using Model;
     using Resources;
 
-    public class Hoverfly
+    public class Hoverfly : IDisposable
     {
         private const int BOOT_TIMEOUT_SECONDS = 10;
         private const int RETRY_BACKOFF_INTERVAL_MS = 100;
@@ -33,6 +33,8 @@
         private readonly HoverflyMode _hoverflyMode;
 
         private Process _hoverflyProcess;
+
+        bool _disposed = false;
 
         /// <summary>
         /// Provide access to Hoverfly to start and stop simulation or capture HTTP calls.
@@ -197,6 +199,23 @@
         public HoverflyMode GetMode()
         {
             return _hoverflyClient.GetMode();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+                _hoverflyProcess?.Dispose();
+
+            _disposed = true;
         }
 
         private void SetProxySystemProperties()

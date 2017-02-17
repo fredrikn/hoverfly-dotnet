@@ -12,3 +12,10 @@ src/Hoverfly\.Core\.Test/bin/Debug/
 src/Hoverfly\.Core\.Test/obj/Debug/
 
 src/Hoverfly\.Core
+src/Hoverfly\.Dsl\.Test/bin/Debug/
+
+src/Hoverfly\.Dsl\.Test/obj/Debug/
+
+src/Hoverfly\.Dsl/bin/Debug/
+
+src/Hoverfly\.Dsl/obj/Debug/
