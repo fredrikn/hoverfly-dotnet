@@ -1,10 +1,14 @@
 ﻿namespace Hoverfly.Core.Test
 {
+    using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
+
+    using Configuration;
 
     using Model;
 
@@ -16,10 +20,13 @@
     {
         //TODO: The tests are now working against an external source, which can be down or be gone. Need to create a own Web server for the test.
 
+        private readonly string _hoverflyPath = Path.Combine(Environment.CurrentDirectory,"..\\..\\..\\packages\\SpectoLabs.Hoverfly.0.10.1\\tools\\");
+
         [Fact]
         public void ShouldExportSimulation()
         {
-            var hoverfly = new Hoverfly(HoverflyMode.Capture);
+            var config = HoverflyConfig.Config().SetHoverflyBasePath(_hoverflyPath);
+            var hoverfly = new Hoverfly(HoverflyMode.Capture, config);
 
             hoverfly.Start();
 
@@ -36,7 +43,8 @@
         {
             var result = GetContentFrom("http://echo.jsontest.com/key/value/one/two");
 
-            var hoverfly = new Hoverfly(HoverflyMode.WebServer);
+            var config = HoverflyConfig.Config().SetHoverflyBasePath(_hoverflyPath);
+            var hoverfly = new Hoverfly(HoverflyMode.WebServer, config);
 
             hoverfly.Start();
 
@@ -53,7 +61,8 @@
         [Fact]
         public void ShouldReturnCorrectSimulationDataResult_WhenHoverflyInSimulationMode()
         {
-            var hoverfly = new Hoverfly(HoverflyMode.Simulate);
+            var config = HoverflyConfig.Config().SetHoverflyBasePath(_hoverflyPath);
+            var hoverfly = new Hoverfly(HoverflyMode.Simulate, config);
 
             hoverfly.Start();
 
@@ -72,7 +81,8 @@
         [Fact]
         public void ShouldReturnCorrectHoverflyMode()
         {
-            var hoverfly = new Hoverfly(HoverflyMode.Simulate);
+            var config = HoverflyConfig.Config().SetHoverflyBasePath(_hoverflyPath);
+            var hoverfly = new Hoverfly(HoverflyMode.Simulate, config);
 
             hoverfly.Start();
 
@@ -86,7 +96,8 @@
         [Fact]
         public void ShouldReturnCorrectMode_WhenHoverflyModeIsChanged()
         {
-            var hoverfly = new Hoverfly(HoverflyMode.Simulate);
+            var config = HoverflyConfig.Config().SetHoverflyBasePath(_hoverflyPath);
+            var hoverfly = new Hoverfly(HoverflyMode.Simulate, config);
 
             hoverfly.Start();
 
@@ -102,7 +113,8 @@
         [Fact]
         public void ShouldReturnSimluationFromHoverfly_WhenFileSimulationSourceIsUsed()
         {
-            var hoverfly = new Hoverfly(HoverflyMode.WebServer);
+            var config = HoverflyConfig.Config().SetHoverflyBasePath(_hoverflyPath);
+            var hoverfly = new Hoverfly(HoverflyMode.WebServer, config);
 
             hoverfly.Start();
 
@@ -127,7 +139,8 @@
         [Fact]
         public void ShouldReturnCorrectSimluationFromHoverfly_WhenImportingSimulation()
         {
-            var hoverfly = new Hoverfly(HoverflyMode.Simulate);
+            var config = HoverflyConfig.Config().SetHoverflyBasePath(_hoverflyPath);
+            var hoverfly = new Hoverfly(HoverflyMode.Simulate, config);
 
             hoverfly.Start();
 
@@ -154,7 +167,8 @@
         [Fact]
         public void ShouldReturnCorrectRestultFromARequest_WhenImportingSimulationAndUsingWebServerMode()
         {
-            var hoverfly = new Hoverfly(HoverflyMode.WebServer);
+            var config = HoverflyConfig.Config().SetHoverflyBasePath(_hoverflyPath);
+            var hoverfly = new Hoverfly(HoverflyMode.WebServer, config);
 
             hoverfly.Start();
 
@@ -172,7 +186,8 @@
         [Fact]
         public void ShouldReturnCorrectRestultFromARequest_WhenImportingSimulationAndUsingSimulationMode()
         {
-            var hoverfly = new Hoverfly(HoverflyMode.Simulate);
+            var config = HoverflyConfig.Config().SetHoverflyBasePath(_hoverflyPath);
+            var hoverfly = new Hoverfly(HoverflyMode.Simulate, config);
 
             hoverfly.Start();
 
