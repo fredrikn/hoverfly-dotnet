@@ -54,7 +54,7 @@ hoverfly.ImportSimulation(new FileSimulationSource("simulation.json"));
 hoverfly.Stop();
 ```
 
-###Specify you own simulations for a call to specific URL with Hoverfly.Dsl:
+###Specify your own simulations for a call to specific URL with Hoverfly.Dsl:
 
 ```cs
 using static Hoverfly.Dsl.HoverflyDsl;
