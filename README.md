@@ -16,7 +16,7 @@ You can download it from http://hoverfly.io/#download It probably will be availa
 ###Example of using simulation:
 
 ```
-var hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
+var hoverfly = new Hoverfly(HoverflyMode.Simulate);
 
 hoverfly.Start();
 
@@ -31,7 +31,7 @@ hoverfly.Stop();
 ###Capture and export simulations:
 
 ```
-var hoverfly = new Hoverfly(HoverflyMode.CAPTURE);
+var hoverfly = new Hoverfly(HoverflyMode.Capture);
 
 hoverfly.Start();
 
@@ -45,7 +45,7 @@ hoverfly.Stop();
 ###Import recorded simulations into hoverfly:
 
 ```
-var hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
+var hoverfly = new Hoverfly(HoverflyMode.Simulate);
 
 hoverfly.Start();
 
@@ -60,7 +60,7 @@ hoverfly.Stop();
 ###Specify you own simulations for a call to specific URL:
 
 ```
-var hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
+var hoverfly = new Hoverfly(HoverflyMode.Simulate);
 
 hoverfly.Start();
 
@@ -97,7 +97,7 @@ Hoverfly hoverfly;
 
 void StartUp()
 {
-    hoverfly = new Hoverfly(HoverflyMode.SIMULATE);
+    hoverfly = new Hoverfly(HoverflyMode.Simulate);
     hoverfly.ImportSimulation("simulation.json");
     hoverfly.Start();
 }
