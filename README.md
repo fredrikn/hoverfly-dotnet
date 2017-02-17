@@ -126,8 +126,8 @@ public class MyController : Controller
    [HttpGet]
    public IActionResult Get(string userId)
    {
-       // Assume this code integrates with another service (maybe a Microservcie :P) over HTTP wiht HttpClient
-       // http://mysuper.microservice.com/foo
+       // Assume this code integrates with another service (maybe a Microservice :P) over HTTP with HttpClient
+       // httpClient.GetAsync("http://mysuper.microservice.com/foo");
        
        ...
        
