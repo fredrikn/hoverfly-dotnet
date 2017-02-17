@@ -72,8 +72,9 @@ hoverfly.ImportSimulation(DslSimulationSource.Dsl(
                     .Get("/key/value/three/four")
                     .WillReturn(Success("Hello World!", "plain/text"))));
 
-// Every call (using for example HttpClient) to the URL http://echo.jsontest.com/key/value/three/four will now
-// return the specified success response in the imported simulation. This will happen as long as hoverfly is running.
+// Every call (using for example HttpClient) to the URL http://echo.jsontest.com/key/value/three/four
+// will now return the specified success response in the imported simulation. This will happen as 
+// long as hoverfly is running.
 var result = <Http Get Content From "http://echo.jsontest.com/key/value/three/four">
 
 hoverfly.Stop();
