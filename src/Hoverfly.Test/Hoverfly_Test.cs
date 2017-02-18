@@ -1,21 +1,18 @@
 ﻿namespace Hoverfly.Test
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Net.Http;
     using System.Threading.Tasks;
 
-    using Hoverfly.Core;
-    using Hoverfly.Core.Configuration;
-    using Hoverfly.Core.Model;
-    using Hoverfly.Dsl;
+    using Core;
+    using Core.Configuration;
 
     using Xunit;
 
-    using static Hoverfly.Dsl.HoverflyDsl;
-    using static Hoverfly.Dsl.ResponseCreators;
-    using static Hoverfly.Dsl.DslSimulationSource;
+    using static Hoverfly.Core.Dsl.HoverflyDsl;
+    using static Hoverfly.Core.Dsl.ResponseCreators;
+    using static Hoverfly.Core.Dsl.DslSimulationSource;
 
     public class Hoverfly_Test
     {
@@ -31,7 +28,7 @@
 
             hoverfly.Start();
 
-            hoverfly.ImportSimulation(DslSimulationSource.Dsl(
+            hoverfly.ImportSimulation(Dsl(
                 Service("http://echo.jsontest.com")
                     .Get("/key/value/three/four")
                     .QueryParam("name", "test")

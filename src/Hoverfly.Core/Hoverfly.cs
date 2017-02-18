@@ -53,7 +53,7 @@
 
             _hoverflyConfig = config ?? HoverflyConfig.Config();
 
-            _logger = loggerFactory?.Create(this.GetType().Name);
+            _logger = loggerFactory?.Create(GetType().Name);
 
             _hoverflyClient = hoverflyClient ?? new HoverflyClient(
                                                          new Uri($"{_hoverflyConfig.RemoteHost}:{_hoverflyConfig.AdminPort}"),

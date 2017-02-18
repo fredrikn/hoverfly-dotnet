@@ -46,6 +46,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\HoverflyConfig.cs" />
+    <Compile Include="Dsl\DslSimulationSource.cs" />
+    <Compile Include="Dsl\HoverflyDsl.cs" />
+    <Compile Include="Dsl\IHttpBodyConverter.cs" />
+    <Compile Include="Dsl\JsonHttpBodyConverter.cs" />
+    <Compile Include="Dsl\RequestMatcherBuilder.cs" />
+    <Compile Include="Dsl\ResponseBuilder.cs" />
+    <Compile Include="Dsl\ResponseCreators.cs" />
+    <Compile Include="Dsl\StubServiceBuilder.cs" />
     <Compile Include="Model\Simulation.cs" />
     <Compile Include="Hoverfly.cs" />
     <Compile Include="HoverflyMode.cs" />

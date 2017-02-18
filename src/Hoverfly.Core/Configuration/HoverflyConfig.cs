@@ -58,7 +58,7 @@
             int proxyPort = DEFAULT_PROXY_PORT,
             int adminPort = DEFAULT_ADMIN_PORT)
         {
-            this.IsRemoteInstance = true;
+            IsRemoteInstance = true;
             RemoteHost = remoteHost ?? LOCALHOST;
             return this;
         }

@@ -23,3 +23,13 @@ src/Hoverfly\.Dsl/obj/Debug/
 src/Hoverfly\.Test/bin/Debug/
 
 src/Hoverfly\.Test/obj/Debug/
+
+src/\.fake/
+
+src/Hoverfly\.Core\.Test/bin/Release/
+
+src/Hoverfly\.Core\.Test/obj/Release/
+
+src/Hoverfly\.Test/bin/Release/
+
+src/Hoverfly\.Test/obj/Release/
