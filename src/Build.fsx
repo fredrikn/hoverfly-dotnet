@@ -116,20 +116,39 @@ Target "RunTests" <| fun _ ->
 // Create a Nuget Package
 
 Target "CreatePackage" (fun _ ->
-     NuGet (fun p -> 
+    let workingDir = (root @@ "/Hoverfly.Core/bin/Release")
+    let packages = (root @@ "/Hoverfly.Core/packages.config")
+    let packageDependencies = if (fileExists packages) then (getDependencies packages) else []
+
+    let tempBuildDir = workingDir + "ForNuGet"
+    ensureDirectory tempBuildDir
+
+    CleanDir tempBuildDir
+
+    let pack packSourceDir =
+        NuGet (fun p -> 
         {p with
            Authors = authors
            Project = product
            Description = description
            OutputPath = outDir
-           WorkingDir = (root @@ "/Hoverfly.Core/bin/Release")
+           WorkingDir = packSourceDir
            Properties = ["Configuration", "Release"]
            ReleaseNotes = release.Notes |> String.concat "\n"
            Version = release.NugetVersion
-           Dependencies = ["SpectoLabs.Hoverfly", GetPackageVersion "./packages/" "SpectoLabs.Hoverfly"
-                           "Newtonsoft.Json", GetPackageVersion "./packages/" "Newtonsoft.Json" ]
+           Dependencies = packageDependencies
            Publish = false }) 
            "./Hoverfly.Core/Hoverfly.Core.nuspec"
+
+     // Copy dll, pdb and xml to libdir = workingDir/lib/net45/
+    let tempLibDir = tempBuildDir @@ @"lib\net45\"
+    ensureDirectory tempLibDir
+    !! (workingDir @@ "*.dll")
+    ++ (workingDir @@ "*.pdb")
+    ++ (workingDir @@ "*.xml")
+    |> CopyFiles tempLibDir
+
+    pack tempBuildDir
 )
 
 //--------------------------------------------------------------------
