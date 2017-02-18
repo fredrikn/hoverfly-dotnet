@@ -69,9 +69,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Hoverfly.Core\Hoverfly.Core.csproj">
       <Project>{12691AD5-E39E-4195-B7B3-C854F290FD07}</Project>
       <Name>Hoverfly.Core</Name>

@@ -1,11 +1,10 @@
-﻿namespace Hoverfly.Core.Test
+﻿namespace Hoverfly.Core.Tests
 {
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
 
     using Model;
-
     using Resources;
 
     using Xunit;

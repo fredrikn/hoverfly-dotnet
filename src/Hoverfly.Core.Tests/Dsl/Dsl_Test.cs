@@ -1,4 +1,4 @@
-﻿namespace Hoverfly.Core.Test.Dsl
+﻿namespace Hoverfly.Core.Tests.Dsl
 {
     using Core.Dsl;
 

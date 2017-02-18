@@ -29,6 +29,7 @@ let buildNumber = if String.IsNullOrWhiteSpace(envBuildNumber) then "0" else env
 let version = release.AssemblyVersion + "." + buildNumber
 
 let root = @".\"
+let projectName = "Hoverfly.Core"
 let solutionName = "Hoverfly.Core.sln"
 let solutionPath = root @@ solutionName
 let outDir = getBuildParamOrDefault "outputDir" "./out/"
@@ -59,7 +60,7 @@ Target "Clean" (fun _ ->
 open AssemblyInfoFile
 
 Target "AssemblyInfo" <| fun _ ->
-    CreateCSharpAssemblyInfoWithConfig (root + "/Hoverfly.Core/Properties/AssemblyInfo.cs") [
+    CreateCSharpAssemblyInfoWithConfig (root @@ projectName @@ "Properties/AssemblyInfo.cs") [
         Attribute.Title product
         Attribute.Company company
         Attribute.Description description
@@ -88,7 +89,7 @@ Target "CopyOutput" <| fun _ ->
         let src = root @@ project @@ @"bin/Release/"
         let dst = outDir @@ project
         CopyDir dst src allFiles
-    [ "Hoverfly.Core" ]
+    [ projectName ]
     |> List.iter copyOutput
 
 //--------------------------------------------------------------------------------
@@ -116,8 +117,8 @@ Target "RunTests" <| fun _ ->
 // Create a Nuget Package
 
 Target "CreatePackage" (fun _ ->
-    let workingDir = (root @@ "/Hoverfly.Core/bin/Release")
-    let packages = (root @@ "/Hoverfly.Core/packages.config")
+    let workingDir = (root @@ projectName @@ "bin/Release")
+    let packages = (root @@ projectName @@ "packages.config")
     let packageDependencies = if (fileExists packages) then (getDependencies packages) else []
 
     let tempBuildDir = workingDir + "ForNuGet"
@@ -138,14 +139,14 @@ Target "CreatePackage" (fun _ ->
            Version = release.NugetVersion
            Dependencies = packageDependencies
            Publish = false }) 
-           "./Hoverfly.Core/Hoverfly.Core.nuspec"
+           (root @@ projectName @@ "Hoverfly.Core.nuspec")
 
      // Copy dll, pdb and xml to libdir = workingDir/lib/net45/
     let tempLibDir = tempBuildDir @@ @"lib\net45\"
     ensureDirectory tempLibDir
-    !! (workingDir @@ "*.dll")
-    ++ (workingDir @@ "*.pdb")
-    ++ (workingDir @@ "*.xml")
+    !! (workingDir @@ projectName + ".dll")
+    ++ (workingDir @@ projectName + ".pdb")
+    ++ (workingDir @@ projectName + ".xml")
     |> CopyFiles tempLibDir
 
     pack tempBuildDir

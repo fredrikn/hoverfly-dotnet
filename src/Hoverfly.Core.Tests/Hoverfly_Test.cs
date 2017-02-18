@@ -10,16 +10,16 @@
 
     using Configuration;
 
-    using Dsl;
+    using Core.Dsl;
 
     using Model;
     using Resources;
 
     using Xunit;
 
-    using static Dsl.HoverflyDsl;
-    using static Dsl.ResponseCreators;
-    using static Dsl.DslSimulationSource;
+    using static Core.Dsl.HoverflyDsl;
+    using static Core.Dsl.ResponseCreators;
+    using static Core.Dsl.DslSimulationSource;
 
     public class Hoverfly_Test
     {
