@@ -67,15 +67,15 @@ var hoverfly = new Hoverfly(HoverflyMode.Simulate);
 
 hoverfly.Start();
 
-hoverfly.ImportSimulation(DslSimulationSource.Dsl(
-                Service("http://echo.jsontest.com")
+hoverfly.ImportSimulation(Dsl(
+                Service("http://myservice.something.com")
                     .Get("/key/value/three/four")
                     .WillReturn(Success("Hello World!", "plain/text"))));
 
 // Every call (using for example HttpClient) to the URL http://echo.jsontest.com/key/value/three/four
 // will now return the specified success response in the imported simulation. This will happen as 
 // long as hoverfly is running.
-var result = <Http Get Content From "http://echo.jsontest.com/key/value/three/four">
+var result = <Http Get Content From "http://myservice.something.com/key/value/three/four">
 
 hoverfly.Stop();
 ```
