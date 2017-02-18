@@ -126,4 +126,4 @@ public class MyController : Controller
 }
 ```
 
-Hoverfly will add a Proxy and all Http calls will go through that proxy. Hoverfly will in simulation mode return a recorded result for a given Http call, so no extrenal call will be made. With the use of hoverfly in our integration/component test we don't need to create fakes to avoid extrenal calls. With hoverfly we can also in our tests simulate delays on certain extrenal calls etc. For example to test timeouts etc.
+Hoverfly will add a Proxy and all Http calls will go through that proxy. Hoverfly will in simulation mode return a recorded result for a given Http call, so no external call will be made. With the use of hoverfly in our integration/component test we don't need to create fakes to avoid external calls. With hoverfly we can also in our tests simulate delays on certain external calls etc. For example to test timeouts etc.
