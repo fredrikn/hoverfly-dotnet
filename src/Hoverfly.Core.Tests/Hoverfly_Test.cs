@@ -1,4 +1,4 @@
-﻿namespace Hoverfly.Core.Test
+﻿namespace Hoverfly.Core.Tests
 {
     using System;
     using System.Collections.Generic;
@@ -10,11 +10,16 @@
 
     using Configuration;
 
-    using Model;
+    using Dsl;
 
+    using Model;
     using Resources;
 
     using Xunit;
+
+    using static Dsl.HoverflyDsl;
+    using static Dsl.ResponseCreators;
+    using static Dsl.DslSimulationSource;
 
     public class Hoverfly_Test
     {
@@ -202,6 +207,27 @@
             Assert.Equal("{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n", result);
         }
 
+        [Fact]
+        public void ShouldGetCorrectResponse_WhenUsingDsl()
+        {
+            var config = HoverflyConfig.Config().SetHoverflyBasePath(_hoverflyPath);
+
+            var hoverfly = new Hoverfly(HoverflyMode.Simulate, config);
+
+            hoverfly.Start();
+
+            hoverfly.ImportSimulation(DslSimulationSource.Dsl(
+                Service("http://echo.jsontest.com")
+                    .Get("/key/value/three/four")
+                    .QueryParam("name", "test")
+                    .WillReturn(Success("{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n", "application/json"))));
+
+            var result = GetContentFrom("http://echo.jsontest.com/key/value/three/four?name=test");
+
+            hoverfly.Stop();
+
+            Assert.Equal("{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n", result);
+        }
 
         private static Simulation CreateTestSimulation()
         {

@@ -81,6 +81,8 @@
         /// </exception>
         public void Stop()
         {
+            WebRequest.DefaultWebProxy = null;
+
             _logger?.Info("Destroying hoverfly process");
 
             if (_hoverflyProcess == null)
@@ -213,7 +215,7 @@
                 return;
 
             if (disposing)
-                _hoverflyProcess?.Dispose();
+                Stop();
 
             _disposed = true;
         }
@@ -221,10 +223,7 @@
         private void SetProxySystemProperties()
         {
             if (_hoverflyMode == HoverflyMode.WebServer)
-            {
-                WebRequest.DefaultWebProxy = null;
                 return;
-            }
 
             //TODO: Temporary hack to accept all SSL
             ServicePointManager.ServerCertificateValidationCallback = (senderX, certificate, chain, sslPolicyErrors) => true;
