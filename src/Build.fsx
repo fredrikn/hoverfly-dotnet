@@ -1,17 +1,38 @@
 #I @"packages/FAKE/tools"
 #r "FakeLib.dll"
 
+open System
+open System.IO
 open Fake
 open Fake.FileUtils
 open Fake.TaskRunnerHelper
 
-// Properties
-let testOutput = FullName "TestResults"
+
+//--------------------------------------------------------------------------------
+// Information about the project for Nuget and Assembly info files
+//--------------------------------------------------------------------------------
+
+let product = "Hoverfly-DotNet"
+let authors = [ "Fredrik Normen" ]
+let copyright = "Copyright © 2017"
+let company = "Fredrik Normen"
+let description = "A .Net Library for Hoverfly"
+
+// Read release notes and version
+let release =
+    File.ReadLines "RELEASE_NOTES.md"
+    |> ReleaseNotesHelper.parseReleaseNotes
+
+let envBuildNumber = System.Environment.GetEnvironmentVariable("BUILD_NUMBER")
+let buildNumber = if String.IsNullOrWhiteSpace(envBuildNumber) then "0" else envBuildNumber
+
+let version = release.AssemblyVersion + "." + buildNumber
 
 let root = @".\"
 let solutionName = "Hoverfly.Core.sln"
 let solutionPath = root @@ solutionName
 let outDir = getBuildParamOrDefault "outputDir" "./out/"
+let testOutput = FullName "TestResults"
 
 //--------------------------------------------------------------------
 // Restore all packages
@@ -32,6 +53,22 @@ Target "Clean" (fun _ ->
   CleanDir outDir
 )
 
+//--------------------------------------------------------------------------------
+// Generate AssemblyInfo files with the version for release notes 
+
+open AssemblyInfoFile
+
+Target "AssemblyInfo" <| fun _ ->
+    CreateCSharpAssemblyInfoWithConfig (root + "/Hoverfly.Core/Properties/AssemblyInfo.cs") [
+        Attribute.Title product
+        Attribute.Company company
+        Attribute.Description description
+        Attribute.Copyright copyright
+        Attribute.Trademark ""
+        Attribute.Version version
+        Attribute.ComVisible false
+        Attribute.FileVersion version ] <| AssemblyInfoFileConfig(false)
+
 //--------------------------------------------------------------------
 // Build Release
 
@@ -43,7 +80,7 @@ Target "Build" <| fun _ ->
 Target "BuildRelease" DoNothing
 
 //--------------------------------------------------------------------------------
-// Copy the build output to bin directory
+// Copy the build output to out directory
 
 Target "CopyOutput" <| fun _ ->
     
@@ -75,6 +112,26 @@ Target "RunTests" <| fun _ ->
         (fun p -> { p with XmlOutputPath = Some (testOutput + @"\XUnitTestResults.xml"); HtmlOutputPath = Some (testOutput + @"\XUnitTestResults.HTML"); ToolPath = xunitToolPath; TimeOut = System.TimeSpan.FromMinutes 30.0; Parallel = ParallelMode.NoParallelization })
         testAssemblies
 
+//------------------------------------------------------------------------------
+// Create a Nuget Package
+
+Target "CreatePackage" (fun _ ->
+     NuGet (fun p -> 
+        {p with
+           Authors = authors
+           Project = product
+           Description = description
+           OutputPath = outDir
+           WorkingDir = (root @@ "/Hoverfly.Core/bin/Release")
+           Properties = ["Configuration", "Release"]
+           ReleaseNotes = release.Notes |> String.concat "\n"
+           Version = release.NugetVersion
+           Dependencies = ["SpectoLabs.Hoverfly", GetPackageVersion "./packages/" "SpectoLabs.Hoverfly"
+                           "Newtonsoft.Json", GetPackageVersion "./packages/" "Newtonsoft.Json" ]
+           Publish = false }) 
+           "./Hoverfly.Core/Hoverfly.Core.nuspec"
+)
+
 //--------------------------------------------------------------------
 // Target Help
 
@@ -86,14 +143,18 @@ Target "Help" (fun _ ->
 // Target dependencies
 
 // build dependencies
-"Clean" ==> "RestorePackages" ==> "Build" ==> "CopyOutput" ==> "BuildRelease"
+"Clean" ==> "RestorePackages" ==> "AssemblyInfo" ==> "Build" ==> "CopyOutput" ==> "BuildRelease"
 
 // tests dependencies
 "CleanTests" ==> "RunTests"
 
+// nuget dependencies
+"BuildRelease" ==> "CreatePackage"
+
 Target "All" DoNothing
 "BuildRelease" ==> "All"
 "RunTests" ==> "All"
+"CreatePackage" ==> "All"
 
 // start build
 RunTargetOrDefault "Help"

@@ -1,3 +1,6 @@
+param (
+    [string]$target = "All"
+)
 
 IF (-NOT (Test-Path ".nuget\nuget.exe"))
 {
@@ -12,4 +15,4 @@ IF (-NOT (Test-Path ".nuget\nuget.exe"))
 
 & ".\.nuget/NuGet.exe" install xunit.runner.console -OutputDirectory "packages\FAKE" -ExcludeVersion -Version 2.0.0
 
-& ".\packages\FAKE\tools\FAKE.exe" build.fsx ALL
+& ".\packages\FAKE\tools\FAKE.exe" build.fsx $target

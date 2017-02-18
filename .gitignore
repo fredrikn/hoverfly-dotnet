@@ -41,3 +41,7 @@ src/Hoverfly\.Core\.Tests/bin/Release/
 src/Hoverfly\.Core\.Tests/obj/Debug/
 
 src/Hoverfly\.Core\.Tests/obj/Release/
+
+src/out/
+
+src/TestResults/
