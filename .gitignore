@@ -45,3 +45,5 @@ src/Hoverfly\.Core\.Tests/obj/Release/
 src/out/
 
 src/TestResults/
+
+src/\.nuget/
