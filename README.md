@@ -57,9 +57,9 @@ hoverfly.Stop();
 ###Specify your own simulations for a call to specific URL with Hoverfly.Dsl:
 
 ```cs
-using static Hoverfly.Dsl.HoverflyDsl;
-using static Hoverfly.Dsl.ResponseCreators;
-using static Hoverfly.Dsl.DslSimulationSource;
+using static Hoverfly.Core.Dsl.HoverflyDsl;
+using static Hoverfly.Core.Dsl.ResponseCreators;
+using static Hoverfly.Core.Dsl.DslSimulationSource;
     
 ...
 
