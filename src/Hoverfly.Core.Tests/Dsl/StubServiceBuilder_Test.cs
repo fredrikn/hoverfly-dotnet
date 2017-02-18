@@ -99,7 +99,7 @@
         [Fact]
         public void ShouldCreateCorrectResponse()
         {
-            var pairs = HoverflyDsl.Service("www.my-test.com").Get("/").WillReturn(ResponseCreators.Success("Hello World", "plain/text")).RequestResponsePairs;
+            var pairs = HoverflyDsl.Service("www.my-test.com").Get("/").WillReturn(ResponseCreators.Success("Hello World", "text/plain")).RequestResponsePairs;
 
             Assert.Equal(1, pairs.Count);
 
@@ -107,7 +107,7 @@
 
             Assert.Equal(200, pair.Response.Status);
             Assert.Equal("Hello World", pair.Response.Body);
-            Assert.Equal("plain/text", pair.Response.Headers["Content-Type"].First());
+            Assert.Equal("text/plain", pair.Response.Headers["Content-Type"].First());
             Assert.Equal(false, pair.Response.EncodedBody);
         }
 
@@ -117,9 +117,9 @@
             var pairs = HoverflyDsl.Service("www.my-test.com")
                             .Get("/test")
                             .QueryParam("Id", 1,2,3)
-                            .Header("Content-Type", "plain/text")
+                            .Header("Content-Type", "text/plain")
                             .Body("")
-                            .WillReturn(ResponseCreators.Success("Hello World", "plain/text")).RequestResponsePairs;
+                            .WillReturn(ResponseCreators.Success("Hello World", "text/plain")).RequestResponsePairs;
 
             Assert.Equal(1, pairs.Count);
 
@@ -128,7 +128,7 @@
             Assert.Equal("www.my-test.com", pair.Request.Destination);
             Assert.Equal("/test", pair.Request.Path);
             Assert.Equal("Id=1&Id=2&Id=3", pair.Request.Query);
-            Assert.Equal("plain/text", pair.Request.Headers["Content-Type"].First());
+            Assert.Equal("text/plain", pair.Request.Headers["Content-Type"].First());
             Assert.Equal("", pair.Request.Body);
         }
     }

@@ -1,6 +1,7 @@
 ﻿namespace Hoverfly.Core
 {
     using System;
+    using System.ComponentModel;
     using System.Configuration;
     using System.Diagnostics;
     using System.IO;
@@ -291,7 +292,7 @@
             if (string.IsNullOrWhiteSpace(hoverflyPath))
                 throw new FileNotFoundException($"Can't find the file '{HOVERFLY_EXE}' file in the '{hoverfileBasePath}' or in its sub-folders.");
 
-            TryStartHoverflyProcess(hoverflyPath);
+            StartHoverflyProcess(hoverflyPath);
         }
 
         private string GetHoverfileBasePath()
@@ -305,13 +306,7 @@
         {
             try
             {
-                var processInfo = new ProcessStartInfo(hoverflyPath, GetHoverflyArgumentsBasedOnMode())
-                {
-                    WorkingDirectory = _hoverflyConfig.HoverflyBasePath,
-                    WindowStyle = ProcessWindowStyle.Hidden
-                };
-
-                _hoverflyProcess = Process.Start(processInfo);
+                StartHoverflyProcess(hoverflyPath);
             }
             catch
             {
@@ -319,6 +314,24 @@
             }
 
             return true;
+        }
+
+        private void StartHoverflyProcess(string hoverflyPath)
+        {
+            var processInfo = new ProcessStartInfo(hoverflyPath, GetHoverflyArgumentsBasedOnMode())
+                                  {
+                                      WorkingDirectory =_hoverflyConfig.HoverflyBasePath,
+                                      WindowStyle = ProcessWindowStyle.Hidden
+                                  };
+
+            try
+            {
+                _hoverflyProcess = Process.Start(processInfo);
+            }
+            catch (Exception e)
+            {
+                throw new ApplicationException($"Can't start Hoverfly from path '{hoverflyPath}', please make sure the path is correct. You can use the {nameof(HoverflyConfig)}'s {nameof(HoverflyConfig.SetHoverflyBasePath)} property to set the base path of {HOVERFLY_EXE}, or you can add the path to {HOVERFLY_EXE} to the system PATH environment variable. {e}");
+            }
         }
 
         private string GetHoverflyArgumentsBasedOnMode()
