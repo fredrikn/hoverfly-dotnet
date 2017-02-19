@@ -25,6 +25,14 @@ var result2 = //Use HttpClient to get content, e.g. "http://time.jsontest.com";
 hoverfly.Stop();
 ```
 
+###Example of using HoverflyRunner for simulation:
+
+```cs
+using (var runner = HoverflyRunner.StartInSimulationMode())
+{
+}
+```
+
 ###Capture and export simulations:
 
 ```cs
@@ -37,6 +45,15 @@ hoverfly.Start();
 hoverfly.ExportSimulation("simulation.json");
 
 hoverfly.Stop();
+```
+
+###Example of using HoverflyRunner to capture automatically export simulations to a file:
+
+```cs
+using (var runner = HoverflyRunner.StartInCaptureMode("simulation.json"))
+{
+   // All HTTP calls will be captured, and then saved to "simnulation.json"
+}
 ```
 
 ###Import recorded simulations into hoverfly:
@@ -54,7 +71,15 @@ hoverfly.ImportSimulation(new FileSimulationSource("simulation.json"));
 hoverfly.Stop();
 ```
 
-###Specify your own simulations for a call to specific URL with Hoverfly.Dsl:
+###Example of using HoverflyRunner to import simulation at start:
+
+```cs
+using (var runner = HoverflyRunner.StartInSimulationMode("simulation.json"))
+{
+}
+```
+
+###Specify your own simulation for a call to specific URL with Hoverfly Dsl:
 
 ```cs
 using static Hoverfly.Core.Dsl.HoverflyDsl;
@@ -78,6 +103,21 @@ hoverfly.ImportSimulation(Dsl(
 var result = <Http Get Content From "http://myservice.something.com/key/value/three/four">
 
 hoverfly.Stop();
+```
+
+###Specify your own simulation for a call to specific URL with Hoverfly Dsl and HoverflyRunner:
+
+```cs
+using (var runner = HoverflyRunner.StartInSimulationMode())
+{
+   runner.Simulate(Dsl(
+                    Service("http://mysuper.microservice.com")
+                            .Get("/key/value/three/four")
+                            .WillReturn(Success("Hello World!", "text/plain"))));
+
+   var result = // Get result from "http://mysuper.microservice.com/key/value/three/four" using for example HttpClient
+                // will return "Hello World!"
+}
 ```
 
 ###Example of using hoverfly in a integration test:
