@@ -115,8 +115,8 @@ using (var runner = HoverflyRunner.StartInSimulationMode())
                             .Get("/key/value/three/four")
                             .WillReturn(Success("Hello World!", "text/plain"))));
 
-   var result = // Get result from "http://mysuper.microservice.com/key/value/three/four" using for example HttpClient
-                // will return "Hello World!"
+   var result = // Get result from "http://mysuper.microservice.com/key/value/three/four" 
+                // using for example HttpClient will return "Hello World!"
 }
 ```
 
