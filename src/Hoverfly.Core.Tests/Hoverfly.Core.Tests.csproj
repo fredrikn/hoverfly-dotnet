@@ -59,6 +59,7 @@
     <Compile Include="Dsl\Dsl_Test.cs" />
     <Compile Include="Dsl\StubServiceBuilder_Test.cs" />
     <Compile Include="FileSimulationSource_Test.cs" />
+    <Compile Include="HoverflyRunner_Test.cs" />
     <Compile Include="Hoverfly_Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

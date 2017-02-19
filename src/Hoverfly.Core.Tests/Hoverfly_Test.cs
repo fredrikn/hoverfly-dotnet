@@ -28,6 +28,58 @@
         private readonly string _hoverflyPath = Path.Combine(Environment.CurrentDirectory,"..\\..\\..\\packages\\SpectoLabs.Hoverfly.0.10.1\\tools\\");
 
         [Fact]
+        public void ShouldReturnCorrectConfiguredProxyPort()
+        {
+            var config = HoverflyConfig.Config().SetProxyPort(8600);
+            var hoverfly = new Hoverfly(HoverflyMode.Simulate, config);
+
+            Assert.Equal(8600, hoverfly.GetProxyPort());
+        }
+
+
+        [Fact]
+        public void ShouldReturnCorrectConfiguredAdminPort()
+        {
+            var config = HoverflyConfig.Config().SetAdminPort(8880);
+            var hoverfly = new Hoverfly(HoverflyMode.Simulate, config);
+
+            Assert.Equal(8880, hoverfly.GetAdminPort());
+        }
+
+
+        [Fact]
+        public void ShouldReturnSimulateMode_WhenHoverFlyIsSetToUseSimulateMode()
+        {
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
+            {
+                hoverfly.Start();
+                Assert.Equal(HoverflyMode.Simulate, hoverfly.GetMode());
+            }
+        }
+
+        [Fact]
+        public void ShouldReturnCaptureMode_WhenHoverFlyIsSetToUseCaptureMode()
+        {
+            using (var hoverfly = new Hoverfly(HoverflyMode.Capture))
+            {
+                hoverfly.Start();
+                Assert.Equal(HoverflyMode.Capture, hoverfly.GetMode());
+            }
+        }
+
+        [Fact]
+        public void ShouldReturnSimulateMode_WhenHoverFlyIsSetToUseWebserverMode()
+        {
+            // NOTE: Hoverfly instance doesn't return WebServer as mode, instead when
+            // running as Webserver, the mode of the Hoverfly is Simulate.
+            using (var hoverfly = new Hoverfly(HoverflyMode.WebServer))
+            {
+                hoverfly.Start();
+                Assert.Equal(HoverflyMode.Simulate, hoverfly.GetMode());
+            }
+        }
+
+        [Fact]
         public void ShouldExportSimulation()
         {
             var config = HoverflyConfig.Config().SetHoverflyBasePath(_hoverflyPath);
@@ -212,21 +264,51 @@
         {
             var config = HoverflyConfig.Config().SetHoverflyBasePath(_hoverflyPath);
 
-            var hoverfly = new Hoverfly(HoverflyMode.Simulate, config);
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, config))
+            {
+                hoverfly.Start();
 
-            hoverfly.Start();
+                hoverfly.ImportSimulation(
+                    DslSimulationSource.Dsl(
+                        Service("http://echo.jsontest.com")
+                            .Get("/key/value/three/four")
+                            .QueryParam("name", "test")
+                            .WillReturn(
+                                Success("{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n", "application/json"))));
 
-            hoverfly.ImportSimulation(DslSimulationSource.Dsl(
-                Service("http://echo.jsontest.com")
-                    .Get("/key/value/three/four")
-                    .QueryParam("name", "test")
-                    .WillReturn(Success("{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n", "application/json"))));
+                var result = GetContentFrom("http://echo.jsontest.com/key/value/three/four?name=test");
+                Assert.Equal("{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n", result);
+            }
+        }
 
-            var result = GetContentFrom("http://echo.jsontest.com/key/value/three/four?name=test");
+        [Fact]
+        public void ShouldUseRemoteHovervyInstance()
+        {
+            var config = HoverflyConfig.Config().SetHoverflyBasePath(_hoverflyPath);
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, config))
+            {
+                hoverfly.Start();
 
-            hoverfly.Stop();
+                hoverfly.ImportSimulation(
+                    DslSimulationSource.Dsl(
+                        Service("http://echo.jsontest.com")
+                            .Get("/key/value/three/four")
+                            .QueryParam("name", "test")
+                            .WillReturn(
+                                Success("{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n", "application/json"))));
 
-            Assert.Equal("{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n", result);
+                var simulation = hoverfly.GetSimulation();
+                
+                var config2 = HoverflyConfig.Config().UseRemoteInstance(config.RemoteHost, config.ProxyPort, config.AdminPort);
+                using (var reuseHoverfly = new Hoverfly(config: config2))
+                {
+                    var simulation2 = reuseHoverfly.GetSimulation();
+
+                    Assert.Equal(hoverfly.GetAdminPort(), reuseHoverfly.GetAdminPort());
+                    Assert.Equal(hoverfly.GetProxyPort(), reuseHoverfly.GetProxyPort());
+                    Assert.Equal(simulation.HoverflyData.RequestResponsePair.First().Response.Body, simulation2.HoverflyData.RequestResponsePair.First().Response.Body);
+                }
+            }
         }
 
         private static Simulation CreateTestSimulation()

@@ -1,13 +1,10 @@
 ﻿namespace Hoverfly.Core
 {
     using System;
-    using System.ComponentModel;
-    using System.Configuration;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Net;
-    using System.Net.NetworkInformation;
     using System.Text;
     using System.Threading;
 
@@ -40,12 +37,12 @@
         /// <summary>
         /// Provide access to Hoverfly to start and stop simulation or capture HTTP calls.
         /// </summary>
-        /// <param name="hoverflyMode">The mode hoverfly should be started in. <see cref="HoverflyMode"/></param>
+        /// <param name="hoverflyMode">The <see cref="HoverflyMode"/> Hoverfly should be started in. Default is Simulate if nothing is specified.</param>
         /// <param name="config">Hoverfly configurations. <see cref="HoverflyConfig"/></param>
         /// <param name="loggerFactory">A logger factory for creating a logger to log messages.</param>
         /// <param name="hoverflyClient">Hoverfly client, by default the <see cref="HoverflyClient"/> is used to accessing the Hoverfly process REST API.</param>
         public Hoverfly(
-            HoverflyMode hoverflyMode,
+            HoverflyMode hoverflyMode = HoverflyMode.Simulate,
             HoverflyConfig config = null,
             ILoggerFactory loggerFactory = null,
             IHoverflyClient hoverflyClient = null)
@@ -86,7 +83,7 @@
 
             _logger?.Info("Destroying hoverfly process");
 
-            if (_hoverflyProcess == null)
+            if (_hoverflyProcess == null || _hoverflyProcess.HasExited)
                 return;
 
             _hoverflyProcess.Kill();
@@ -204,6 +201,24 @@
             return _hoverflyClient.GetMode();
         }
 
+        /// <summary>
+        /// Gets the hoverfly proxy port.
+        /// </summary>
+        /// <returns>Return the Proxy port used by the current hoverfly process.</returns>
+        public int GetProxyPort()
+        {
+            return _hoverflyConfig.ProxyPort;
+        }
+
+        /// <summary>
+        /// Gets the hoverfly admin port.
+        /// </summary>
+        /// <returns>Return the Admin port used by the current hoverfly process.</returns>
+        public int GetAdminPort()
+        {
+            return _hoverflyConfig.AdminPort;
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -273,8 +288,8 @@
 
         private void StartHoverflyProcess()
         {
-            VerifyPortNotInUse(_hoverflyConfig.ProxyPort);
-            VerifyPortNotInUse(_hoverflyConfig.AdminPort);
+            VerifyOrCreateRandomProxyPort();
+            VerifyOrCreateRandomAdminPort();
 
             var hoverfilePath = string.IsNullOrWhiteSpace(_hoverflyConfig.HoverflyBasePath) ?
                                HOVERFLY_EXE :
@@ -293,6 +308,28 @@
                 throw new FileNotFoundException($"Can't find the file '{HOVERFLY_EXE}' file in the '{hoverfileBasePath}' or in its sub-folders.");
 
             StartHoverflyProcess(hoverflyPath);
+        }
+
+        private void VerifyOrCreateRandomAdminPort()
+        {
+            if (!PortHelper.IsPortAlreadyInUse(_hoverflyConfig.AdminPort))
+                return;
+
+            if (!_hoverflyConfig.UseRandomAdminPort)
+                throw new PortAlreadyInUseException($"Port '{_hoverflyConfig.AdminPort}' is already in use by other application, please use another one");
+
+            _hoverflyConfig.SetAdminPort(PortHelper.GetRandomPort());
+        }
+
+        private void VerifyOrCreateRandomProxyPort()
+        {
+            if (!PortHelper.IsPortAlreadyInUse(_hoverflyConfig.ProxyPort))
+                return;
+
+            if (!_hoverflyConfig.UseRandomProxyPort)
+                throw new PortAlreadyInUseException($"Port '{_hoverflyConfig.ProxyPort}' is already in use by other application, please use another one");
+
+            _hoverflyConfig.SetProxyPort(PortHelper.GetRandomPort());
         }
 
         private string GetHoverfileBasePath()
@@ -363,15 +400,6 @@
         {
             var result = Directory.GetFiles(folder, HOVERFLY_EXE, SearchOption.AllDirectories);
             return result.Any() ? result.First() : null;
-        }
-
-        private static void VerifyPortNotInUse(int port)
-        {
-            var ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
-            var tcpConnInfoArray = ipGlobalProperties.GetActiveTcpListeners();
-
-            if (tcpConnInfoArray.Any(endpoint => endpoint.Port == port))
-                throw new ConfigurationErrorsException($"Port '{port}' is already in use by other application, please use another one");
         }
     }
 }

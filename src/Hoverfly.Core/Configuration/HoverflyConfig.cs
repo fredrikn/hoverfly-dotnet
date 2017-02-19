@@ -46,6 +46,10 @@
         /// <returns>Returns an instance of <see cref="HoverflyConfig"/>.</returns>
         public static HoverflyConfig Config() => new HoverflyConfig();
 
+        internal bool UseRandomProxyPort { get; private set; } = false;
+
+        internal bool UseRandomAdminPort { get; private set; } = false;
+
         /// <summary>
         /// Use this method if there is already a remote instance of hoverfly running. By using this method .Net will not start a hoverfly instance.
         /// </summary>
@@ -67,21 +71,46 @@
         /// Sets the proxy port used by the hoverfly.
         /// </summary>
         /// <param name="port">The proxy port.</param>
+        /// <param name="createRandomIfAlreadyInUse">Specify if Hoverfly should try to create a random port if the specfied one is already in use. Default is false.</param>
         /// <returns>Returns <see cref="HoverflyConfig"/> for further customizations.</returns>
-        public HoverflyConfig SetProxyPort(int port)
+        public HoverflyConfig SetProxyPort(int port, bool createRandomIfAlreadyInUse = false)
         {
             ProxyPort = port;
+            UseRandomProxyPort = createRandomIfAlreadyInUse;
             return this;
         }
+
+        /// <summary>
+        /// Specifies that Hoverfly should try to create a random Proxy port if the default or specified one is already in use.
+        /// </summary>
+        /// <returns>Returns <see cref="HoverflyConfig"/> for further customizations.</returns>
+        public HoverflyConfig AllowToCreateRandomProxyPort()
+        {
+            UseRandomProxyPort = true;
+            return this;
+        }
+
 
         /// <summary>
         /// Sets the admin used by the hoverfly.
         /// </summary>
         /// <param name="port">The admin port.</param>
+        /// <param name="createRandomIfAlreadyInUse">Specify if Hoverfly should try to create a random port if the specfied one is already in use. Default is false.</param>
         /// <returns>Returns <see cref="HoverflyConfig"/> for further customizations.</returns>
-        public HoverflyConfig SetAdminPort(int port)
+        public HoverflyConfig SetAdminPort(int port, bool createRandomIfAlreadyInUse = false)
         {
             AdminPort = port;
+            UseRandomAdminPort = createRandomIfAlreadyInUse;
+            return this;
+        }
+
+        /// <summary>
+        /// Specifies that Hoverfly should try to create a random Admin port if the default or specified one is already in use.
+        /// </summary>
+        /// <returns>Returns <see cref="HoverflyConfig"/> for further customizations.</returns>
+        public HoverflyConfig AllowToCreateRandomAdminPort()
+        {
+            UseRandomAdminPort = true;
             return this;
         }
 

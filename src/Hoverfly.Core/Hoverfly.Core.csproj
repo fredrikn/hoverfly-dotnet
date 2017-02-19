@@ -46,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\HoverflyConfig.cs" />
+    <Compile Include="Configuration\PortAlreadyInUseException.cs" />
+    <Compile Include="Configuration\PortHelper.cs" />
     <Compile Include="Dsl\DslSimulationSource.cs" />
     <Compile Include="Dsl\HoverflyDsl.cs" />
     <Compile Include="Dsl\IHttpBodyConverter.cs" />
@@ -54,6 +56,7 @@
     <Compile Include="Dsl\ResponseBuilder.cs" />
     <Compile Include="Dsl\ResponseCreators.cs" />
     <Compile Include="Dsl\StubServiceBuilder.cs" />
+    <Compile Include="HoverflyRunner.cs" />
     <Compile Include="Model\Simulation.cs" />
     <Compile Include="Hoverfly.cs" />
     <Compile Include="HoverflyMode.cs" />

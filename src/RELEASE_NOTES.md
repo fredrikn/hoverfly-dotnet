@@ -1,3 +1,7 @@
+### New in 0.1.1 (Released 2017/02/19)
+* Adding HoverflyRunner to make it faster to create a hoverfly instance.
+* Added the possibity to specify if random proxy and/or admin port should be created when a port is already in use by other process.
+
 ### New in 0.1.0 (Released 2017/02/18)
 * API's against Hoverfly
 * DSL to make it easier to create Simulations

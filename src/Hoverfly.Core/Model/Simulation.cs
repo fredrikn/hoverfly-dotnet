@@ -1,5 +1,7 @@
 ﻿namespace Hoverfly.Core.Model
 {
+    using System.Collections.Generic;
+
     using Newtonsoft.Json;
 
     public class Simulation
@@ -15,5 +17,15 @@
 
         [JsonProperty("meta")]
         public HoverflyMetaData HoverflyMetaData { get; private set; }
+
+        public static Simulation Empty()
+        {
+            return new Simulation(
+                new HoverflyData(
+                    new List<RequestResponsePair>(),
+                    new GlobalActions(
+                        new List<DelaySettings>())),
+                new HoverflyMetaData());
+        }
     }
 }
