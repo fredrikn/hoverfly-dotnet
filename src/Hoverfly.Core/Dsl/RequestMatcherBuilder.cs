@@ -16,8 +16,10 @@
         private readonly HttpMethod _httpMethod;
         private readonly string _path;
         private readonly StubServiceBuilder _invoker;
-        private readonly string _destination;
+        private readonly string _baseUrl;
         private readonly string _scheme;
+
+        private int? _dealy = null;
 
         private string _body;
         private readonly Dictionary<string, IList<string>> _headers = new Dictionary<string, IList<string>>();
@@ -27,13 +29,13 @@
             StubServiceBuilder invoker,
             HttpMethod httpMethod,
             string scheme,
-            string destination,
+            string baseUrl,
             string path)
         {
             _invoker = invoker;
             _httpMethod = httpMethod;
             _scheme = scheme;
-            _destination = destination;
+            _baseUrl = baseUrl;
             _path = path;
         }
 
@@ -108,7 +110,7 @@
         /// </summary>
         /// <param name="key">The query params key to match on.</param>
         /// <param name="values">The query params values to match on.</param>
-        /// <returns></returns>
+        /// <returns>Returns this <see cref="RequestMatcherBuilder"/> for further customizations.</returns>
         public RequestMatcherBuilder QueryParam(string key, params object[] values)
         {
             foreach (var value in values)
@@ -122,6 +124,29 @@
             return this;
         }
 
+
+        /// <summary>
+        /// Adds a dealy to the Request.
+        /// </summary>
+        /// <param name="milleseconds">The delay of the request in milliseconds.</param>
+        /// <returns>Returns this <see cref="RequestMatcherBuilder"/> for further customizations.</returns>
+        /// <remarks>NOTE: Only the Host, Http method and path will be added to the delay settings. Not the header or the body etc.</remarks>
+        public RequestMatcherBuilder WithDelay(int milleseconds)
+        {
+            _dealy = milleseconds;
+            var tmpPath = _path;
+            var tmpBaseUrl = _baseUrl;
+
+            if (tmpPath.StartsWith("/")) tmpPath = tmpPath.Remove(0, 1);
+            if (tmpBaseUrl.EndsWith("/")) tmpBaseUrl = tmpBaseUrl.Remove(tmpBaseUrl.Length-1, 1);
+
+            var urlPattern = $"{tmpBaseUrl}/{tmpPath}";
+
+            _invoker.AddDelay(urlPattern, _dealy.Value, _httpMethod);
+            return this;
+        }
+        
+        
         /// <summary>
         /// Sets the expected response.
         /// </summary>
@@ -134,11 +159,14 @@
 
         private Request Build()
         {
-            var query = string.Join("&", 
-                _queryParams.Select(item =>
-                     string.Join("&", item.Value.Select(value => CreateKeyValeuParam(item.Key, value)))));
+            var query = CrateQueryParams();
+            return new Request(_path, _httpMethod.ToString(), _baseUrl, _scheme, query, _body, _headers, TEMPLATE);
+        }
 
-            return new Request(_path, _httpMethod.ToString(), _destination, _scheme, query, _body, _headers, TEMPLATE);
+        private string CrateQueryParams()
+        {
+            return string.Join("&",
+                _queryParams.Select(item => string.Join("&", item.Value.Select(value => CreateKeyValeuParam(item.Key, value)))));
         }
 
         private static string CreateKeyValeuParam(string key, string value)

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Net.Http;
@@ -277,6 +278,7 @@
                                 Success("{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n", "application/json"))));
 
                 var result = GetContentFrom("http://echo.jsontest.com/key/value/three/four?name=test");
+
                 Assert.Equal("{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n", result);
             }
         }
@@ -308,6 +310,30 @@
                     Assert.Equal(hoverfly.GetProxyPort(), reuseHoverfly.GetProxyPort());
                     Assert.Equal(simulation.HoverflyData.RequestResponsePair.First().Response.Body, simulation2.HoverflyData.RequestResponsePair.First().Response.Body);
                 }
+            }
+        }
+
+        [Fact]
+        public void ShouldBeDelay_WhenAddingADelaryToRequestWithDsl()
+        {
+            var config = HoverflyConfig.Config().SetHoverflyBasePath(_hoverflyPath);
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, config))
+            {
+                hoverfly.Start();
+
+                hoverfly.ImportSimulation(
+                    DslSimulationSource.Dsl(
+                        Service("http://echo.jsontest.com")
+                            .Get("/key/value/three/four")
+                            .WithDelay(2000)
+                            .WillReturn(Success("Test", "application/json"))));
+
+                var stopWatch = Stopwatch.StartNew();
+                GetContentFrom("http://echo.jsontest.com/key/value/three/four");
+                stopWatch.Stop();
+
+                Assert.Equal(true, stopWatch.Elapsed.TotalMilliseconds >= 2000);
             }
         }
 

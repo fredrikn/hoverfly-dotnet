@@ -6,13 +6,14 @@
 
     public class DelaySettings
     {
-        public DelaySettings(string urlPattern, int delay)
+        public DelaySettings(string urlPattern, int delay, string httpMethod = null)
         {
             if (string.IsNullOrWhiteSpace(urlPattern))
                 throw new ArgumentNullException(nameof(urlPattern));
 
             UrlPattern = urlPattern;
             Delay = delay;
+            HttpMethod = httpMethod;
         }
 
         [JsonProperty("urlPattern")]
@@ -20,5 +21,8 @@
 
         [JsonProperty("delay")]
         public int Delay { get; set; }
+
+        [JsonProperty("httpMethod", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string HttpMethod { get; set; }
     }
 }

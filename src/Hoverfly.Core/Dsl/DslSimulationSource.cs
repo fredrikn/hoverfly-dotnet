@@ -26,9 +26,12 @@
 
         public Simulation GetSimulation()
         {
-            var pairs = _serviceBuilder.SelectMany(pair => pair.RequestResponsePairs).ToList();
+            var pairs = _serviceBuilder.SelectMany(service => service.RequestResponsePairs).ToList();
 
-            var hoverflyData = new HoverflyData(pairs, new GlobalActions(new List<DelaySettings>()));
+            var delaySettings = new List<DelaySettings>();
+            delaySettings.AddRange(_serviceBuilder.SelectMany(service => service.Delays));
+
+            var hoverflyData = new HoverflyData(pairs, new GlobalActions(delaySettings));
 
             return new Simulation(hoverflyData, new HoverflyMetaData());
         }
