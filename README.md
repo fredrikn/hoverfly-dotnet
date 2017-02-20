@@ -10,7 +10,7 @@ It enables you to get around common testing problems caused by external dependen
 
 Hoverfly .Net is a native language binding which gives you an expressive API for managing Hoverfly in .Net. It gives you a Hoverfly class which abstracts away the binary and API calls.
 
-** *NOTE: If you run the tests in parallel you can only at the moment have one Hoverfly process started. In those cases you need to start the process before all tests will be running, and stop when all tests are done. BUT you can only have one simulation loaded, or you can first use hoverfly.GetSimulation method to get the current Simulation, then modify the Simulation object and then use hoverfly.ImportSimulation to import the “new” Simulation.* **
+***NOTE: If you run the tests in parallel you can only at the moment have one Hoverfly process started. In those cases you need to start the process before all tests will be running, and stop when all tests are done. BUT you can only have one simulation loaded, or you can first use hoverfly.GetSimulation method to get the current Simulation, then modify the Simulation object and then use hoverfly.ImportSimulation to import the “new” Simulation.***
 
 ###Example of using simulation:
 
