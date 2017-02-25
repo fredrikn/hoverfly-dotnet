@@ -26,7 +26,7 @@
     {
         //TODO: The tests are now working against an external source, which can be down or be gone. Need to create a own Web server for the test.
 
-        private readonly string _hoverflyPath = Path.Combine(Environment.CurrentDirectory,"..\\..\\..\\packages\\SpectoLabs.Hoverfly.0.10.1\\tools\\");
+        private readonly string _hoverflyPath = Path.Combine(Environment.CurrentDirectory,"..\\..\\..\\packages\\SpectoLabs.Hoverfly.0.10.2\\tools\\");
 
         [Fact]
         public void ShouldReturnCorrectConfiguredProxyPort()

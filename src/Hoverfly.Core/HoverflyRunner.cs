@@ -4,6 +4,8 @@
 
     using Configuration;
 
+    using global::Hoverfly.Core.Dsl;
+
     using Model;
 
     using Resources;
@@ -206,6 +208,41 @@
 
             _simulationSource = simulationSource;
             ImportSimulationSource();
+        }
+
+        /// <summary>
+        /// Adds simulations.
+        /// </summary>
+        /// <param name="simulationSource">The simulation to add.</param>
+        /// <remarks>This method can be used when a simulation is already loaded, 
+        /// and in some tests need to add more simulation without replacing the whole simulation that is already loaded.
+        /// </remarks>
+        public void AddSimulation(ISimulationSource simulationSource)
+        {
+            if (simulationSource == null)
+                throw new ArgumentNullException(nameof(simulationSource));
+
+            var simulation = GetSimulation();
+
+            if (simulation == null)
+            {
+                Simulate(simulationSource);
+                return;
+            }
+
+            var simulationToAdd = simulationSource.GetSimulation();
+
+            foreach (var requestPair in simulationToAdd.HoverflyData.RequestResponsePair)
+            {
+                simulation.HoverflyData.RequestResponsePair.Add(requestPair);
+            }
+
+            foreach (var delays in simulationToAdd.HoverflyData.GlobalActions.Delays)
+            {
+                simulation.HoverflyData.GlobalActions.Delays.Add(delays);
+            }
+
+            _hoverfly.ImportSimulation(simulation);
         }
 
         /// <summary>

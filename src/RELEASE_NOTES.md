@@ -1,3 +1,7 @@
+### New in 0.1.3 (Released 2017/02/25)
+* Upgrade to support Hoverfly version 0.10.2
+* Added support of adding simulations to existing simulation with the HoverflyRunner
+
 ### New in 0.1.2 (Released 2017/02/19)
 * Added support for specifying Delays while creating services with the hoverfly Dsl.
 
