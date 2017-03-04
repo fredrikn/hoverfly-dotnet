@@ -3,6 +3,8 @@ A .Net Library for Hoverfly (http://hoverfly.io/)
 
 Hoverfly is maintained by SpectoLabs (https://specto.io/)
 
+Hoverfly DotNet on NuGet https://www.nuget.org/packages/Hoverfly-DotNet
+
 # What is Hoverfly DotNet?
 Hoverfly is a lightweight service virtualisation tool which allows you to stub / simulate HTTP(S) services. It is a proxy written in Go which responds to HTTP(S) requests with stored responses, pretending to be it’s real counterpart.
 
