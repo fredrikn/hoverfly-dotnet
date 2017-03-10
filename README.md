@@ -153,7 +153,7 @@ void MyTest()
     
     var result = myController.Get("10");
     
-    Assert.Eqaul(result.StatusCode, 200);
+    Assert.Equals(result.StatusCode, 200);
 }
 
 void TearDown()
