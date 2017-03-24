@@ -14,7 +14,7 @@ Hoverfly .Net is a native language binding which gives you an expressive API for
 
 ***NOTE: If you run the tests in parallel you can only at the moment have one Hoverfly process started. In those cases you need to start the process before all tests will be running, and stop when all tests are done. BUT you can only have one simulation loaded, or you can first use hoverfly.GetSimulation method to get the current Simulation, then modify the Simulation object and then use hoverfly.ImportSimulation to import the “new” Simulation.***
 
-###Example of using simulation:
+### Example of using simulation:
 
 ```cs
 var hoverfly = new Hoverfly(HoverflyMode.Simulate);
@@ -29,7 +29,7 @@ var result2 = //Use HttpClient to get content, e.g. "http://time.jsontest.com";
 hoverfly.Stop();
 ```
 
-###Example of using HoverflyRunner for simulation:
+### Example of using HoverflyRunner for simulation:
 
 ```cs
 using (var runner = HoverflyRunner.StartInSimulationMode())
@@ -37,7 +37,7 @@ using (var runner = HoverflyRunner.StartInSimulationMode())
 }
 ```
 
-###Capture and export simulations:
+### Capture and export simulations:
 
 ```cs
 var hoverfly = new Hoverfly(HoverflyMode.Capture);
@@ -51,7 +51,7 @@ hoverfly.ExportSimulation("simulation.json");
 hoverfly.Stop();
 ```
 
-###Example of using HoverflyRunner to capture automatically export simulations to a file:
+### Example of using HoverflyRunner to capture automatically export simulations to a file:
 
 ```cs
 using (var runner = HoverflyRunner.StartInCaptureMode("simulation.json"))
@@ -60,7 +60,7 @@ using (var runner = HoverflyRunner.StartInCaptureMode("simulation.json"))
 }
 ```
 
-###Import recorded simulations into hoverfly:
+### Import recorded simulations into hoverfly:
 
 ```cs
 var hoverfly = new Hoverfly(HoverflyMode.Simulate);
@@ -75,7 +75,7 @@ hoverfly.ImportSimulation(new FileSimulationSource("simulation.json"));
 hoverfly.Stop();
 ```
 
-###Example of using HoverflyRunner to import simulation at start:
+### Example of using HoverflyRunner to import simulation at start:
 
 ```cs
 using (var runner = HoverflyRunner.StartInSimulationMode("simulation.json"))
@@ -83,7 +83,7 @@ using (var runner = HoverflyRunner.StartInSimulationMode("simulation.json"))
 }
 ```
 
-###Specify your own simulation for a call to specific URL with Hoverfly Dsl:
+### Specify your own simulation for a call to specific URL with Hoverfly Dsl:
 
 ```cs
 using static Hoverfly.Core.Dsl.HoverflyDsl;
@@ -109,7 +109,7 @@ var result = <Http Get Content From "http://myservice.something.com/key/value/th
 hoverfly.Stop();
 ```
 
-###Specify your own simulation for a call to specific URL with Hoverfly Dsl and HoverflyRunner:
+### Specify your own simulation for a call to specific URL with Hoverfly Dsl and HoverflyRunner:
 
 ```cs
 using (var runner = HoverflyRunner.StartInSimulationMode())
@@ -124,7 +124,7 @@ using (var runner = HoverflyRunner.StartInSimulationMode())
 }
 ```
 
-###Example of using delays for a request (Can be used to simulate timeouts etc.):
+### Example of using delays for a request (Can be used to simulate timeouts etc.):
 
 ```cs
  hoverfly.ImportSimulation(
@@ -135,7 +135,7 @@ using (var runner = HoverflyRunner.StartInSimulationMode())
                             .WillReturn(Success("Test", "application/json"))));
 ```
 
-###Example of using hoverfly in a integration test:
+### Example of using hoverfly in a integration test:
 
 ```cs
 Hoverfly hoverfly;
