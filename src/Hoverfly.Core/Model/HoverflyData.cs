@@ -17,7 +17,7 @@ namespace Hoverfly.Core.Model
         [JsonProperty("pairs")]
         public IList<RequestResponsePair> RequestResponsePair { get; private set; }
 
-        [JsonProperty("globalActions")]
+        [JsonProperty("globalActions", NullValueHandling = NullValueHandling.Ignore)]
         public GlobalActions GlobalActions { get; private set; }
     }
 }

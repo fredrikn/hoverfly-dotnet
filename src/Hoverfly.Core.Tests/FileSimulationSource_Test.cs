@@ -21,10 +21,10 @@
             var request = simulation.HoverflyData.RequestResponsePair.First().Request;
             var response = simulation.HoverflyData.RequestResponsePair.First().Response;
 
-            Assert.Equal(request.Method, "GET");
-            Assert.Equal(request.Path, "/key/value/one/two");
-            Assert.Equal(request.Destination, "echo.jsontest.com");
-            Assert.Equal(request.Scheme, "http");
+            Assert.Equal(request.Method.ExactMatch, "GET");
+            Assert.Equal(request.Path.ExactMatch, "/key/value/one/two");
+            Assert.Equal(request.Destination.ExactMatch, "echo.jsontest.com");
+            Assert.Equal(request.Scheme.ExactMatch, "http");
 
             Assert.Equal(response.Status, 200);
             Assert.Equal(response.Body, "{\n   \"one\": \"two\",\n   \"key\": \"value\"\n}\n");
@@ -39,11 +39,11 @@
 
             var request = new Request
                               {
-                                  Scheme = "http",
-                                  Destination = "echo.jsontest.com",
-                                  Method = "GET",
-                                  Path = "/key/value/three/four",
-                                  Query = "name=test",
+                                  Scheme = new FieldMatcher("http"),
+                                  Destination = new FieldMatcher("echo.jsontest.com"),
+                                  Method = new FieldMatcher("GET"),
+                                  Path = new FieldMatcher("/key/value/three/four"),
+                                  Query = new FieldMatcher("name=test"),
                                   Headers = requestHeaders
                               };
 
@@ -84,11 +84,11 @@
             Assert.Equal(expectedGlobalActionDelay.Delay, simulation.HoverflyData.GlobalActions.Delays.First().Delay);
             Assert.Equal(expectedGlobalActionDelay.UrlPattern, simulation.HoverflyData.GlobalActions.Delays.First().UrlPattern);
 
-            Assert.Equal(expectedRequest.Method, request.Method);
-            Assert.Equal(expectedRequest.Path, request.Path);
-            Assert.Equal(expectedRequest.Query, request.Query);
-            Assert.Equal(expectedRequest.Destination, request.Destination);
-            Assert.Equal(expectedRequest.Scheme, request.Scheme);
+            Assert.Equal(expectedRequest.Method.ExactMatch, request.Method.ExactMatch);
+            Assert.Equal(expectedRequest.Path.ExactMatch, request.Path.ExactMatch);
+            Assert.Equal(expectedRequest.Query.ExactMatch, request.Query.ExactMatch);
+            Assert.Equal(expectedRequest.Destination.ExactMatch, request.Destination.ExactMatch);
+            Assert.Equal(expectedRequest.Scheme.ExactMatch, request.Scheme.ExactMatch);
             Assert.Equal(expectedRequest.Headers["Content-Type"][0], request.Headers["Content-Type"][0]);
 
             Assert.Equal(expectedresponse.Status, response.Status);

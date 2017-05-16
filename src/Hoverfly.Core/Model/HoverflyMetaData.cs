@@ -5,6 +5,6 @@
     public class HoverflyMetaData
     {
         [JsonProperty("schemaVersion")]
-        public string SchemaVersion { get; private set; } = "v1";
+        public string SchemaVersion { get; private set; } = "v2";
     }
 }

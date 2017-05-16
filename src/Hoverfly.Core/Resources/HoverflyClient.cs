@@ -17,7 +17,7 @@
     /// </summary>
     public class HoverflyClient : IHoverflyClient
     {
-        private const string HEALTH_CHECK_PATH = "/api/stats";
+        private const string HEALTH_CHECK_PATH = "/api/health";
         private const string SIMULATION_PATH = "/api/v2/simulation";
         private const string HOVERFLY_MODE_PATH = "/api/v2/hoverfly/mode";
 
@@ -67,7 +67,6 @@
                 var result = Encoding.UTF8.GetString(Task.Run(() => response.Content.ReadAsByteArrayAsync()).Result);
 
                 return JsonConvert.DeserializeObject<Simulation>(result);
-
             }
         }
 

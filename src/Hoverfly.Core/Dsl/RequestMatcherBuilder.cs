@@ -11,19 +11,18 @@
     public class RequestMatcherBuilder
     {
         private const string CONTENT_TYPE = "Content-Type";
-        private const string TEMPLATE = "template";
+
+        private readonly StubServiceBuilder _invoker;
 
         private readonly HttpMethod _httpMethod;
         private readonly string _path;
-        private readonly StubServiceBuilder _invoker;
         private readonly string _baseUrl;
         private readonly string _scheme;
-
-        private int? _dealy = null;
-
-        private string _body;
+        private string _body = string.Empty;
         private readonly Dictionary<string, IList<string>> _headers = new Dictionary<string, IList<string>>();
         private readonly Dictionary<string, IList<string>> _queryParams = new Dictionary<string, IList<string>>();
+
+        private int? _dealy = null;
 
         protected RequestMatcherBuilder(
             StubServiceBuilder invoker,
@@ -160,7 +159,7 @@
         private Request Build()
         {
             var query = CrateQueryParams();
-            return new Request(_path, _httpMethod.ToString(), _baseUrl, _scheme, query, _body, _headers, TEMPLATE);
+            return new Request(_path, _httpMethod.ToString(), _baseUrl, _scheme, query, _body, _headers);
         }
 
         private string CrateQueryParams()

@@ -17,8 +17,8 @@
 
             var pair = pairs.First();
 
-            Assert.Equal("www.my-test.com", pair.Request.Destination);
-            Assert.Equal("https", pair.Request.Scheme);
+            Assert.Equal("www.my-test.com", pair.Request.Destination.ExactMatch);
+            Assert.Equal("https", pair.Request.Scheme.ExactMatch);
         }
 
         [Fact]
@@ -30,8 +30,8 @@
 
             var pair = pairs.First();
 
-            Assert.Equal("www.my-test.com", pair.Request.Destination);
-            Assert.Equal("http", pair.Request.Scheme);
+            Assert.Equal("www.my-test.com", pair.Request.Destination.ExactMatch);
+            Assert.Equal("http", pair.Request.Scheme.ExactMatch);
         }
 
         [Fact]
@@ -44,8 +44,8 @@
 
             var pair = pairs.First();
 
-            Assert.Equal("www.my-test.com", pair.Request.Destination);
-            Assert.Equal("http", pair.Request.Scheme);
+            Assert.Equal("www.my-test.com", pair.Request.Destination.ExactMatch);
+            Assert.Equal("http", pair.Request.Scheme.ExactMatch);
         }
 
         [Fact]
@@ -57,7 +57,7 @@
 
             var pair = pairs.First();
 
-            Assert.Equal("GET", pair.Request.Method);
+            Assert.Equal("GET", pair.Request.Method.ExactMatch);
         }
 
         [Fact]
@@ -69,7 +69,7 @@
 
             var pair = pairs.First();
 
-            Assert.Equal("POST", pair.Request.Method);
+            Assert.Equal("POST", pair.Request.Method.ExactMatch);
         }
 
         [Fact]
@@ -81,7 +81,7 @@
 
             var pair = pairs.First();
 
-            Assert.Equal("PUT", pair.Request.Method);
+            Assert.Equal("PUT", pair.Request.Method.ExactMatch);
         }
 
         [Fact]
@@ -93,7 +93,7 @@
 
             var pair = pairs.First();
 
-            Assert.Equal("DELETE", pair.Request.Method);
+            Assert.Equal("DELETE", pair.Request.Method.ExactMatch);
         }
 
         [Fact]
@@ -125,11 +125,11 @@
 
             var pair = pairs.First();
 
-            Assert.Equal("www.my-test.com", pair.Request.Destination);
-            Assert.Equal("/test", pair.Request.Path);
-            Assert.Equal("Id=1&Id=2&Id=3", pair.Request.Query);
+            Assert.Equal("www.my-test.com", pair.Request.Destination.ExactMatch);
+            Assert.Equal("/test", pair.Request.Path.ExactMatch);
+            Assert.Equal("Id=1&Id=2&Id=3", pair.Request.Query.ExactMatch);
             Assert.Equal("text/plain", pair.Request.Headers["Content-Type"].First());
-            Assert.Equal("", pair.Request.Body);
+            Assert.Equal("", pair.Request.Body.ExactMatch);
         }
     }
 }

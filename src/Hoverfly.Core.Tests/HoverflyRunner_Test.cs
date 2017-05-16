@@ -5,7 +5,6 @@
     using System.Threading.Tasks;
 
     using global::Hoverfly.Core.Dsl;
-
     using Model;
     using Resources;
 
@@ -13,16 +12,16 @@
 
     using static Core.Dsl.HoverflyDsl;
     using static Core.Dsl.ResponseCreators;
-    using static Core.Dsl.DslSimulationSource;
+
 
     public class HoverflyRunner_Test
     {
         [Fact]
         public void ShouldStartInSimulationMode()
         {
-            using (var runner = HoverflyRunner.StartInSimulationMode())
+            using (var runner = HoverflyRunner.StartInSimulationMode(HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
             {
-                Assert.Equal(HoverflyMode.Simulate, runner.GetHoverflyMode());                
+                Assert.Equal(HoverflyMode.Simulate, runner.GetHoverflyMode());
             }
         }
 
@@ -30,10 +29,10 @@
         public void ShouldLoadSimulation_WhenStartInSimulationModeWithASimulationSource()
         {
             var fakeSource = new FileSimulationSource("simulation_test.json");
-            using (var runner = HoverflyRunner.StartInSimulationMode(fakeSource))
+            using (var runner = HoverflyRunner.StartInSimulationMode(fakeSource, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
             {
                 var simulation = runner.GetSimulation();
-                Assert.Equal("echo.jsontest.com", simulation.HoverflyData.RequestResponsePair.First().Request.Destination);
+                Assert.Equal("echo.jsontest.com", simulation.HoverflyData.RequestResponsePair.First().Request.Destination.ExactMatch);
                 Assert.Equal(HoverflyMode.Simulate, runner.GetHoverflyMode());
             }
         }
@@ -41,10 +40,10 @@
         [Fact]
         public void ShouldLoadSimulation_WhenStartInSimulationModeWithASimulationSourceAsFile()
         {
-            using (var runner = HoverflyRunner.StartInSimulationMode("simulation_test.json"))
+            using (var runner = HoverflyRunner.StartInSimulationMode("simulation_test.json", HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
             {
                 var simulation = runner.GetSimulation();
-                Assert.Equal("echo.jsontest.com", simulation.HoverflyData.RequestResponsePair.First().Request.Destination);
+                Assert.Equal("echo.jsontest.com", simulation.HoverflyData.RequestResponsePair.First().Request.Destination.ExactMatch);
                 Assert.Equal(HoverflyMode.Simulate, runner.GetHoverflyMode());
             }
         }
@@ -53,7 +52,7 @@
         public void ShouldStartInCaptureMode()
         {
             var fakeDestination = new FakeSimulationDestinationSource();
-            using (var runner = HoverflyRunner.StartInCaptureMode(fakeDestination))
+            using (var runner = HoverflyRunner.StartInCaptureMode(fakeDestination, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
             {
                 Assert.Equal(HoverflyMode.Capture, runner.GetHoverflyMode());
             }
@@ -63,9 +62,10 @@
         public void ShouldExportSimulationOnStop_WhenInCaptureMode()
         {
             var fakeDestination = new FakeSimulationDestinationSource();
-            var runner = HoverflyRunner.StartInCaptureMode(fakeDestination);
 
-            runner.Dispose();
+            using (var runner = HoverflyRunner.StartInCaptureMode(fakeDestination, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            {
+            }
 
             Assert.Equal(true, fakeDestination.WasSaved);
         }
@@ -73,7 +73,7 @@
         [Fact]
         public void ShouldReturnCorrectSimulation_WhenUsingSimulateWithDsl()
         {
-            using (var runner = HoverflyRunner.StartInSimulationMode())
+            using (var runner = HoverflyRunner.StartInSimulationMode(HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
             {
                 runner.Simulate(DslSimulationSource.Dsl(
                       Service("http://echo.jsontest.com")
@@ -91,7 +91,7 @@
         [Fact]
         public void ShouldReturnCorrectSimulations_WhenUsingAnExistingSimulateAndWhenAddingOne()
         {
-            using (var runner = HoverflyRunner.StartInSimulationMode("simulation_test.json"))
+            using (var runner = HoverflyRunner.StartInSimulationMode("simulation_test.json", HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
             {
                 runner.AddSimulation(DslSimulationSource.Dsl(
                       Service("http://echo.jsontest.com")
@@ -101,11 +101,11 @@
                               Success("Hello World!", "application/json"))));
 
                 var simulation = runner.GetSimulation();
-                Assert.Equal("echo.jsontest.com", simulation.HoverflyData.RequestResponsePair.First().Request.Destination);
-                Assert.Equal("/key/value/one/two", simulation.HoverflyData.RequestResponsePair.First().Request.Path);
+                Assert.Equal("echo.jsontest.com", simulation.HoverflyData.RequestResponsePair.First().Request.Destination.ExactMatch);
+                Assert.Equal("/key/value/one/two", simulation.HoverflyData.RequestResponsePair.First().Request.Path.ExactMatch);
 
-                Assert.Equal("echo.jsontest.com", simulation.HoverflyData.RequestResponsePair.Last().Request.Destination);
-                Assert.Equal("/key/value/six/seven", simulation.HoverflyData.RequestResponsePair.Last().Request.Path);
+                Assert.Equal("echo.jsontest.com", simulation.HoverflyData.RequestResponsePair.Last().Request.Destination.ExactMatch);
+                Assert.Equal("/key/value/six/seven", simulation.HoverflyData.RequestResponsePair.Last().Request.Path.ExactMatch);
             }
         }
 

@@ -8,6 +8,8 @@ namespace Hoverfly.Core.Model
     {
         public Request()
         {
+            Query = new FieldMatcher("");
+            Body = new FieldMatcher("");
         }
 
         public Request(
@@ -17,41 +19,36 @@ namespace Hoverfly.Core.Model
             string schema,
             string query,
             string body,
-            Dictionary<string, IList<string>> headers,
-            string requestType)
+            Dictionary<string, IList<string>> headers)
         {
-            Path = path;
-            Method = method;
-            Destination = destination;
-            Scheme = schema;
-            Query = query;
-            Body = body;
+            Path = new FieldMatcher(path);
+            Method = new FieldMatcher(method);
+            Destination = new FieldMatcher(destination);
+            Scheme = new FieldMatcher(schema);
+            Query = new FieldMatcher(query);
+            Body = new FieldMatcher(body);
             Headers = headers;
-            RequestType = requestType;
         }
 
-        [JsonProperty("requestType")]
-        public string RequestType { get; set; }
+        [JsonProperty("path", NullValueHandling = NullValueHandling.Ignore)]
+        public FieldMatcher Path { get; set; }
 
-        [JsonProperty("path")]
-        public string Path { get; set; }
+        [JsonProperty("method", NullValueHandling = NullValueHandling.Ignore)]
+        public FieldMatcher Method { get; set; }
 
-        [JsonProperty("method")]
-        public string Method { get; set; }
+        [JsonProperty("destination", NullValueHandling = NullValueHandling.Ignore)]
+        public FieldMatcher Destination { get; set; }
 
-        [JsonProperty("destination")]
-        public string Destination { get; set; }
+        [JsonProperty("scheme", NullValueHandling = NullValueHandling.Ignore)]
+        public FieldMatcher Scheme { get; set; }
 
-        [JsonProperty("scheme")]
-        public string Scheme { get; set; }
+        [JsonProperty("query", NullValueHandling = NullValueHandling.Ignore)]
+        public FieldMatcher Query { get; set; }
 
-        [JsonProperty("query")]
-        public string Query { get; set; }
+        [JsonProperty("body", NullValueHandling = NullValueHandling.Ignore)]
+        public FieldMatcher Body { get; set; }
 
-        [JsonProperty("body")]
-        public string Body { get; set; }
-
-        [JsonProperty("headers")]
+        [JsonProperty("headers", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, IList<string>> Headers { get; set; }
     }
 }
