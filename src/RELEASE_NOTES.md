@@ -1,3 +1,6 @@
+### New in 0.2.1 (Released 2017/08/17)
+* Fixed a bug where exact field match was always added to the body and query requests.
+
 ### New in 0.2.0 (Released 2017/05/16)
 * Upgrade to support Hoverfly version 0.11.3
 * Schema changes, targetting v2

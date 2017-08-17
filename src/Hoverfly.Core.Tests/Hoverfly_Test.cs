@@ -1,4 +1,6 @@
-﻿namespace Hoverfly.Core.Tests
+﻿using System.Text;
+
+namespace Hoverfly.Core.Tests
 {
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -224,6 +226,29 @@
         }
 
         [Fact]
+        public async Task ShouldReturnCorrectRestultFromAPutRequest_WhenImportingSimulationAndUsingSimulationMode()
+        {
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            {
+                hoverfly.Start();
+
+                hoverfly.ImportSimulation(new FileSimulationSource("simulation_test2.json"));
+
+                var httpClient = new HttpClient();
+
+                var content = new StringContent("{\"items\":[{\"sku\":\"6948017\",\"quantity\":2}]}", Encoding.UTF8, "application/json");
+
+                var result = await httpClient.PutAsync("https://echo.jsontest.com/cart", content);
+
+                var contentRestult = await result.Content.ReadAsStringAsync();
+
+                hoverfly.Stop();
+
+                Assert.Equal("{\n   \"one\": \"two\",\n   \"key\": \"value\"\n}\n", contentRestult);
+            }
+        }
+
+        [Fact]
         public void ShouldReturnCorrectRestultFromARequest_WhenImportingSimulationAndUsingWebServerMode()
         {
             using (var hoverfly = new Hoverfly(HoverflyMode.WebServer, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
@@ -348,7 +373,6 @@
                                             Method = new FieldMatcher("GET"),
                                             Path = new FieldMatcher("/key/value/three/four"),
                                             Query = new FieldMatcher("name=test"),
-                                            //Headers = new Dictionary<string, IList<string>> { { "Content-Type", new List<string> { "application/json" } } }
                                         },
                                         new Response
                                         {

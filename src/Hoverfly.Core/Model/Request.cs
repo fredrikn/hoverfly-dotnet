@@ -8,8 +8,6 @@ namespace Hoverfly.Core.Model
     {
         public Request()
         {
-            Query = new FieldMatcher("");
-            Body = new FieldMatcher("");
         }
 
         public Request(

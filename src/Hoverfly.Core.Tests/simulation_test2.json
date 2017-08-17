@@ -1,0 +1,48 @@
+{
+  "data": {
+    "pairs": [
+      {
+        "response": {
+          "status": 200,
+          "body": "{\n   \"one\": \"two\",\n   \"key\": \"value\"\n}\n",
+          "encodedBody": false,
+          "headers": {
+            "Access-Control-Allow-Origin": [ "*" ],
+            "Content-Length": [ "39" ],
+            "Content-Type": [ "application/json; charset=ISO-8859-1" ],
+            "Date": [ "Wed, 15 Feb 2017 19:28:28 GMT" ],
+            "Hoverfly": [ "Was-Here" ],
+            "Server": [ "Google Frontend" ],
+            "X-Cloud-Trace-Context": [ "a4305798c1bf25a5a6ac350791a6b08d" ]
+          }
+        },
+        "request": {
+            "path": {
+              "exactMatch": "/cart"
+            },
+            "method": {
+              "exactMatch": "PUT"
+            },
+          "destination": {
+            "exactMatch": "echo.jsontest.com"
+          },
+            "scheme": {
+              "exactMatch": "https"
+            },
+            "query": {
+              "exactMatch": ""
+            },
+            "body": {
+              "jsonMatch": "{\"items\":[{\"sku\":\"6948017\",\"quantity\":2}]}"
+            }
+        }
+      }
+    ],
+    "globalActions": { "delays": [] }
+  },
+  "meta": {
+    "schemaVersion": "v2",
+    "hoverflyVersion": "v0.11.3",
+    "timeExported": "2017-05-16T19:15:38+02:00"
+  }
+}

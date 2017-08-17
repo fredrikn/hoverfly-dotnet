@@ -69,6 +69,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="simulation_test2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="simulation_test.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
