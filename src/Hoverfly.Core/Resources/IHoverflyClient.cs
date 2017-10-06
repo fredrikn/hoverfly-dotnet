@@ -24,7 +24,13 @@ namespace Hoverfly.Core.Resources
         /// Changes the hoverfly mode.
         /// </summary>
         /// <param name="mode">The <see cref="HoverflyMode"/> to change to.</param>
-        void ChangeMode(HoverflyMode mode);
+        void SetMode(HoverflyMode mode);
+
+        /// <summary>
+        /// Changes the hoverfly mode.
+        /// </summary>
+        /// <param name="mode">The <see cref="ModeCommand"/> to change to.</param>
+        void SetMode(ModeCommand modeCommand);
 
         /// <summary>
         /// Gets the hoverfly mode.

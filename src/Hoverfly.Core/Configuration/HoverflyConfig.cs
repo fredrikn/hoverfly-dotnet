@@ -15,6 +15,11 @@
         public int AdminPort { get; private set; } = DEFAULT_ADMIN_PORT;
 
         /// <summary>
+        /// Gets the headers to capture.
+        /// </summary>
+        public string[] CaptureHeaders { get; private set; }
+
+        /// <summary>
         /// Gets the proxy port number used by hoverfly.
         /// </summary>
         public int ProxyPort { get; private set; } = DEFAULT_PROXY_PORT;
@@ -143,13 +148,34 @@
         /// Sets the base path to the hoverfly.exe.
         /// </summary>
         /// <param name="hoverflyBasePath">The base path to the hoverfly.exe.</param>
-        /// <returns></returns>
+        /// <returns>Returns <see cref="HoverflyConfig"/> for further customizations.</returns>
         public HoverflyConfig SetHoverflyBasePath(string hoverflyBasePath)
         {
             if (string.IsNullOrWhiteSpace(hoverflyBasePath))
                 throw new ArgumentNullException(nameof(hoverflyBasePath));
 
             HoverflyBasePath = hoverflyBasePath;
+            return this;
+        }
+
+        /// <summary>
+        /// Specifies which request headers to capture.
+        /// </summary>
+        /// <param name="headers">An array of header names</param>
+        /// <returns>Returns <see cref="HoverflyConfig"/> for further customizations.</returns>
+        public HoverflyConfig SetCaptureHeaders(params string[] headers)
+        {
+            CaptureHeaders = headers;
+            return this;
+        }
+
+        /// <summary>
+        /// Set to capture all request headers
+        /// </summary>
+        /// <returns>Returns <see cref="HoverflyConfig"/> for further customizations.</returns>
+        public HoverflyConfig CaptureAllHeaders()
+        {
+            CaptureHeaders = new[] { "*" };
             return this;
         }
     }

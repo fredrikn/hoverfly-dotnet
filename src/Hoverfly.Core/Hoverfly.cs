@@ -67,6 +67,16 @@
                 StartHoverflyProcess();
 
             WaitForHoverflyToBecomeHealthy();
+
+            if (_hoverflyMode == HoverflyMode.Capture)
+            {
+                _hoverflyClient.SetMode(new ModeCommand(_hoverflyMode, new ModeArguments(_hoverflyConfig.CaptureHeaders)));
+            }
+            else
+            {
+                _hoverflyClient.SetMode(_hoverflyMode);
+            }
+
             SetProxySystemProperties();
         }
 
@@ -189,7 +199,7 @@
         public void ChangeMode(HoverflyMode mode)
         {
             _logger?.Info($"Changing mode to '{mode}'");
-            _hoverflyClient.ChangeMode(mode);
+            _hoverflyClient.SetMode(mode);
         }
 
         /// <summary>
@@ -238,9 +248,6 @@
 
         private void SetProxySystemProperties()
         {
-            if (_hoverflyMode == HoverflyMode.WebServer)
-                return;
-
             //TODO: Temporary hack to accept all SSL
             ServicePointManager.ServerCertificateValidationCallback = (senderX, certificate, chain, sslPolicyErrors) => true;
 
@@ -374,20 +381,6 @@
         private string GetHoverflyArgumentsBasedOnMode()
         {
             var arguments = new StringBuilder();
-
-            switch (_hoverflyMode)
-            {
-                case HoverflyMode.Capture:
-                    arguments.Append(" -capture ");
-                    break;
-                case HoverflyMode.WebServer:
-                    arguments.Append(" -webserver ");
-                    break;
-                case HoverflyMode.Simulate:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
 
             arguments.Append(" -db memory ");
             arguments.Append($" -pp {_hoverflyConfig.ProxyPort} ");

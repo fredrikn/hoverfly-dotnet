@@ -262,7 +262,7 @@
         {
             try
             {
-                if (_simulationSource != null && (_hoverflyMode == HoverflyMode.Simulate || _hoverflyMode == HoverflyMode.WebServer))
+                if (_simulationSource != null && _hoverflyMode == HoverflyMode.Simulate)
                     _hoverfly.ImportSimulation(_simulationSource);
             }
             catch (Exception)

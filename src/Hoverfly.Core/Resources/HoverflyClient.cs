@@ -11,6 +11,7 @@
 
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using Newtonsoft.Json.Converters;
 
     /// <summary>
     /// The client that works against a hoverfly instance.
@@ -74,14 +75,25 @@
         /// Changes the hoverfly mode.
         /// </summary>
         /// <param name="mode">The <see cref="HoverflyMode"/> to change to.</param>
-        public void ChangeMode(HoverflyMode mode)
+        public void SetMode(HoverflyMode mode)
         {
-            var modeBody = new StringContent("{ \"mode\": \"" + mode.ToString().ToLower() + "\"}", Encoding.UTF8, "application/json");
+            SetMode(new ModeCommand(mode));
+        }
+
+        /// <summary>
+        /// Changes the hoverfly mode.
+        /// </summary>
+        /// <param name="mode">The <see cref="ModeCommand"/> to change to.</param>
+        public void SetMode(ModeCommand modeCommand)
+        {
+            var content = JsonConvert.SerializeObject(modeCommand, new StringEnumConverter(true));
+
+            var modeBody = new StringContent(content, Encoding.UTF8, "application/json");
 
             using (var response = Task.Run(() => _hoverflyHttpClient.PutAsync(HOVERFLY_MODE_PATH, modeBody)).Result)
             {
                 if (!response.IsSuccessStatusCode)
-                    throw new HttpRequestException($"Can't change the mode to {mode}, status code: '{response.StatusCode}', reason '{response.ReasonPhrase}'");
+                    throw new HttpRequestException($"Can't change the mode to {modeCommand.Mode}, status code: '{response.StatusCode}', reason '{response.ReasonPhrase}'");
             }
         }
 

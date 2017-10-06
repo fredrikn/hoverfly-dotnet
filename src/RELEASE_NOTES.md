@@ -1,3 +1,8 @@
+### New in 0.3.0 (Released 2017/10/06)
+* Upgrade to use Hoverfly version 0.14.2
+* Removed the use of Webserver mode.
+* Added support of capturing all or specific headers.
+
 ### New in 0.2.1 (Released 2017/08/17)
 * Fixed a bug where exact field match was always added to the body and query requests.
 

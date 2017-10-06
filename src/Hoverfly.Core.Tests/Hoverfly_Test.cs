@@ -20,6 +20,7 @@ namespace Hoverfly.Core.Tests
 
     using static Core.Dsl.HoverflyDsl;
     using static Core.Dsl.ResponseCreators;
+    using System;
 
     public class Hoverfly_Test
     {
@@ -66,18 +67,6 @@ namespace Hoverfly.Core.Tests
         }
 
         [Fact]
-        public void ShouldReturnSimulateMode_WhenHoverFlyIsSetToUseWebserverMode()
-        {
-            // NOTE: Hoverfly instance doesn't return WebServer as mode, instead when
-            // running as Webserver, the mode of the Hoverfly is Simulate.
-            using (var hoverfly = new Hoverfly(HoverflyMode.WebServer, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
-            {
-                hoverfly.Start();
-                Assert.Equal(HoverflyMode.Simulate, hoverfly.GetMode());
-            }
-        }
-
-        [Fact]
         public void ShouldExportSimulation()
         {
             using (var hoverfly = new Hoverfly(HoverflyMode.Capture, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
@@ -86,31 +75,11 @@ namespace Hoverfly.Core.Tests
 
                 GetContentFrom("http://echo.jsontest.com/key/value/one/two");
 
+                //http://localhost:8888/api/v2/simulation
                 var destinatonSource = new FileSimulationSource("simulation.json");
                 hoverfly.ExportSimulation(destinatonSource);
 
                 hoverfly.Stop();
-            }
-        }
-
-        [Fact]
-        public void ShouldReturnCorrectSimulationDataResult_WhenHoverflyInWebserverModeImportingSimulationData()
-        {
-            var result = GetContentFrom("http://echo.jsontest.com/key/value/one/two");
-
-            using (var hoverfly = new Hoverfly(HoverflyMode.WebServer, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
-            {
-
-                hoverfly.Start();
-
-                // Simulation_test.json holds a captured result from http://echo.jsontest.com/key/value/one/two
-                hoverfly.ImportSimulation(new FileSimulationSource("simulation_test.json"));
-
-                var result2 = GetContentFrom("http://localhost:8500/key/value/one/two");
-
-                hoverfly.Stop();
-
-                Assert.Equal(result, result2);
             }
         }
 
@@ -170,33 +139,6 @@ namespace Hoverfly.Core.Tests
         }
 
         [Fact]
-        public void ShouldReturnSimluationFromHoverfly_WhenFileSimulationSourceIsUsed()
-        {
-            using (var hoverfly = new Hoverfly(HoverflyMode.WebServer, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
-            {
-
-                hoverfly.Start();
-
-                hoverfly.ImportSimulation(new FileSimulationSource("simulation_test.json"));
-
-                var simulation = hoverfly.GetSimulation();
-
-                hoverfly.Stop();
-
-                var request = simulation.HoverflyData.RequestResponsePair.First().Request;
-                var response = simulation.HoverflyData.RequestResponsePair.First().Response;
-
-                Assert.Equal(request.Method.ExactMatch, "GET");
-                Assert.Equal(request.Path.ExactMatch, "/key/value/one/two");
-                Assert.Equal(request.Destination.ExactMatch, "echo.jsontest.com");
-                Assert.Equal(request.Scheme.ExactMatch, "http");
-
-                Assert.Equal(response.Status, 200);
-                Assert.Equal(response.Body, "{\n   \"one\": \"two\",\n   \"key\": \"value\"\n}\n");
-            }
-        }
-
-        [Fact]
         public void ShouldReturnCorrectSimluationFromHoverfly_WhenImportingSimulation()
         {
             using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
@@ -249,26 +191,6 @@ namespace Hoverfly.Core.Tests
         }
 
         [Fact]
-        public void ShouldReturnCorrectRestultFromARequest_WhenImportingSimulationAndUsingWebServerMode()
-        {
-            using (var hoverfly = new Hoverfly(HoverflyMode.WebServer, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
-            {
-
-                hoverfly.Start();
-
-                var simulation = CreateTestSimulation();
-
-                hoverfly.ImportSimulation(simulation);
-
-                var result = GetContentFrom("http://localhost:8500/key/value/three/four?name=test");
-
-                hoverfly.Stop();
-
-                Assert.Equal("{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n", result);
-            }
-        }
-
-        [Fact]
         public void ShouldReturnCorrectRestultFromARequest_WhenImportingSimulationAndUsingSimulationMode()
         {
             using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
@@ -305,6 +227,79 @@ namespace Hoverfly.Core.Tests
                 var result = GetContentFrom("http://echo.jsontest.com/key/value/three/four?name=test");
 
                 Assert.Equal("{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n", result);
+            }
+        }
+
+        [Fact]
+        public void ShouldGetHeaderInTheSimulation_WhenCapturingSpecificHeader()
+        {
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            config.SetCaptureHeaders("My-Header");
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Capture, config))
+            {
+                hoverfly.Start();
+
+                var header = new Dictionary<string, string> { { "My-Header", "Value" } };
+
+                var result = GetContentFrom(
+                    "http://echo.jsontest.com/key/value/three/four?name=test",
+                    header);
+
+                var simulation = hoverfly.GetSimulation();
+                var capturedHeader = simulation.HoverflyData.RequestResponsePair.First().Request.Headers;
+
+                Assert.NotNull(capturedHeader);
+                Assert.Equal("My-Header", capturedHeader.First().Key);
+            }
+        }
+
+        [Fact]
+        public void ShouldNotCaptureNoneCaptureHeader_WhenCapturingSpecificHeader()
+        {
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            config.SetCaptureHeaders("My-Header");
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Capture, config))
+            {
+                hoverfly.Start();
+
+                var header = new Dictionary<string, string> { { "MY-HEADER-NOT-CAPTURED", "Value" } };
+
+                var result = GetContentFrom(
+                    "http://echo.jsontest.com/key/value/three/four?name=test",
+                    header);
+
+                var simulation = hoverfly.GetSimulation();
+                var capturedHeader = simulation.HoverflyData.RequestResponsePair.First().Request.Headers;
+
+                Assert.Null(capturedHeader);
+            }
+        }
+
+        [Fact]
+        public void ShouldGetHeaderInTheSimulation_WhenCapturingAllHeaders()
+        {
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            config.CaptureAllHeaders();
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Capture, config))
+            {
+                hoverfly.Start();
+
+                var header = new Dictionary<string, string> { { "My-Header", "Value" } };
+
+                var result = GetContentFrom(
+                    "http://echo.jsontest.com/key/value/three/four?name=test",
+                    header);
+
+                var simulation = hoverfly.GetSimulation();
+                var capturedHeader = simulation.HoverflyData.RequestResponsePair.First().Request.Headers;
+
+                Assert.NotNull(capturedHeader);
             }
         }
 
@@ -385,9 +380,24 @@ namespace Hoverfly.Core.Tests
                         new HoverflyMetaData());
         }
 
-        private static string GetContentFrom(string url)
+        private static string GetContentFrom(string url, Dictionary<string,string> headers = null)
         {
-            var response = Task.Run(() => new HttpClient().GetAsync(url)).Result;
+            var client = new HttpClient();
+            var request = new HttpRequestMessage()
+            {
+                RequestUri = new Uri(url),
+                Method = HttpMethod.Get,
+            };
+
+            if (headers != null && headers.Any())
+            {
+                foreach (var header in headers)
+                {
+                    request.Headers.Add(header.Key, header.Value);
+                }
+            }
+
+            var response = Task.Run(() => client.SendAsync(request)).Result;
             return Task.Run(() => response.Content.ReadAsStringAsync()).Result;
         }
     }
