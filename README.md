@@ -46,7 +46,7 @@ hoverfly.Start();
 
 // use for example HttpClient to make a call to a URL, e.g. "http://echo.jsontest.com/key/value/one/two");
 
-hoverfly.ExportSimulation("simulation.json");
+hoverfly.ExportSimulation(new FileSimulationSource("simulation.json"));
 
 hoverfly.Stop();
 ```
@@ -143,7 +143,7 @@ Hoverfly hoverfly;
 void StartUp()
 {
     hoverfly = new Hoverfly(HoverflyMode.Simulate);
-    hoverfly.ImportSimulation("simulation.json");
+    hoverfly.ImportSimulation(new FileSimulationSource("simulation.json"));
     hoverfly.Start();
 }
 
