@@ -3,6 +3,7 @@
     public enum HoverflyMode
     {
         Simulate,
-        Capture
+        Capture,
+        Spy
     }
 }

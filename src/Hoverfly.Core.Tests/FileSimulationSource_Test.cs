@@ -21,13 +21,13 @@
             var request = simulation.HoverflyData.RequestResponsePair.First().Request;
             var response = simulation.HoverflyData.RequestResponsePair.First().Response;
 
-            Assert.Equal(request.Method.ExactMatch, "GET");
-            Assert.Equal(request.Path.ExactMatch, "/key/value/one/two");
-            Assert.Equal(request.Destination.ExactMatch, "echo.jsontest.com");
-            Assert.Equal(request.Scheme.ExactMatch, "http");
+            Assert.Equal("GET", request.Method.ExactMatch);
+            Assert.Equal("/key/value/one/two", request.Path.ExactMatch);
+            Assert.Equal("echo.jsontest.com", request.Destination.ExactMatch);
+            Assert.Equal("http", request.Scheme.ExactMatch);
 
-            Assert.Equal(response.Status, 200);
-            Assert.Equal(response.Body, "{\n   \"one\": \"two\",\n   \"key\": \"value\"\n}\n");
+            Assert.Equal(200, response.Status);
+            Assert.Equal("{\n   \"one\": \"two\",\n   \"key\": \"value\"\n}\n", response.Body);
         }
 
         [Fact]

@@ -1,5 +1,6 @@
 ﻿namespace Hoverfly.Core.Tests
 {
+    using System.IO;
     using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
@@ -67,7 +68,7 @@
             {
             }
 
-            Assert.Equal(true, fakeDestination.WasSaved);
+            Assert.True(fakeDestination.WasSaved);
         }
 
         [Fact]
@@ -86,7 +87,6 @@
                 Assert.Equal("Hello World!", result);
             }
         }
-
 
         [Fact]
         public void ShouldReturnCorrectSimulations_WhenUsingAnExistingSimulateAndWhenAddingOne()
@@ -108,6 +108,66 @@
                 Assert.Equal("/key/value/six/seven", simulation.HoverflyData.RequestResponsePair.Last().Request.Path.ExactMatch);
             }
         }
+
+        [Fact]
+        public void ShouldGetSimulationResponse_WhenUsingSpyModeAndSimulationDslIsAreadyAdded()
+        {
+            using (var runner = HoverflyRunner.StartInSpyMode(HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            {
+                runner.AddSimulation(
+                    DslSimulationSource.Dsl(
+                        Service("http://echo.jsontest.com")
+                            .Get("/key/value/three/four")
+                            .QueryParam("name", "test")
+                            .WillReturn(
+                                Success("MyData", "application/json"))));
+
+                var result = GetContentFrom("http://echo.jsontest.com/key/value/three/four?name=test");
+
+                Assert.Equal("MyData", result);
+            }
+        }
+
+        [Fact]
+        public void ShouldGetSimulationResponse_WhenUsingSpyModeAndSimulationDslIsAreadyAddedDuringStart()
+        {
+            var simulation = DslSimulationSource.Dsl(
+                        Service("http://echo.jsontest.com")
+                            .Get("/key/value/three/four")
+                            .QueryParam("name", "test")
+                            .WillReturn(
+                                Success("MyData", "application/json")));
+
+            using (var runner = HoverflyRunner.StartInSpyMode(simulation, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            {
+                var result = GetContentFrom("http://echo.jsontest.com/key/value/three/four?name=test");
+
+                Assert.Equal("MyData", result);
+            }
+        }
+
+        [Fact]
+        public void ShouldGetSimulationResponse_WhenUsingSpyModeAndSimulationFromFileIsAreadyAdded()
+        {
+            using (var runner = HoverflyRunner.StartInSpyMode("simulation_test.json", HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            {
+                var result = GetContentFrom("http://echo.jsontest.com/key/value/one/two");
+
+                Assert.Equal("{\n   \"one\": \"two\",\n   \"key\": \"value\"\n}\n", result);
+            }
+        }
+
+        [Fact]
+        public void ShouldGetExternalResponse_WhenUsingSpyModeAndSimulationIsNotAdded()
+        {
+            using (var runner = HoverflyRunner.StartInSpyMode(HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            {
+                var result = GetContentFrom("http://echo.jsontest.com/key/value/one/two?name=testSpy");
+
+                Assert.Equal("{\n   \"one\": \"two\",\n   \"key\": \"value\"\n}\n", result);
+            }
+        }
+
 
         private class FakeSimulationDestinationSource : ISimulationDestinationSource
         {

@@ -1,13 +1,8 @@
 ﻿namespace Hoverfly.Core
 {
     using System;
-
     using Configuration;
-
-    using global::Hoverfly.Core.Dsl;
-
     using Model;
-
     using Resources;
 
     /// <summary>
@@ -42,6 +37,14 @@
             _hoverflyMode = hoverflyMode;
             _hoverfly = new Hoverfly(_hoverflyMode, hoverflyConfig);
             _simulationSource = null;
+        }
+
+        private HoverflyRunner(HoverflyMode hoverflyMode, ISimulationSource simulationSource, HoverflyConfig hoverflyConfig)
+        {
+            _hoverflyMode = hoverflyMode;
+            _hoverfly = new Hoverfly(_hoverflyMode, hoverflyConfig);
+            _simulationSource = simulationSource;
+            _simulationDestinationSource = null;
         }
 
         /// <summary>
@@ -155,6 +158,71 @@
         }
 
         /// <summary>
+        /// Instantiates a runner which runs <see cref="Hoverfly"/> in Spy mode.
+        /// </summary>
+        /// <returns>Returns <see cref="HoverflyRunner"/>.</returns>
+        public static HoverflyRunner StartInSpyMode()
+        {
+            return StartInSpyMode(HoverflyConfig.Config());
+        }
+
+        /// <summary>
+        /// Instantiates a runner which runs <see cref="Hoverfly"/> in Spy mode.
+        /// </summary>
+        /// <param name="hoverflyConfig">The hoverfly configuration.</param>
+        /// <returns>Returns <see cref="HoverflyRunner"/>.</returns>
+        public static HoverflyRunner StartInSpyMode(HoverflyConfig hoverflyConfig)
+        {
+            var hoverflyRunner = new HoverflyRunner(HoverflyMode.Spy, hoverflyConfig);
+            hoverflyRunner.Start();
+            return hoverflyRunner;
+        }
+
+        /// <summary>
+        /// Instantiates a runner which runs <see cref="Hoverfly"/> in Spy mode.
+        /// </summary>
+        /// <param name="simulationFile">The simulation to import.</param>
+        /// <returns>Returns <see cref="HoverflyRunner"/>.</returns>
+        public static HoverflyRunner StartInSpyMode(string simulationFile)
+        {
+            return StartInSpyMode(simulationFile, HoverflyConfig.Config());
+        }
+
+        /// <summary>
+        /// Instantiates a runner which runs <see cref="Hoverfly"/> in Spy mode.
+        /// </summary>
+        /// <param name="simulationFile">The simulation to import.</param>
+        /// <param name="hoverflyConfig">The hoverfly configuration.</param>
+        /// <returns>Returns <see cref="HoverflyRunner"/>.</returns>
+        public static HoverflyRunner StartInSpyMode(string simulationFile, HoverflyConfig hoverflyConfig)
+        {
+            return StartInSpyMode(new FileSimulationSource(simulationFile), hoverflyConfig);
+        }
+
+        /// <summary>
+        /// Instantiates a runner which runs <see cref="Hoverfly"/> in Spy mode.
+        /// </summary>
+        /// <param name="simulationSource">The simulation to import.</param>
+        /// <returns>Returns <see cref="HoverflyRunner"/>.</returns>
+        public static HoverflyRunner StartInSpyMode(ISimulationSource simulationSource)
+        {
+            return StartInSpyMode(simulationSource, HoverflyConfig.Config());
+        }
+
+        /// <summary>
+        /// Instantiates a runner which runs <see cref="Hoverfly"/> in Spy mode.
+        /// </summary>
+        /// <param name="simulationSource">The simulation to import.</param>
+        /// <param name="hoverflyConfig">The hoverfly configuration.</param>
+        /// <returns>Returns <see cref="HoverflyRunner"/>.</returns>
+        public static HoverflyRunner StartInSpyMode(ISimulationSource simulationSource, HoverflyConfig hoverflyConfig)
+        {
+            var hoverflyRunner = new HoverflyRunner(HoverflyMode.Spy, simulationSource, hoverflyConfig);
+            hoverflyRunner.Start();
+            return hoverflyRunner;
+        }
+
+        /// <summary>
         /// Starts <see cref="Hoverfly"/>.
         /// </summary>
         protected void Start()
@@ -262,7 +330,7 @@
         {
             try
             {
-                if (_simulationSource != null && _hoverflyMode == HoverflyMode.Simulate)
+                if (_simulationSource != null && (_hoverflyMode == HoverflyMode.Simulate || _hoverflyMode == HoverflyMode.Spy))
                     _hoverfly.ImportSimulation(_simulationSource);
             }
             catch (Exception)

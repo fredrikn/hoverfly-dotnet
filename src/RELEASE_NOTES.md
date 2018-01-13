@@ -1,3 +1,7 @@
+### New in 0.4.0 (Released 2018/01/13)
+* Upgrade to use Hoverfly version 0.15.0
+* Added the Spy mode, Hoverfly simulates external APIs if a request match is found in simulation data, otherwise, the request will be passed through to the real API.
+
 ### New in 0.3.0 (Released 2017/10/06)
 * Upgrade to use Hoverfly version 0.14.2
 * Removed the use of Webserver mode.

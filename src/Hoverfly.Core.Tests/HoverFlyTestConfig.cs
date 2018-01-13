@@ -6,7 +6,7 @@ namespace Hoverfly.Core.Tests
 {
     public static class HoverFlyTestConfig
     {
-        public static string PackagePath => Path.Combine(Environment.CurrentDirectory, "..\\..\\..\\packages\\SpectoLabs.Hoverfly.0.14.2\\tools\\");
+        public static string PackagePath => Path.Combine(Environment.CurrentDirectory, "..\\..\\..\\packages\\SpectoLabs.Hoverfly.0.15.0\\tools\\");
 
         public static HoverflyConfig GetHoverFlyConfigWIthBasePath()
         {

@@ -66,6 +66,17 @@ namespace Hoverfly.Core.Tests
             }
         }
 
+
+        [Fact]
+        public void ShouldReturnSpyMode_WhenHoverFlyIsSetToUseSpyMode()
+        {
+            using (var hoverfly = new Hoverfly(HoverflyMode.Spy, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            {
+                hoverfly.Start();
+                Assert.Equal(HoverflyMode.Spy, hoverfly.GetMode());
+            }
+        }
+
         [Fact]
         public void ShouldExportSimulation()
         {
@@ -157,13 +168,13 @@ namespace Hoverfly.Core.Tests
                 var expectedRequest = expectedSimulation.HoverflyData.RequestResponsePair.First().Request;
                 var expectedResponse = expectedSimulation.HoverflyData.RequestResponsePair.First().Response;
 
-                Assert.Equal(expectedRequest.Method.ExactMatch, "GET");
-                Assert.Equal(expectedRequest.Path.ExactMatch, "/key/value/three/four");
-                Assert.Equal(expectedRequest.Destination.ExactMatch, "echo.jsontest.com");
-                Assert.Equal(expectedRequest.Scheme.ExactMatch, "http");
+                Assert.Equal("GET", expectedRequest.Method.ExactMatch);
+                Assert.Equal("/key/value/three/four", expectedRequest.Path.ExactMatch);
+                Assert.Equal("echo.jsontest.com", expectedRequest.Destination.ExactMatch);
+                Assert.Equal("http", expectedRequest.Scheme.ExactMatch);
 
-                Assert.Equal(expectedResponse.Status, 200);
-                Assert.Equal(expectedResponse.Body, "{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n");
+                Assert.Equal(200, expectedResponse.Status);
+                Assert.Equal("{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n", expectedResponse.Body);
             }
         }
 
@@ -227,6 +238,40 @@ namespace Hoverfly.Core.Tests
                 var result = GetContentFrom("http://echo.jsontest.com/key/value/three/four?name=test");
 
                 Assert.Equal("{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n", result);
+            }
+        }
+
+        [Fact]
+        public void ShouldGetSimulationResponse_WhenUsingSpyModeAndSimulationIsAreadyAdded()
+        {
+            using (var hoverfly = new Hoverfly(HoverflyMode.Spy, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            {
+                hoverfly.Start();
+
+                hoverfly.ImportSimulation(
+                    DslSimulationSource.Dsl(
+                        Service("http://echo.jsontest.com")
+                            .Get("/key/value/three/four")
+                            .QueryParam("name", "test")
+                            .WillReturn(
+                                Success("MyData", "application/json"))));
+
+                var result = GetContentFrom("http://echo.jsontest.com/key/value/three/four?name=test");
+
+                Assert.Equal("MyData", result);
+            }
+        }
+
+        [Fact]
+        public void ShouldGetExternalResponse_WhenUsingSpyModeAndSimulationIsNotAdded()
+        {
+            using (var hoverfly = new Hoverfly(HoverflyMode.Spy, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            {
+                hoverfly.Start();
+
+                var result = GetContentFrom("http://echo.jsontest.com/key/value/one/two?name=testSpy");
+
+                Assert.Equal("{\n   \"one\": \"two\",\n   \"key\": \"value\"\n}\n", result);
             }
         }
 
@@ -351,7 +396,7 @@ namespace Hoverfly.Core.Tests
                 GetContentFrom("http://echo.jsontest.com/key/value/three/four");
                 stopWatch.Stop();
 
-                Assert.Equal(true, stopWatch.Elapsed.TotalMilliseconds >= 2000);
+                Assert.True(stopWatch.Elapsed.TotalMilliseconds >= 2000);
             }
         }
 

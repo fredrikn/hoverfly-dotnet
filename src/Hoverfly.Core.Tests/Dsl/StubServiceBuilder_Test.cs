@@ -108,7 +108,7 @@
             Assert.Equal(200, pair.Response.Status);
             Assert.Equal("Hello World", pair.Response.Body);
             Assert.Equal("text/plain", pair.Response.Headers["Content-Type"].First());
-            Assert.Equal(false, pair.Response.EncodedBody);
+            Assert.False(pair.Response.EncodedBody);
         }
 
         [Fact]
