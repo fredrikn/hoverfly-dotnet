@@ -1,5 +1,6 @@
 ﻿namespace Hoverfly.Core.Configuration
 {
+    using global::Hoverfly.Core.Logging;
     using System;
 
     public class HoverflyConfig
@@ -44,6 +45,11 @@
         /// Gets the base path to the hoverfly.exe.
         /// </summary>
         public string HoverflyBasePath { get; private set; } = string.Empty;
+
+        /// <summary>
+        /// Gets the logger used to log information. Default is <see cref="OutputLog"/>"
+        /// </summary>
+        public ILog Logger { get; private set; } = new OutputLog();
 
         /// <summary>
         /// Create an new instance of <see cref="HoverflyConfig"/>.
@@ -166,6 +172,17 @@
         public HoverflyConfig SetCaptureHeaders(params string[] headers)
         {
             CaptureHeaders = headers;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the logger to be used.
+        /// </summary>
+        /// <param name="logger">The <see cref="ILog"/> to be used for logging.</param>
+        /// <returns>Returns <see cref="HoverflyConfig"/> for further customizations.</returns>
+        public HoverflyConfig SetLogger(ILog logger)
+        {
+            Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             return this;
         }
 

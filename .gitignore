@@ -9,3 +9,4 @@ src/out
 src/packages
 src/\.fake
 src/\.nuget/
+src/\_Ncrunch*

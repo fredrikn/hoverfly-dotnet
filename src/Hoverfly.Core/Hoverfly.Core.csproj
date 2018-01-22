@@ -71,8 +71,6 @@
     <Compile Include="Resources\ModeCommand.cs" />
     <Compile Include="Resources\IHoverflyClient.cs" />
     <Compile Include="Logging\ILog.cs" />
-    <Compile Include="Logging\ILoggerFactory.cs" />
-    <Compile Include="Logging\LoggerFactory.cs" />
     <Compile Include="Logging\OutputLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\ISimulationDestinationSource.cs" />

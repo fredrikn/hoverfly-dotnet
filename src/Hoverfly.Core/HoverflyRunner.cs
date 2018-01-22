@@ -290,28 +290,9 @@
             if (simulationSource == null)
                 throw new ArgumentNullException(nameof(simulationSource));
 
-            var simulation = GetSimulation();
-
-            if (simulation == null)
-            {
-                Simulate(simulationSource);
-                return;
-            }
-
-            var simulationToAdd = simulationSource.GetSimulation();
-
-            foreach (var requestPair in simulationToAdd.HoverflyData.RequestResponsePair)
-            {
-                simulation.HoverflyData.RequestResponsePair.Add(requestPair);
-            }
-
-            foreach (var delays in simulationToAdd.HoverflyData.GlobalActions.Delays)
-            {
-                simulation.HoverflyData.GlobalActions.Delays.Add(delays);
-            }
-
-            _hoverfly.ImportSimulation(simulation);
+            _hoverfly.AddSimulation(simulationSource);
         }
+
 
         /// <summary>
         /// Get the <see cref="Hoverfly"/> simulation data if any.

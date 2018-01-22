@@ -9,7 +9,6 @@
     using System.Threading;
 
     using Configuration;
-    using Logging;
     using Model;
     using Resources;
 
@@ -26,8 +25,6 @@
 
         private readonly IHoverflyClient _hoverflyClient;
 
-        private readonly ILog _logger;
-
         private readonly HoverflyMode _hoverflyMode;
 
         private Process _hoverflyProcess;
@@ -39,23 +36,19 @@
         /// </summary>
         /// <param name="hoverflyMode">The <see cref="HoverflyMode"/> Hoverfly should be started in. Default is Simulate if nothing is specified.</param>
         /// <param name="config">Hoverfly configurations. <see cref="HoverflyConfig"/></param>
-        /// <param name="loggerFactory">A logger factory for creating a logger to log messages.</param>
         /// <param name="hoverflyClient">Hoverfly client, by default the <see cref="HoverflyClient"/> is used to accessing the Hoverfly process REST API.</param>
         public Hoverfly(
             HoverflyMode hoverflyMode = HoverflyMode.Simulate,
             HoverflyConfig config = null,
-            ILoggerFactory loggerFactory = null,
             IHoverflyClient hoverflyClient = null)
         {
             _hoverflyMode = hoverflyMode;
 
             _hoverflyConfig = config ?? HoverflyConfig.Config();
 
-            _logger = loggerFactory?.Create(GetType().Name);
-
             _hoverflyClient = hoverflyClient ?? new HoverflyClient(
                                                          new Uri($"{_hoverflyConfig.RemoteHost}:{_hoverflyConfig.AdminPort}"),
-                                                         _logger);
+                                                         _hoverflyConfig.Logger);
         }
 
         /// <summary>
@@ -91,7 +84,7 @@
         {
             WebRequest.DefaultWebProxy = null;
 
-            _logger?.Info("Destroying hoverfly process");
+            LogInfo("Destroying hoverfly process");
 
             if (_hoverflyProcess == null || _hoverflyProcess.HasExited)
                 return;
@@ -101,6 +94,8 @@
 
             if (IsHoverflyProcessStillRunning())
                 throw new TimeoutException("Timeout while waiting for hoverfly process to be closed.");
+
+            LogInfo("Hoverfly porcess is desroyed");
         }
 
         /// <summary>
@@ -136,7 +131,7 @@
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
-            _logger?.Info("Importing simulation data to Hoverfly.");
+            LogInfo("Importing simulation data to Hoverfly.");
 
             var simulation = source.GetSimulation();
 
@@ -153,9 +148,57 @@
             if (simulation == null)
                 throw new ArgumentNullException(nameof(simulation));
 
-            _logger?.Info("Importing simulation data to Hoverfly.");
+            LogInfo("Importing simulation data to Hoverfly.");
 
             _hoverflyClient.ImportSimulation(simulation);
+        }
+
+        /// <summary>
+        /// Adds simulations.
+        /// </summary>
+        /// <param name="simulationSource">The simulation to add.</param>
+        /// <remarks>This method can be used when a simulation is already loaded, 
+        /// and in some tests need to add more simulation without replacing the whole simulation that is already loaded.
+        /// </remarks>
+        public void AddSimulation(ISimulationSource simulationSource)
+        {
+            if (simulationSource == null)
+                throw new ArgumentNullException(nameof(simulationSource));
+
+            AddSimulation(simulationSource.GetSimulation());
+        }
+
+        /// <summary>
+        /// Adds simulations.
+        /// </summary>
+        /// <param name="simulationToAdd">The simulation to add.</param>
+        /// <remarks>This method can be used when a simulation is already loaded, 
+        /// and in some tests need to add more simulation without replacing the whole simulation that is already loaded.
+        /// </remarks>
+        public void AddSimulation(Simulation simulationToAdd)
+        {
+            if (simulationToAdd == null)
+                throw new ArgumentNullException(nameof(simulationToAdd));
+
+            var simulation = GetSimulation();
+
+            if (simulation == null)
+            {
+                ImportSimulation(simulationToAdd);
+                return;
+            }
+
+            foreach (var requestPair in simulationToAdd.HoverflyData.RequestResponsePair)
+            {
+                simulation.HoverflyData.RequestResponsePair.Add(requestPair);
+            }
+
+            foreach (var delays in simulationToAdd.HoverflyData.GlobalActions.Delays)
+            {
+                simulation.HoverflyData.GlobalActions.Delays.Add(delays);
+            }
+
+            ImportSimulation(simulation);
         }
 
         /// <summary>
@@ -167,7 +210,7 @@
             if (destinationSource == null)
                 throw new ArgumentNullException(nameof(destinationSource));
 
-            _logger?.Info("Exporting simulation data from Hoverfly.");
+            LogInfo("Exporting simulation data from Hoverfly.");
 
             try
             {
@@ -187,7 +230,7 @@
         /// <remarks>Hoverfly simulation data.</remarks>
         public Simulation GetSimulation()
         {
-            _logger?.Info("Get simulation data from Hoverfly.");
+            LogInfo("Get simulation data from Hoverfly.");
 
             return _hoverflyClient.GetSimulation();
         }
@@ -198,7 +241,7 @@
         /// <param name="mode">The <see cref="HoverflyMode"/> to change to.</param>
         public void ChangeMode(HoverflyMode mode)
         {
-            _logger?.Info($"Changing mode to '{mode}'");
+            LogInfo($"Changing mode to '{mode}'");
             _hoverflyClient.SetMode(mode);
         }
 
@@ -302,7 +345,7 @@
                                HOVERFLY_EXE :
                                Path.Combine(_hoverflyConfig.HoverflyBasePath, HOVERFLY_EXE);
 
-            _logger?.Info("Start hoverfly.");
+            LogInfo("Start hoverfly.");
 
             if (TryStartHoverflyProcess(hoverfilePath))
                 return;
@@ -393,6 +436,11 @@
         {
             var result = Directory.GetFiles(folder, HOVERFLY_EXE, SearchOption.AllDirectories);
             return result.Any() ? result.First() : null;
+        }
+
+        private void LogInfo(string message)
+        {
+            _hoverflyConfig.Logger?.Info(message);
         }
     }
 }

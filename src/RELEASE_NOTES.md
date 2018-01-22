@@ -1,3 +1,8 @@
+### New in 0.4.1 (Released 2018/01/22)
+* Removed the log factory
+* Added support to add a logger to the Hoverfly's config.
+* Added support of adding simulation for Hoverfly and not only for the HiverflyRunner.
+
 ### New in 0.4.0 (Released 2018/01/13)
 * Upgrade to use Hoverfly version 0.15.0
 * Added the Spy mode, Hoverfly simulates external APIs if a request match is found in simulation data, otherwise, the request will be passed through to the real API.

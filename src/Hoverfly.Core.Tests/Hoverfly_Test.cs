@@ -242,6 +242,34 @@ namespace Hoverfly.Core.Tests
         }
 
         [Fact]
+        public void ShouldReturnCorrectSimulations_WhenUsingAnExistingSimulateAndWhenAddingOne()
+        {
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            {
+                hoverfly.Start();
+
+                hoverfly.ImportSimulation(new FileSimulationSource("simulation_test.json"));
+
+                hoverfly.AddSimulation(DslSimulationSource.Dsl(
+                      Service("http://echo.jsontest.com")
+                          .Get("/key/value/six/seven")
+                          .QueryParam("name", "test")
+                          .WillReturn(
+                              Success("Hello World!", "application/json"))));
+
+                var simulation = hoverfly.GetSimulation();
+
+                hoverfly.Stop();
+
+                Assert.Equal("echo.jsontest.com", simulation.HoverflyData.RequestResponsePair.First().Request.Destination.ExactMatch);
+                Assert.Equal("/key/value/one/two", simulation.HoverflyData.RequestResponsePair.First().Request.Path.ExactMatch);
+
+                Assert.Equal("echo.jsontest.com", simulation.HoverflyData.RequestResponsePair.Last().Request.Destination.ExactMatch);
+                Assert.Equal("/key/value/six/seven", simulation.HoverflyData.RequestResponsePair.Last().Request.Path.ExactMatch);
+            }
+        }
+
+        [Fact]
         public void ShouldGetSimulationResponse_WhenUsingSpyModeAndSimulationIsAreadyAdded()
         {
             using (var hoverfly = new Hoverfly(HoverflyMode.Spy, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
