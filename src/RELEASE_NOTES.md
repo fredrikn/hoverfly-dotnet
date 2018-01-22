@@ -1,7 +1,7 @@
 ### New in 0.4.1 (Released 2018/01/22)
 * Removed the log factory
 * Added support to add a logger to the Hoverfly's config.
-* Added support of adding simulation for Hoverfly and not only for the HiverflyRunner.
+* Added support of adding simulation for Hoverfly and not only for the HoverflyRunner.
 
 ### New in 0.4.0 (Released 2018/01/13)
 * Upgrade to use Hoverfly version 0.15.0
