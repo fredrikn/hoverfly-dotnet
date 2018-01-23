@@ -84,7 +84,7 @@
         {
             WebRequest.DefaultWebProxy = null;
 
-            LogInfo("Destroying hoverfly process");
+            LogInfo("Destroying Hoverfly process.");
 
             if (_hoverflyProcess == null || _hoverflyProcess.HasExited)
                 return;
@@ -93,9 +93,9 @@
             _hoverflyProcess.WaitForExit(KILL_PROCESS_TIMEOUT);
 
             if (IsHoverflyProcessStillRunning())
-                throw new TimeoutException("Timeout while waiting for hoverfly process to be closed.");
+                throw new TimeoutException("Timeout while waiting for Hoverfly process to be closed.");
 
-            LogInfo("Hoverfly porcess is desroyed");
+            LogInfo("Hoverfly process is destroyed.");
         }
 
         /// <summary>
@@ -119,7 +119,7 @@
             }
 
             if (Process.GetProcessesByName("hoverfly").Any())
-                throw new ApplicationException("can't kill all existing running hoverfly processes.");
+                throw new ApplicationException("can't kill all existing running Hoverfly processes.");
         }
 
         /// <summary>
