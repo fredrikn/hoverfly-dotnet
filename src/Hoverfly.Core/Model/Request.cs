@@ -16,7 +16,7 @@ namespace Hoverfly.Core.Model
             string destination,
             string schema,
             string query,
-            string body,
+            FieldMatcher body,
             Dictionary<string, IList<string>> headers)
         {
             Path = new FieldMatcher(path);
@@ -24,7 +24,7 @@ namespace Hoverfly.Core.Model
             Destination = new FieldMatcher(destination);
             Scheme = new FieldMatcher(schema);
             Query = new FieldMatcher(query);
-            Body = new FieldMatcher(body);
+            Body = body;
             Headers = headers;
         }
 

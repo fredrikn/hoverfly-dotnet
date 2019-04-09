@@ -18,7 +18,7 @@
         private readonly string _path;
         private readonly string _baseUrl;
         private readonly string _scheme;
-        private string _body = string.Empty;
+        private FieldMatcher _body = new FieldMatcher();
         private readonly Dictionary<string, IList<string>> _headers = new Dictionary<string, IList<string>>();
         private readonly Dictionary<string, IList<string>> _queryParams = new Dictionary<string, IList<string>>();
 
@@ -70,7 +70,7 @@
         /// <returns>Returns this <see cref="RequestMatcherBuilder"/> for further customizations.</returns>
         public RequestMatcherBuilder Body(string body)
         {
-            _body = body;
+            _body = new FieldMatcher(body);
             return this;
         }
 
@@ -81,8 +81,14 @@
         /// <returns>Returns this <see cref="RequestMatcherBuilder"/> for futher customizations.</returns>
         public RequestMatcherBuilder Body(IHttpBodyConverter httpBodyConverter)
         {
-            _body = httpBodyConverter.Body;
+            _body = new FieldMatcher(httpBodyConverter.Body);
             Header(CONTENT_TYPE, httpBodyConverter.ContentType);
+            return this;
+        }
+
+        public RequestMatcherBuilder Body(FieldMatcher bodyMatcher)
+        {
+            _body = bodyMatcher;
             return this;
         }
 
@@ -144,8 +150,8 @@
             _invoker.AddDelay(urlPattern, _dealy.Value, _httpMethod);
             return this;
         }
-        
-        
+
+
         /// <summary>
         /// Sets the expected response.
         /// </summary>

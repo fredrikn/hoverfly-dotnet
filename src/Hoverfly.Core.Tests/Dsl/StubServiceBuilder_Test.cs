@@ -1,4 +1,6 @@
-﻿namespace Hoverfly.Core.Tests.Dsl
+﻿using Hoverfly.Core.Model;
+
+namespace Hoverfly.Core.Tests.Dsl
 {
     using System.Linq;
 
@@ -70,6 +72,19 @@
             var pair = pairs.First();
 
             Assert.Equal("POST", pair.Request.Method.ExactMatch);
+        }
+
+        [Fact]
+        public void ShouldCreatePostRequestWithBody()
+        {
+            var pairs = HoverflyDsl.Service("www.my-test.com").Post("/").Body(new FieldMatcher{GlobMatch = "*"}).WillReturn(ResponseBuilder.Response()).RequestResponsePairs;
+
+            Assert.Equal(1, pairs.Count);
+
+            var pair = pairs.First();
+
+            Assert.Equal("POST", pair.Request.Method.ExactMatch);
+            Assert.Equal("*", pair.Request.Body.GlobMatch);
         }
 
         [Fact]
