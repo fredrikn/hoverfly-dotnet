@@ -86,6 +86,11 @@
             return this;
         }
 
+        /// <summary>
+        /// Sets the request body
+        /// </summary>
+        /// <param name="bodyMatcher">The matcher that is used to match the body</param>
+        /// <returns>Returns this <see cref="RequestMatcherBuilder"/> for further customizations.</returns>
         public RequestMatcherBuilder Body(FieldMatcher bodyMatcher)
         {
             _body = bodyMatcher;
