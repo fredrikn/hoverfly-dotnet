@@ -6,7 +6,7 @@
     <version>@build.number@</version>
     <authors>@authors@</authors>
     <owners>@authors@</owners>
-    <licenseUrl>https://github.com/fredrikn/hoverfly-dotnet/blob/master/LICENSE</licenseUrl>
+    <license type="expression">Apache-2.0</license>
     <projectUrl>https://github.com/fredrikn/hoverfly-dotnet</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/SpectoLabs/hoverpy/master/docs/fly.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
