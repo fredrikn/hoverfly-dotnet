@@ -14,29 +14,47 @@
             "Hoverfly": [ "Was-Here" ],
             "Server": [ "Google Frontend" ],
             "X-Cloud-Trace-Context": [ "a4305798c1bf25a5a6ac350791a6b08d" ]
-          }
-        },
-        "request": {
-          "path": {
-            "exactMatch": "/key/value/one/two"
           },
-          "method": {
-            "exactMatch": "GET"
+          "removesState": [],
+          "templated": false,
+          "transitionsState": {}
           },
-          "destination": {
-            "exactMatch": "echo.jsontest.com"
-          },
-          "scheme": {
-            "exactMatch": "http"
+          "request": {
+            "path": [
+              {
+                "matcher": "exact",
+                "value": "/key/value/one/two"
+              }
+            ],
+            "method": [
+              {
+                "matcher": "exact",
+                "value": "GET"
+              }
+            ],
+            "destination": [
+              {
+                "matcher": "exact",
+                "value": "echo.jsontest.com"
+              }
+            ],
+            "scheme": [
+              {
+                "matcher": "exact",
+                "value": "http"
+              }
+            ]
           }
         }
-      }
     ],
-    "globalActions": { "delays": [] }
+    "globalActions": {
+      "delays": [],
+      "delaysLogNormal": []
+    }
   },
   "meta": {
-    "schemaVersion": "v2",
-    "hoverflyVersion": "v0.11.3",
-    "timeExported": "2017-05-16T19:15:38+02:00"
+    "schemaVersion": "v5",
+    "hoverflyVersion": "v1.0.0",
+    "timeExported": "2019-06-26T19:15:38+02:00"
   }
 }

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -30,12 +30,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,16 +48,21 @@
     <Compile Include="Configuration\HoverflyConfig.cs" />
     <Compile Include="Configuration\PortAlreadyInUseException.cs" />
     <Compile Include="Configuration\PortHelper.cs" />
+    <Compile Include="Dsl\AbstractDelaySettingsBuilder.cs" />
     <Compile Include="Dsl\DslSimulationSource.cs" />
     <Compile Include="Dsl\HoverflyDsl.cs" />
+    <Compile Include="Dsl\HoverflyMatchers.cs" />
     <Compile Include="Dsl\IHttpBodyConverter.cs" />
     <Compile Include="Dsl\JsonHttpBodyConverter.cs" />
     <Compile Include="Dsl\RequestMatcherBuilder.cs" />
     <Compile Include="Dsl\ResponseBuilder.cs" />
     <Compile Include="Dsl\ResponseCreators.cs" />
+    <Compile Include="Dsl\ResponseDelaySettingsBuilder.cs" />
     <Compile Include="Dsl\StubServiceBuilder.cs" />
+    <Compile Include="Dsl\StubServiceDelaySettingsBuilder.cs" />
     <Compile Include="HoverflyRunner.cs" />
-    <Compile Include="Model\FieldMatcher.cs" />
+    <Compile Include="Model\RequestFieldMatcher.cs" />
+    <Compile Include="Model\Matchers.cs" />
     <Compile Include="Model\Simulation.cs" />
     <Compile Include="Hoverfly.cs" />
     <Compile Include="HoverflyMode.cs" />
@@ -82,6 +88,26 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="HoverflyExe\386\hoverfly.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HoverflyExe\386\LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HoverflyExe\386\VERSION.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HoverflyExe\amd64\hoverfly.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HoverflyExe\amd64\LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HoverflyExe\amd64\VERSION.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

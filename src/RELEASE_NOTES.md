@@ -1,3 +1,8 @@
+### New in 1.0.0 (Released 2019/06/28)
+* Updated to fit Hoverfly v 1.0.1
+* Major Schema changes and changes to the DSL of creating Simulations.
+* Note: This release will break earlier versions.
+
 ### New in 0.4.1 (Released 2018/01/22)
 * Removed the log factory
 * Added support to add a logger to the Hoverfly's config.

@@ -11,8 +11,8 @@ IF (-NOT (Test-Path ".nuget\nuget.exe"))
 
 & ".\.nuget\nuget.exe" update -self
 
-& ".\.nuget\NuGet.exe" install FAKE -OutputDirectory "packages" -ExcludeVersion -Version 4.50.0
+& ".\.nuget\NuGet.exe" install FAKE -OutputDirectory "packages" -ExcludeVersion -Version 4.64.17
 
-& ".\.nuget/NuGet.exe" install xunit.runner.console -OutputDirectory "packages\FAKE" -ExcludeVersion -Version 2.3.1
+& ".\.nuget/NuGet.exe" install xunit.runner.console -OutputDirectory "packages\FAKE" -ExcludeVersion -Version 2.4.1
 
 & ".\packages\FAKE\tools\FAKE.exe" build.fsx $target

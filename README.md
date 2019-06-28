@@ -124,15 +124,25 @@ using (var runner = HoverflyRunner.StartInSimulationMode())
 }
 ```
 
-### Example of using delays for a request (Can be used to simulate timeouts etc.):
+### Example of using delays for a response (Can be used to simulate timeouts etc.):
 
 ```cs
  hoverfly.ImportSimulation(
                     Dsl(
                         Service("http://mysuper.microservice.com")
-                            .Get("/key/value/three/four")
-                            .WithDelay(2000)
-                            .WillReturn(Success("Test", "application/json"))));
+                                .Get("/key/value/three/four")
+                                .WillReturn(Success("Test", "application/json").WithDelay(2000))));
+```
+
+
+### Example of using delays for a service and all GET:
+
+```cs
+ hoverfly.ImportSimulation(
+                    Dsl(
+                        Service("http://mysuper.microservice.com")
+                                .AndDelay(4000)
+                                .ForMethod(HttpMethod.GET);
 ```
 
 ### Example of using hoverfly in a integration test:

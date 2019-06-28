@@ -149,6 +149,12 @@ Target "CreatePackage" (fun _ ->
     ++ (workingDir @@ projectName + ".xml")
     |> CopyFiles tempLibDir
 
+     // Copy all files and sub dir to libdir = workingDir/content
+    let tempContentDir = tempBuildDir @@ "content/HoverflyExe"
+    ensureDirectory tempContentDir 
+    let hoverflyePath = workingDir @@ "HoverflyExe"
+    copyRecursive (directoryInfo hoverflyePath) (directoryInfo tempContentDir) true |> ignore
+
     pack tempBuildDir
 )
 

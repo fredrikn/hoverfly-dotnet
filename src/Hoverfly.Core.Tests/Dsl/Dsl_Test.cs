@@ -1,11 +1,12 @@
 ﻿namespace Hoverfly.Core.Tests.Dsl
 {
     using System.Linq;
-    using System.Net.Http;
 
     using Core.Dsl;
 
     using Xunit;
+    using static Core.Dsl.StubServiceBuilder;
+    using static Core.Dsl.ResponseCreators;
 
     public class Dsl_Test
     {
@@ -13,8 +14,8 @@
         public void ShouldReturnCorrectNumberOfRequest_WhenGettingSimulation()
         {
             var service1 = HoverflyDsl.Service("www.my-test1.com")
-                                .Get("/1").WillReturn(ResponseCreators.Success("Hello World 1", "text/plain"))
-                                .Get("/10").WillReturn(ResponseCreators.Success("Hello World 10", "ptext/plain"));
+                                .Get("/1").WillReturn(Success("Hello World 1", "text/plain"))
+                                .Get("/10").WillReturn(Success("Hello World 10", "ptext/plain"));
 
             var service2 = HoverflyDsl.Service("www.my-test2.com").Get("/2").WillReturn(ResponseCreators.Success("Hello World 2", "text/plain"));
             var service3 = HoverflyDsl.Service("www.my-test3.com").Get("/3").WillReturn(ResponseCreators.Success("Hello World 3", "text/plain"));
@@ -30,18 +31,24 @@
         public void ShouldReturnCorrectNumberDelays_WhenGettingSimulation()
         {
             var service1 = HoverflyDsl.Service("www.my-test1.com")
-                                .Get("/1").WithDelay(2000).WillReturn(ResponseCreators.Success("Hello World 1", "text/plain"))
-                                .Get("/10").WithDelay(1000).WillReturn(ResponseCreators.Success("Hello World 10", "ptext/plain"));
+                                        .Get("/1")
+                                        .WillReturn(Success("Hello World 1", "text/plain").WithDelay(500))
+                                        .Get("/10")
+                                        .WillReturn(Success("Hello World 10", "ptext/plain"));
 
-            var service2 = HoverflyDsl.Service("www.my-test1.com").AddDelay("www.my-test1.com", 4000, HttpMethod.Post);
+            var service2 = HoverflyDsl.Service("www.my-test1.com")
+                                        .AndDelay(4000)
+                                        .ForMethod(HttpMethod.GET);
 
-            var service3 = HoverflyDsl.Service("www.my-test1.com").Put("/test").WithDelay(100).WillReturn(ResponseCreators.Success("Hello World 3", "text/plain"));
+            var service3 = HoverflyDsl.Service("www.my-test1.com")
+                                        .Put("/test")
+                                        .WillReturn(Success("Hello World 3", "text/plain"));
 
             var dsl = new DslSimulationSource(service1, service2, service3);
 
             var simulation = dsl.GetSimulation();
 
-            Assert.Equal(4, simulation.HoverflyData.GlobalActions.Delays.Count);
+            Assert.Equal(2, simulation.HoverflyData.GlobalActions.Delays.Count);
         }
 
         [Fact]
@@ -50,8 +57,8 @@
             var service1 =
                 HoverflyDsl.Service("www.my-test1.com")
                     .Get("/a/b")
-                    .WithDelay(2000)
-                    .WillReturn(ResponseCreators.Success("Hello World 1", "text/plain"));
+                    .WillReturn(Success("Hello World 1", "text/plain")
+                                .WithDelay(2000));
 
             var dsl = new DslSimulationSource(service1);
 
@@ -66,9 +73,25 @@
         public void ShouldReturnCorrectDelaySettings_WhenUsingPut()
         {
             var service1 =
-                HoverflyDsl.Service("www.my-test1.com")
+                HoverflyDsl.Service("www.my-test1.com").AndDelay(2000).ForMethod(HttpMethod.PUT)
                     .Put("/")
-                    .WithDelay(2000)
+                    .WillReturn(ResponseCreators.Success("Hello World 1", "text/plain"));
+
+            var dsl = new DslSimulationSource(service1);
+
+            var simulation = dsl.GetSimulation();
+
+            Assert.Equal("www.my-test1.com", simulation.HoverflyData.GlobalActions.Delays.First().UrlPattern);
+            Assert.Equal(2000, simulation.HoverflyData.GlobalActions.Delays.First().Delay);
+            Assert.Equal("PUT", simulation.HoverflyData.GlobalActions.Delays.First().HttpMethod);
+        }
+
+        [Fact]
+        public void ShouldReturnCorrectDelaySettings_WhenUsingAnyMehtod()
+        {
+            var service1 =
+                HoverflyDsl.Service("www.my-test1.com/").AndDelay(2000).ForAll()
+                    .Post("/1")
                     .WillReturn(ResponseCreators.Success("Hello World 1", "text/plain"));
 
             var dsl = new DslSimulationSource(service1);
@@ -77,25 +100,7 @@
 
             Assert.Equal("www.my-test1.com/", simulation.HoverflyData.GlobalActions.Delays.First().UrlPattern);
             Assert.Equal(2000, simulation.HoverflyData.GlobalActions.Delays.First().Delay);
-            Assert.Equal("PUT", simulation.HoverflyData.GlobalActions.Delays.First().HttpMethod);
-        }
-
-        [Fact]
-        public void ShouldReturnCorrectDelaySettings_WhenUsingPost()
-        {
-            var service1 =
-                HoverflyDsl.Service("www.my-test1.com/")
-                    .Post("/1")
-                    .WithDelay(2000)
-                    .WillReturn(ResponseCreators.Success("Hello World 1", "text/plain"));
-
-            var dsl = new DslSimulationSource(service1);
-
-            var simulation = dsl.GetSimulation();
-
-            Assert.Equal("www.my-test1.com/1", simulation.HoverflyData.GlobalActions.Delays.First().UrlPattern);
-            Assert.Equal(2000, simulation.HoverflyData.GlobalActions.Delays.First().Delay);
-            Assert.Equal("POST", simulation.HoverflyData.GlobalActions.Delays.First().HttpMethod);
+            Assert.Null(simulation.HoverflyData.GlobalActions.Delays.First().HttpMethod);
         }
     }
 }

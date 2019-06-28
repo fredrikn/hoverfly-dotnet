@@ -12,6 +12,7 @@
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Newtonsoft.Json.Converters;
+    using Newtonsoft.Json.Serialization;
 
     /// <summary>
     /// The client that works against a hoverfly instance.
@@ -41,7 +42,9 @@
         /// <param name="simulation">The <see cref="Simulation"/> to import.</param>
         public void ImportSimulation(Simulation simulation)
         {
-            var body = new StringContent(JsonConvert.SerializeObject(simulation), Encoding.UTF8, "application/json");
+            var content = JsonConvert.SerializeObject(simulation);
+
+            var body = new StringContent(content, Encoding.UTF8, "application/json");
 
             using (var response = Task.Run(() => _hoverflyHttpClient.PutAsync(SIMULATION_PATH, body))
                                       .Result)
@@ -86,7 +89,7 @@
         /// <param name="mode">The <see cref="ModeCommand"/> to change to.</param>
         public void SetMode(ModeCommand modeCommand)
         {
-            var content = JsonConvert.SerializeObject(modeCommand, new StringEnumConverter(true));
+            var content = JsonConvert.SerializeObject(modeCommand, new StringEnumConverter(new CamelCaseNamingStrategy()));
 
             var modeBody = new StringContent(content, Encoding.UTF8, "application/json");
 

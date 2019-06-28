@@ -4,6 +4,9 @@
     {
         Simulate,
         Capture,
-        Spy
+        Spy,
+        Diff,
+        Modify,
+        Synthesize
     }
 }

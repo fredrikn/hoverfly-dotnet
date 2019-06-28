@@ -5,12 +5,8 @@
     /// <summary>
     /// Wrapper around a <see cref="ResponseBuilder"/> for building common types of responses.
     /// </summary>
-    public class ResponseCreators
+    public static class ResponseCreators
     {
-        private ResponseCreators()
-        {
-        }
-
         /// <summary>
         /// Builds a 201 response with a given location header value.
         /// </summary>

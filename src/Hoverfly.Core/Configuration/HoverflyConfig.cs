@@ -2,6 +2,7 @@
 {
     using global::Hoverfly.Core.Logging;
     using System;
+    using System.IO;
 
     public class HoverflyConfig
     {
@@ -44,7 +45,12 @@
         /// <summary>
         /// Gets the base path to the hoverfly.exe.
         /// </summary>
-        public string HoverflyBasePath { get; private set; } = string.Empty;
+        public string HoverflyBasePath { get; private set; } = Path.Combine(Environment.CurrentDirectory, "HoverflyExe");
+
+        /// <summary>
+        /// Gets the base path to the hoverfly.exe.
+        /// </summary>
+        public bool UseHoverfly64 { get; private set; } = true;
 
         /// <summary>
         /// Gets the logger used to log information. Default is <see cref="OutputLog"/>"

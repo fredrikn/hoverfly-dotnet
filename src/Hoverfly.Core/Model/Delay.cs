@@ -3,17 +3,20 @@
     using System;
 
     using Newtonsoft.Json;
+    using static global::Hoverfly.Core.Dsl.StubServiceBuilder;
 
     public class DelaySettings
     {
-        public DelaySettings(string urlPattern, int delay, string httpMethod = null)
+        public DelaySettings(string urlPattern, int delay, HttpMethod? httpMethod = null)
         {
             if (string.IsNullOrWhiteSpace(urlPattern))
                 throw new ArgumentNullException(nameof(urlPattern));
 
             UrlPattern = urlPattern;
             Delay = delay;
-            HttpMethod = httpMethod;
+
+            if (httpMethod.HasValue)
+                HttpMethod = httpMethod.ToString();
         }
 
         [JsonProperty("urlPattern")]

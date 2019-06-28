@@ -49,7 +49,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldReturnSimulateMode_WhenHoverFlyIsSetToUseSimulateMode()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
             {
                 hoverfly.Start();
                 Assert.Equal(HoverflyMode.Simulate, hoverfly.GetMode());
@@ -59,7 +59,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldReturnCaptureMode_WhenHoverFlyIsSetToUseCaptureMode()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Capture, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            using (var hoverfly = new Hoverfly(HoverflyMode.Capture))
             {
                 hoverfly.Start();
                 Assert.Equal(HoverflyMode.Capture, hoverfly.GetMode());
@@ -70,7 +70,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldReturnSpyMode_WhenHoverFlyIsSetToUseSpyMode()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Spy, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            using (var hoverfly = new Hoverfly(HoverflyMode.Spy))
             {
                 hoverfly.Start();
                 Assert.Equal(HoverflyMode.Spy, hoverfly.GetMode());
@@ -80,7 +80,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldExportSimulation()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Capture, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            using (var hoverfly = new Hoverfly(HoverflyMode.Capture))
             {
                 hoverfly.Start();
 
@@ -97,7 +97,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldReturnCorrectSimulationDataResult_WhenHoverflyInSimulationMode()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
             {
 
                 hoverfly.Start();
@@ -118,7 +118,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldReturnCorrectHoverflyMode()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
             {
 
                 hoverfly.Start();
@@ -134,7 +134,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldReturnCorrectMode_WhenHoverflyModeIsChanged()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
             {
 
                 hoverfly.Start();
@@ -152,9 +152,8 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldReturnCorrectSimluationFromHoverfly_WhenImportingSimulation()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
             {
-
                 hoverfly.Start();
 
                 var simulation = CreateTestSimulation();
@@ -168,10 +167,10 @@ namespace Hoverfly.Core.Tests
                 var expectedRequest = expectedSimulation.HoverflyData.RequestResponsePair.First().Request;
                 var expectedResponse = expectedSimulation.HoverflyData.RequestResponsePair.First().Response;
 
-                Assert.Equal("GET", expectedRequest.Method.ExactMatch);
-                Assert.Equal("/key/value/three/four", expectedRequest.Path.ExactMatch);
-                Assert.Equal("echo.jsontest.com", expectedRequest.Destination.ExactMatch);
-                Assert.Equal("http", expectedRequest.Scheme.ExactMatch);
+                Assert.Equal("GET", expectedRequest.Method[0].Value);
+                Assert.Equal("/key/value/three/four", expectedRequest.Path[0].Value);
+                Assert.Equal("echo.jsontest.com", expectedRequest.Destination[0].Value);
+                Assert.Equal("http", expectedRequest.Scheme[0].Value);
 
                 Assert.Equal(200, expectedResponse.Status);
                 Assert.Equal("{\n   \"three\": \"four\",\n   \"key\": \"value\"\n}\n", expectedResponse.Body);
@@ -181,7 +180,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public async Task ShouldReturnCorrectRestultFromAPutRequest_WhenImportingSimulationAndUsingSimulationMode()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
             {
                 hoverfly.Start();
 
@@ -204,7 +203,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldReturnCorrectRestultFromARequest_WhenImportingSimulationAndUsingSimulationMode()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
             {
                 hoverfly.Start();
 
@@ -223,7 +222,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldGetCorrectResponse_WhenUsingDsl()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
             {
                 hoverfly.Start();
 
@@ -244,7 +243,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldReturnCorrectSimulations_WhenUsingAnExistingSimulateAndWhenAddingOne()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
             {
                 hoverfly.Start();
 
@@ -261,18 +260,18 @@ namespace Hoverfly.Core.Tests
 
                 hoverfly.Stop();
 
-                Assert.Equal("echo.jsontest.com", simulation.HoverflyData.RequestResponsePair.First().Request.Destination.ExactMatch);
-                Assert.Equal("/key/value/one/two", simulation.HoverflyData.RequestResponsePair.First().Request.Path.ExactMatch);
+                Assert.Equal("echo.jsontest.com", simulation.HoverflyData.RequestResponsePair.First().Request.Destination[0].Value);
+                Assert.Equal("/key/value/one/two", simulation.HoverflyData.RequestResponsePair.First().Request.Path[0].Value);
 
-                Assert.Equal("echo.jsontest.com", simulation.HoverflyData.RequestResponsePair.Last().Request.Destination.ExactMatch);
-                Assert.Equal("/key/value/six/seven", simulation.HoverflyData.RequestResponsePair.Last().Request.Path.ExactMatch);
+                Assert.Equal("echo.jsontest.com", simulation.HoverflyData.RequestResponsePair.Last().Request.Destination[0].Value);
+                Assert.Equal("/key/value/six/seven", simulation.HoverflyData.RequestResponsePair.Last().Request.Path[0].Value);
             }
         }
 
         [Fact]
         public void ShouldGetSimulationResponse_WhenUsingSpyModeAndSimulationIsAreadyAdded()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Spy, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            using (var hoverfly = new Hoverfly(HoverflyMode.Spy))
             {
                 hoverfly.Start();
 
@@ -293,7 +292,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldGetExternalResponse_WhenUsingSpyModeAndSimulationIsNotAdded()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Spy, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            using (var hoverfly = new Hoverfly(HoverflyMode.Spy))
             {
                 hoverfly.Start();
 
@@ -306,7 +305,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldGetHeaderInTheSimulation_WhenCapturingSpecificHeader()
         {
-            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+            var config = new HoverflyConfig();
 
             config.SetCaptureHeaders("My-Header");
 
@@ -331,7 +330,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldNotCaptureNoneCaptureHeader_WhenCapturingSpecificHeader()
         {
-            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+            var config = new HoverflyConfig();
 
             config.SetCaptureHeaders("My-Header");
 
@@ -355,7 +354,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldGetHeaderInTheSimulation_WhenCapturingAllHeaders()
         {
-            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+            var config = new HoverflyConfig();
 
             config.CaptureAllHeaders();
 
@@ -379,7 +378,8 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldUseRemoteHovervyInstance()
         {
-            var config = HoverflyConfig.Config().SetHoverflyBasePath(HoverFlyTestConfig.PackagePath);
+            var config = new HoverflyConfig();
+
             using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, config))
             {
                 hoverfly.Start();
@@ -407,9 +407,9 @@ namespace Hoverfly.Core.Tests
         }
 
         [Fact]
-        public void ShouldBeDelay_WhenAddingADelaryToRequestWithDsl()
+        public void ShouldBeDelayed_WhenAddingADelayToReponseWithDsl()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath()))
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
             {
                 hoverfly.Start();
 
@@ -417,7 +417,27 @@ namespace Hoverfly.Core.Tests
                     DslSimulationSource.Dsl(
                         Service("http://echo.jsontest.com")
                             .Get("/key/value/three/four")
-                            .WithDelay(2000)
+                            .WillReturn(Success("Test", "application/json").WithDelay(3000))));
+
+                var stopWatch = Stopwatch.StartNew();
+                GetContentFrom("http://echo.jsontest.com/key/value/three/four");
+                stopWatch.Stop();
+
+                Assert.True(stopWatch.Elapsed.TotalMilliseconds >= 2000);
+            }
+        }
+
+        [Fact]
+        public void ShouldBeDelayed_WhenAddingADelayToServiceWithDsl()
+        {
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
+            {
+                hoverfly.Start();
+
+                hoverfly.ImportSimulation(
+                    DslSimulationSource.Dsl(
+                        Service("http://echo.jsontest.com").AndDelay(3000).ForAll()
+                            .Get("/key/value/three/four")
                             .WillReturn(Success("Test", "application/json"))));
 
                 var stopWatch = Stopwatch.StartNew();
@@ -436,11 +456,11 @@ namespace Hoverfly.Core.Tests
                                     new RequestResponsePair(
                                         new Request
                                         {
-                                            Scheme = new FieldMatcher("http"),
-                                            Destination = new FieldMatcher("echo.jsontest.com"),
-                                            Method = new FieldMatcher("GET"),
-                                            Path = new FieldMatcher("/key/value/three/four"),
-                                            Query = new FieldMatcher("name=test"),
+                                            Scheme = new [] { new RequestFieldMatcher("http") },
+                                            Destination = new [] { new RequestFieldMatcher("echo.jsontest.com") },
+                                            Method = new [] { new RequestFieldMatcher("GET") },
+                                            Path = new [] { new RequestFieldMatcher("/key/value/three/four") },
+                                            Query = new Dictionary<string, IList<RequestFieldMatcher>> { { "name", new [] { new RequestFieldMatcher("test") } } },
                                         },
                                         new Response
                                         {

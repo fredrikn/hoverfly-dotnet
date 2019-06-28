@@ -341,23 +341,19 @@
             VerifyOrCreateRandomProxyPort();
             VerifyOrCreateRandomAdminPort();
 
-            var hoverfilePath = string.IsNullOrWhiteSpace(_hoverflyConfig.HoverflyBasePath) ?
-                               HOVERFLY_EXE :
-                               Path.Combine(_hoverflyConfig.HoverflyBasePath, HOVERFLY_EXE);
-
             LogInfo("Start hoverfly.");
 
-            if (TryStartHoverflyProcess(hoverfilePath))
-                return;
+            var hoverfilePath = GetHoverExePath();
 
-            var hoverfileBasePath = GetHoverfileBasePath();
+            StartHoverflyProcess(hoverfilePath);
+        }
 
-            var hoverflyPath = SearchForHoverflyFile(hoverfileBasePath);
-
-            if (string.IsNullOrWhiteSpace(hoverflyPath))
-                throw new FileNotFoundException($"Can't find the file '{HOVERFLY_EXE}' file in the '{hoverfileBasePath}' or in its sub-folders.");
-
-            StartHoverflyProcess(hoverflyPath);
+        private string GetHoverExePath()
+        {
+            if (_hoverflyConfig.UseHoverfly64)
+               return Path.Combine(_hoverflyConfig.HoverflyBasePath, "amd64", HOVERFLY_EXE);
+            else
+                return Path.Combine(_hoverflyConfig.HoverflyBasePath, "386", HOVERFLY_EXE);
         }
 
         private void VerifyOrCreateRandomAdminPort()
@@ -380,27 +376,6 @@
                 throw new PortAlreadyInUseException($"Port '{_hoverflyConfig.ProxyPort}' is already in use by other application, please use another one");
 
             _hoverflyConfig.SetProxyPort(PortHelper.GetRandomPort());
-        }
-
-        private string GetHoverfileBasePath()
-        {
-            return string.IsNullOrWhiteSpace(_hoverflyConfig.HoverflyBasePath) ?
-                Environment.CurrentDirectory :
-                _hoverflyConfig.HoverflyBasePath;
-        }
-
-        private bool TryStartHoverflyProcess(string hoverflyPath)
-        {
-            try
-            {
-                StartHoverflyProcess(hoverflyPath);
-            }
-            catch
-            {
-                return false;
-            }
-
-            return true;
         }
 
         private void StartHoverflyProcess(string hoverflyPath)
@@ -430,12 +405,6 @@
             arguments.Append($" -ap {_hoverflyConfig.AdminPort} ");
 
             return arguments.ToString();
-        }
-
-        private static string SearchForHoverflyFile(string folder)
-        {
-            var result = Directory.GetFiles(folder, HOVERFLY_EXE, SearchOption.AllDirectories);
-            return result.Any() ? result.First() : null;
         }
 
         private void LogInfo(string message)
