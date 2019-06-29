@@ -19,7 +19,9 @@
         [Fact]
         public void ShouldStartInSimulationMode()
         {
-            using (var runner = HoverflyRunner.StartInSimulationMode())
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var runner = HoverflyRunner.StartInSimulationMode(config))
             {
                 Assert.Equal(HoverflyMode.Simulate, runner.GetHoverflyMode());
             }
@@ -30,7 +32,9 @@
         {
             var fakeSource = new FileSimulationSource("simulation_test.json");
 
-            using (var runner = HoverflyRunner.StartInSimulationMode(fakeSource))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var runner = HoverflyRunner.StartInSimulationMode(fakeSource, config))
             {
                 var simulation = runner.GetSimulation();
 
@@ -42,7 +46,9 @@
         [Fact]
         public void ShouldLoadSimulation_WhenStartInSimulationModeWithASimulationSourceAsFile()
         {
-            using (var runner = HoverflyRunner.StartInSimulationMode("simulation_test.json"))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var runner = HoverflyRunner.StartInSimulationMode("simulation_test.json", config))
             {
                 var simulation = runner.GetSimulation();
                 Assert.Equal("echo.jsontest.com", simulation.HoverflyData.RequestResponsePair.First().Request.Destination[0].Value);
@@ -54,7 +60,10 @@
         public void ShouldStartInCaptureMode()
         {
             var fakeDestination = new FakeSimulationDestinationSource();
-            using (var runner = HoverflyRunner.StartInCaptureMode(fakeDestination))
+
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var runner = HoverflyRunner.StartInCaptureMode(fakeDestination, config))
             {
                 Assert.Equal(HoverflyMode.Capture, runner.GetHoverflyMode());
             }
@@ -64,8 +73,9 @@
         public void ShouldExportSimulationOnStop_WhenInCaptureMode()
         {
             var fakeDestination = new FakeSimulationDestinationSource();
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
 
-            using (var runner = HoverflyRunner.StartInCaptureMode(fakeDestination))
+            using (var runner = HoverflyRunner.StartInCaptureMode(fakeDestination, config))
             {
             }
 
@@ -75,7 +85,9 @@
         [Fact]
         public void ShouldReturnCorrectSimulation_WhenUsingSimulateWithDsl()
         {
-            using (var runner = HoverflyRunner.StartInSimulationMode())
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var runner = HoverflyRunner.StartInSimulationMode(config))
             {
                 runner.Simulate(DslSimulationSource.Dsl(
                       Service("http://echo.jsontest.com")
@@ -92,7 +104,9 @@
         [Fact]
         public void ShouldReturnCorrectSimulations_WhenUsingAnExistingSimulateAndWhenAddingOne()
         {
-            using (var runner = HoverflyRunner.StartInSimulationMode("simulation_test.json"))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var runner = HoverflyRunner.StartInSimulationMode("simulation_test.json", config))
             {
                 runner.AddSimulation(DslSimulationSource.Dsl(
                       Service("http://echo.jsontest.com")
@@ -113,7 +127,9 @@
         [Fact]
         public void ShouldGetSimulationResponse_WhenUsingSpyModeAndSimulationDslIsAreadyAdded()
         {
-            using (var runner = HoverflyRunner.StartInSpyMode())
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var runner = HoverflyRunner.StartInSpyMode(config))
             {
                 runner.AddSimulation(
                     DslSimulationSource.Dsl(
@@ -139,7 +155,9 @@
                             .WillReturn(
                                 Success("MyData", "application/json")));
 
-            using (var runner = HoverflyRunner.StartInSpyMode(simulation))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var runner = HoverflyRunner.StartInSpyMode(simulation, config))
             {
                 var result = GetContentFrom("http://echo.jsontest.com/key/value/three/four?name=test");
 
@@ -150,7 +168,9 @@
         [Fact]
         public void ShouldGetSimulationResponse_WhenUsingSpyModeAndSimulationFromFileIsAreadyAdded()
         {
-            using (var runner = HoverflyRunner.StartInSpyMode("simulation_test.json"))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var runner = HoverflyRunner.StartInSpyMode("simulation_test.json", config))
             {
                 var result = GetContentFrom("http://echo.jsontest.com/key/value/one/two");
 
@@ -161,7 +181,9 @@
         [Fact]
         public void ShouldGetExternalResponse_WhenUsingSpyModeAndSimulationIsNotAdded()
         {
-            using (var runner = HoverflyRunner.StartInSpyMode())
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var runner = HoverflyRunner.StartInSpyMode(config))
             {
                 var result = GetContentFrom("http://echo.jsontest.com/key/value/one/two?name=testSpy");
 

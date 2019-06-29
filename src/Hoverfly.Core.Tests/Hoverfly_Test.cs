@@ -49,7 +49,9 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldReturnSimulateMode_WhenHoverFlyIsSetToUseSimulateMode()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, config))
             {
                 hoverfly.Start();
                 Assert.Equal(HoverflyMode.Simulate, hoverfly.GetMode());
@@ -59,7 +61,9 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldReturnCaptureMode_WhenHoverFlyIsSetToUseCaptureMode()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Capture))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Capture, config))
             {
                 hoverfly.Start();
                 Assert.Equal(HoverflyMode.Capture, hoverfly.GetMode());
@@ -70,7 +74,9 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldReturnSpyMode_WhenHoverFlyIsSetToUseSpyMode()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Spy))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Spy, config))
             {
                 hoverfly.Start();
                 Assert.Equal(HoverflyMode.Spy, hoverfly.GetMode());
@@ -80,7 +86,9 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldExportSimulation()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Capture))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Capture, config))
             {
                 hoverfly.Start();
 
@@ -97,7 +105,9 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldReturnCorrectSimulationDataResult_WhenHoverflyInSimulationMode()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, config))
             {
 
                 hoverfly.Start();
@@ -118,7 +128,9 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldReturnCorrectHoverflyMode()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, config))
             {
 
                 hoverfly.Start();
@@ -134,7 +146,9 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldReturnCorrectMode_WhenHoverflyModeIsChanged()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, config))
             {
 
                 hoverfly.Start();
@@ -152,7 +166,9 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldReturnCorrectSimluationFromHoverfly_WhenImportingSimulation()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, config))
             {
                 hoverfly.Start();
 
@@ -180,7 +196,9 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public async Task ShouldReturnCorrectRestultFromAPutRequest_WhenImportingSimulationAndUsingSimulationMode()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, config))
             {
                 hoverfly.Start();
 
@@ -203,7 +221,9 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldReturnCorrectRestultFromARequest_WhenImportingSimulationAndUsingSimulationMode()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, config))
             {
                 hoverfly.Start();
 
@@ -222,7 +242,9 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldGetCorrectResponse_WhenUsingDsl()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, config))
             {
                 hoverfly.Start();
 
@@ -243,7 +265,9 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldReturnCorrectSimulations_WhenUsingAnExistingSimulateAndWhenAddingOne()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, config))
             {
                 hoverfly.Start();
 
@@ -271,7 +295,9 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldGetSimulationResponse_WhenUsingSpyModeAndSimulationIsAreadyAdded()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Spy))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Spy, config))
             {
                 hoverfly.Start();
 
@@ -292,7 +318,9 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldGetExternalResponse_WhenUsingSpyModeAndSimulationIsNotAdded()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Spy))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Spy, config))
             {
                 hoverfly.Start();
 
@@ -305,7 +333,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldGetHeaderInTheSimulation_WhenCapturingSpecificHeader()
         {
-            var config = new HoverflyConfig();
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
 
             config.SetCaptureHeaders("My-Header");
 
@@ -330,7 +358,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldNotCaptureNoneCaptureHeader_WhenCapturingSpecificHeader()
         {
-            var config = new HoverflyConfig();
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
 
             config.SetCaptureHeaders("My-Header");
 
@@ -354,7 +382,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldGetHeaderInTheSimulation_WhenCapturingAllHeaders()
         {
-            var config = new HoverflyConfig();
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
 
             config.CaptureAllHeaders();
 
@@ -378,7 +406,7 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldUseRemoteHovervyInstance()
         {
-            var config = new HoverflyConfig();
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
 
             using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, config))
             {
@@ -409,7 +437,9 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldBeDelayed_WhenAddingADelayToReponseWithDsl()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, config))
             {
                 hoverfly.Start();
 
@@ -430,7 +460,9 @@ namespace Hoverfly.Core.Tests
         [Fact]
         public void ShouldBeDelayed_WhenAddingADelayToServiceWithDsl()
         {
-            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate))
+            var config = HoverFlyTestConfig.GetHoverFlyConfigWIthBasePath();
+
+            using (var hoverfly = new Hoverfly(HoverflyMode.Simulate, config))
             {
                 hoverfly.Start();
 

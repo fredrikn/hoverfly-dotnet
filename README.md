@@ -14,6 +14,24 @@ Hoverfly .Net is a native language binding which gives you an expressive API for
 
 ***NOTE: If you run the tests in parallel you can only at the moment have one Hoverfly process started. In those cases you need to start the process before all tests will be running, and stop when all tests are done. BUT you can only have one simulation loaded, or you can first use hoverfly.GetSimulation method to get the current Simulation, then modify the Simulation object and then use hoverfly.ImportSimulation to import the “new” Simulation.***
 
+### How to Start
+
+Run build.ps1, it will download Hoverfly 32-bit and 64-bit version. (Default the 64-bit will be used)
+
+Note: Hoverfly will be downloaded to the folder ".hoverfly", in the directory where you run the buid script from.
+
+You can also download Hoverfly from:
+
+32-bit
+https://github.com/SpectoLabs/hoverfly/releases/download/v1.0.1/hoverfly_bundle_windows_386.zip
+
+64-bit
+https://github.com/SpectoLabs/hoverfly/releases/download/v1.0.1/hoverfly_bundle_windows_amd64.zip
+
+By default Hoverfly DotNet will first use the HoverflyConfig.HoverflyBasePath to locate where the Hoverfly.exe is located.
+If it can't find it, till will try to just run "Hoverfly.exe". If that doesn't work Hoverfly DotNet will search in the subdirectoried of the
+specified HoverflyConfig.HoverflyBasePath (if the config is not set, default null, the Environment current directory will be used).
+
 ### Example of using simulation:
 
 ```cs

@@ -8,5 +8,6 @@
 src/out
 src/packages
 src/\.fake
+src/\.hoverfly
 src/\.nuget/
 src/\_Ncrunch*

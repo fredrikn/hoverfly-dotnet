@@ -1,5 +1,6 @@
-### New in 1.0.0 (Released 2019/06/28)
+### New in 1.0.0 (Released 2019/06/29)
 * Updated to fit Hoverfly v 1.0.1
+* Hoverfly is downloaded externally and not part of the package
 * Major Schema changes and changes to the DSL of creating Simulations.
 * Note: This release will break earlier versions.
 

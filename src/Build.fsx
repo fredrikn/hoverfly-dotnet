@@ -14,7 +14,7 @@ open Fake.TaskRunnerHelper
 
 let product = "Hoverfly-DotNet"
 let authors = [ "Fredrik Normen" ]
-let copyright = "Copyright © 2017"
+let copyright = "Copyright ï¿½ 2017"
 let company = "Fredrik Normen"
 let description = "A .Net Library for Hoverfly"
 
@@ -147,13 +147,8 @@ Target "CreatePackage" (fun _ ->
     !! (workingDir @@ projectName + ".dll")
     ++ (workingDir @@ projectName + ".pdb")
     ++ (workingDir @@ projectName + ".xml")
+    ++ (workingDir @@ "README_HOW_TO_USE.txt")
     |> CopyFiles tempLibDir
-
-     // Copy all files and sub dir to libdir = workingDir/content
-    let tempContentDir = tempBuildDir @@ "content/HoverflyExe"
-    ensureDirectory tempContentDir 
-    let hoverflyePath = workingDir @@ "HoverflyExe"
-    copyRecursive (directoryInfo hoverflyePath) (directoryInfo tempContentDir) true |> ignore
 
     pack tempBuildDir
 )
