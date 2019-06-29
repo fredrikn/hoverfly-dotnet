@@ -7,6 +7,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescriptionAttribute("A .Net Library for Hoverfly")]
 [assembly: AssemblyCopyrightAttribute("Copyright � 2017")]
 [assembly: AssemblyTrademarkAttribute("")]
-[assembly: AssemblyVersionAttribute("1.0.0.0")]
+[assembly: AssemblyVersionAttribute("1.0.1.0")]
 [assembly: ComVisibleAttribute(false)]
-[assembly: AssemblyFileVersionAttribute("1.0.0.0")]
+[assembly: AssemblyFileVersionAttribute("1.0.1.0")]
