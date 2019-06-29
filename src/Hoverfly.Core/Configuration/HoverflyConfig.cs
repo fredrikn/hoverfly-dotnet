@@ -45,7 +45,7 @@
         /// <summary>
         /// Gets the base path to the hoverfly.exe.
         /// </summary>
-        public string HoverflyBasePath { get; private set; } = Path.Combine(Environment.CurrentDirectory, "HoverflyExe");
+        public string HoverflyBasePath { get; private set; }
 
         /// <summary>
         /// Gets the base path to the hoverfly.exe.
