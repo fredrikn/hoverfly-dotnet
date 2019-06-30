@@ -1,13 +1,11 @@
+### New in 2.0.0-beta (Released 2019/06/30)
+* Targetting .Net Standard Library 2.0
+
 ### New in 1.0.1 (Released 2019/06/29)
 * Updated to fit Hoverfly v 1.0.1
 * Hoverfly is downloaded externally and not part of the package
 * Major Schema changes and changes to the DSL of creating Simulations.
 * Note: This release will break earlier versions.
-
-### New in 0.4.1 (Released 2018/01/22)
-* Removed the log factory
-* Added support to add a logger to the Hoverfly's config.
-* Added support of adding simulation for Hoverfly and not only for the HoverflyRunner.
 
 ### New in 0.4.0 (Released 2018/01/13)
 * Upgrade to use Hoverfly version 0.15.0

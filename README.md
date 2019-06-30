@@ -1,13 +1,10 @@
-# This repo has the code for the latest Hoverfly-DotNet NugetPakage v 1.0.1
-
-NOTE: The continuous work for uppcomming versions will be in the Hoverfly-DotNetCore Repository the https://github.com/fredrikn/hoverfly-dotnetcore
-
 # hoverfly-dotnet
 A .Net Library for Hoverfly (http://hoverfly.io/)
 
 Hoverfly is maintained by SpectoLabs (https://specto.io/)
 
-Hoverfly DotNet on NuGet https://www.nuget.org/packages/Hoverfly-DotNet
+NOTE: Only work for .Net Framework Test Project, not yet for .Net Core.
+      The Core code is a .Net Standard 2 Class Library
 
 # What is Hoverfly DotNet?
 Hoverfly is a lightweight service virtualisation tool which allows you to stub / simulate HTTP(S) services. It is a proxy written in Go which responds to HTTP(S) requests with stored responses, pretending to be it’s real counterpart.

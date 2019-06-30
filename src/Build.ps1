@@ -23,7 +23,7 @@ IF (-NOT (Test-Path ".hoverfly\amd64\hoverfly.exe"))
     # Install Hoverfly v 1.0.1 64 bit
     MKDIR ".hoverfly\amd64"
     Invoke-WebRequest "https://github.com/SpectoLabs/hoverfly/releases/download/v1.0.1/hoverfly_bundle_windows_amd64.zip" -OutFile ".hoverfly\amd64\hoverfly_bundle_windows_amd64.zip" -UseBasicParsing
-    Unzip ".hoverfly\amd64\hoverfly_bundle_windows_amd64.zip" ".hoverfly\amd64"
+    Unzip (Join-Path -Path $PSScriptRoot -ChildPath ".hoverfly\amd64\hoverfly_bundle_windows_amd64.zip") ".hoverfly\amd64"
 }
 
 IF (-NOT (Test-Path ".hoverfly\386\hoverfly.exe"))
@@ -31,7 +31,7 @@ IF (-NOT (Test-Path ".hoverfly\386\hoverfly.exe"))
     # Install Hoverfly v 1.0.1 32 bit
     MKDIR ".hoverfly\386"
     Invoke-WebRequest "https://github.com/SpectoLabs/hoverfly/releases/download/v1.0.1/hoverfly_bundle_windows_386.zip" -OutFile ".hoverfly\386\hoverfly_bundle_windows_386.zip" -UseBasicParsing 
-    Unzip ".hoverfly\386\hoverfly_bundle_windows_386.zip" ".hoverfly\386"
+    Unzip (Join-Path -Path $PSScriptRoot -ChildPath ".hoverfly\386\hoverfly_bundle_windows_386.zip") ".hoverfly\386"
 }
 
 & ".\.nuget\nuget.exe" update -self
