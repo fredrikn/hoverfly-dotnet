@@ -1,3 +1,7 @@
+# This code is the Code base for the latest Hoverfly-DotNet NugetPakage v 1.0.1
+
+NOTE: The continuous work for uppcomming versions will be in the Hoverfly-DotNetCore Repository the https://github.com/fredrikn/hoverfly-dotnetcore
+
 # hoverfly-dotnet
 A .Net Library for Hoverfly (http://hoverfly.io/)
 
