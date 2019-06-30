@@ -3,6 +3,8 @@ A .Net Library for Hoverfly (http://hoverfly.io/)
 
 Hoverfly is maintained by SpectoLabs (https://specto.io/)
 
+Hoverfly DotNet on Nuget https://www.nuget.org/packages/Hoverfly-DotNet/
+
 NOTE: Only work for .Net Framework Test Project, not yet for .Net Core.
       The Core code is a .Net Standard 2 Class Library
 
